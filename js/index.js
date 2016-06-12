@@ -7,9 +7,19 @@ CELLS_COUNT_VERTICAL = 11;
 CANVAS_MARGIN_TOP_PX = 68;
 CANVAS_MARGIN_LEFT_PX = 20;
 
+PLAYER_DIRECTION_UP = 0;
+PLAYER_DIRECTION_RIGHT = 1;
+PLAYER_DIRECTION_DOWN = 2;
+PLAYER_DIRECTION_LEFT = 3;
+
 var FPS = 1000 / 60;
 
 g_ctx = null;
+
+g_upKeyDown = false;
+g_rightKeyDown = false;
+g_downKeyDown = false;
+g_leftKeyDown = false;
 
 var g_player = new Player("green", 0, 0);
 
@@ -18,23 +28,20 @@ function init()
     var canvas = document.getElementById("canvas");
     g_ctx = canvas.getContext('2d');
     var lastDownTarget;
-    document.addEventListener('mousedown', function(event) {
-        lastDownTarget = event.target;
-    }, false);
-
-    document.addEventListener('keydown', function(event) {
-        if(lastDownTarget == canvas) {
-            onKeyDown(event);
-        }
-    }, false);
+    window.addEventListener('keydown', function() {
+        handleKey(event, true);
+    }, true);
+    window.addEventListener('keyup', function() {
+        handleKey(event, false);
+    }, true);
 
     setInterval(play, FPS);
 }
 
 function play()
 {
-    draw(); //Рисуем объекты
-    //update(); //Расчитываем координаты
+    draw();
+    update();
 }
 
 function draw()
@@ -42,7 +49,33 @@ function draw()
     _drawBase();
     _drawMap();
     g_player.draw();
-    //drawScore();
+}
+
+function update()
+{
+    if (g_upKeyDown)
+    {
+        g_player.y--;
+        g_player.direction = PLAYER_DIRECTION_UP;
+    }
+
+    if (g_rightKeyDown)
+    {
+        g_player.x++;
+        g_player.direction = PLAYER_DIRECTION_RIGHT;
+    }
+
+    if (g_downKeyDown)
+    {
+        g_player.y++;
+        g_player.direction = PLAYER_DIRECTION_DOWN;
+    }
+
+    if (g_leftKeyDown)
+    {
+        g_player.x--;
+        g_player.direction = PLAYER_DIRECTION_LEFT;
+    }
 }
 
 function _drawBase()
@@ -101,42 +134,42 @@ function _drawMap()
     };
 }
 
-function onKeyDown(event) {
-    switch(event.keyCode) {
-    case 37: case 65: // left
-        g_player.x -= 2;
-        console.log('left');
-    break;
+function handleKey(event, state)
+{
+    switch(event.keyCode)
+    {
+        case 37: case 65: // left
+            g_leftKeyDown = state;
+        break;
 
-    case 38: case 87: case 32: // up
-        g_player.y -= 2;
-        console.log('top');
-    break;
+        case 38: case 87: // up
+            g_upKeyDown = state;
+        break;
 
-    case 39: case 68: // right
-        g_player.x += 2;
-        console.log('right');
-    break;
+        case 39: case 68: // right
+            g_rightKeyDown = state;
+        break;
 
-    case 40: case 83: // down
-        g_player.y += 2;
-        console.log('down');
-    break;
+        case 40: case 83: // down
+            g_downKeyDown = state;
+        break;
 
-    case 16: // sprint
-        console.log('bomb');
-    break;
+        case 16: // shift
+            console.log('bomb');
+        break;
 
-    default: return;
+        default: return;
     }
 }
 
-
-function Player(color, x, y)
+function Player(color, matrixX, matrixY)
 {
     this.color = color;
-    this.x = x;
-    this.y = y;
+    this.matrixX = matrixX;
+    this.matrixY = matrixY;
+    this.x = matrixX * CELL_WIDTH;
+    this.y = matrixY * CELL_HEIGHT;
+    this.direction = PLAYER_DIRECTION_DOWN;
     this.draw = function() {
         var self = this;
         playerImage = new Image();
