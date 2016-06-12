@@ -55,26 +55,39 @@ function update()
 {
     if (g_upKeyDown)
     {
-        g_player.y--;
         g_player.direction = PLAYER_DIRECTION_UP;
+        g_player.y-=2;
+        if (g_player.y < (g_player.matrixY - 0.5) * CELL_HEIGHT)
+        {
+            g_player.matrixY--;
+        }
     }
-
-    if (g_rightKeyDown)
+    else if (g_rightKeyDown)
     {
-        g_player.x++;
         g_player.direction = PLAYER_DIRECTION_RIGHT;
+        g_player.x+=2;
+        if (g_player.x > (g_player.matrixX + 0.5) * CELL_WIDTH)
+        {
+            g_player.matrixX++;
+        }
     }
-
-    if (g_downKeyDown)
+    else if (g_downKeyDown)
     {
-        g_player.y++;
         g_player.direction = PLAYER_DIRECTION_DOWN;
+        g_player.y+=2;
+        if (g_player.y > (g_player.matrixY + 0.5) * CELL_HEIGHT)
+        {
+            g_player.matrixY++;
+        }
     }
-
-    if (g_leftKeyDown)
+    else if (g_leftKeyDown)
     {
-        g_player.x--;
         g_player.direction = PLAYER_DIRECTION_LEFT;
+        g_player.x-=2;
+        if (g_player.x < (g_player.matrixX - 0.5) * CELL_WIDTH)
+        {
+            g_player.matrixX--;
+        }
     }
 }
 
@@ -136,7 +149,7 @@ function _drawMap()
 
 function handleKey(event, state)
 {
-    switch(event.keyCode)
+    switch (event.keyCode)
     {
         case 37: case 65: // left
             g_leftKeyDown = state;
@@ -173,7 +186,20 @@ function Player(color, matrixX, matrixY)
     this.draw = function() {
         var self = this;
         playerImage = new Image();
-        playerImage.src = "img/players/stand_bottom.png";
+        switch(self.direction){
+            case PLAYER_DIRECTION_UP:
+                playerImage.src = "img/players/stand_top.png";
+            break;
+            case PLAYER_DIRECTION_RIGHT:
+                playerImage.src = "img/players/stand_right.png";
+            break;
+            case PLAYER_DIRECTION_DOWN:
+                playerImage.src = "img/players/stand_bottom.png";
+            break;
+            case PLAYER_DIRECTION_LEFT:
+                playerImage.src = "img/players/stand_left.png";
+            break;
+        }
         playerImage.onload = function()
         {
             g_ctx.drawImage(playerImage, self.x + CANVAS_MARGIN_LEFT_PX, self.y + CANVAS_MARGIN_TOP_PX - playerImage.height / 2);
