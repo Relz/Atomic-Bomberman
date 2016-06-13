@@ -21,6 +21,8 @@ g_rightKeyDown = false;
 g_downKeyDown = false;
 g_leftKeyDown = false;
 
+var g_bombs = [];
+
 var g_player = new Player("green", 0, 0);
 
 function init()
@@ -49,6 +51,7 @@ function draw()
     _drawBase();
     _drawMap();
     g_player.draw();
+    _drawBombs();
 }
 
 function update()
@@ -56,9 +59,8 @@ function update()
     if (g_upKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_UP;
-        console.log(g_player.y);
-        console.log(g_player.matrixY * CELL_HEIGHT);
-        if ((g_player.matrixY !== 0 && (map[g_player.matrixY - 1][g_player.matrixX].y === -1)) || (g_player.y > g_player.matrixY * CELL_HEIGHT))
+        if ((g_player.matrixY !== 0 && (map[g_player.matrixY - 1][g_player.matrixX].y === -1)) ||
+            (g_player.y > g_player.matrixY * CELL_HEIGHT))
         {
             g_player.y-=2;
             if (g_player.y < (g_player.matrixY - 0.5) * CELL_HEIGHT)
@@ -70,9 +72,8 @@ function update()
     else if (g_rightKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_RIGHT;
-        console.log(g_player.x);
-        console.log(g_player.matrixX * CELL_WIDTH + CELL_WIDTH);
-        if ((g_player.matrixX + 1 < CELLS_COUNT_HORIZONTAL && (map[g_player.matrixY][g_player.matrixX + 1].y == -1)) || (g_player.x < g_player.matrixX * CELL_WIDTH))
+        if ((g_player.matrixX + 1 < CELLS_COUNT_HORIZONTAL && (map[g_player.matrixY][g_player.matrixX + 1].y == -1)) ||
+            (g_player.x < g_player.matrixX * CELL_WIDTH))
         {
             g_player.x+=2;
             if (g_player.x > (g_player.matrixX + 0.5) * CELL_WIDTH)
@@ -84,7 +85,8 @@ function update()
     else if (g_downKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_DOWN;
-        if ((g_player.matrixY + 1 < CELLS_COUNT_VERTICAL && (map[g_player.matrixY + 1][g_player.matrixX].y == -1)) || (g_player.y < g_player.matrixY * CELL_HEIGHT))
+        if ((g_player.matrixY + 1 < CELLS_COUNT_VERTICAL && (map[g_player.matrixY + 1][g_player.matrixX].y == -1)) ||
+            (g_player.y < g_player.matrixY * CELL_HEIGHT))
         {
             g_player.y+=2;
             if (g_player.y > (g_player.matrixY + 0.5) * CELL_HEIGHT)
@@ -96,9 +98,8 @@ function update()
     else if (g_leftKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_LEFT;
-        console.log(g_player.x);
-        console.log(g_player.matrixX * CELL_WIDTH);
-        if (g_player.matrixX !== 0 && (map[g_player.matrixY][g_player.matrixX - 1].y === -1) || (g_player.x > g_player.matrixX * CELL_WIDTH))
+        if (g_player.matrixX !== 0 && (map[g_player.matrixY][g_player.matrixX - 1].y === -1) ||
+            (g_player.x > g_player.matrixX * CELL_WIDTH))
         {
             g_player.x-=2;
             if (g_player.x < (g_player.matrixX - 0.5) * CELL_WIDTH)
@@ -165,6 +166,19 @@ function _drawMap()
     };
 }
 
+function _drawBombs()
+{
+    bombImage = new Image();
+    bombImage.src = "img/bomb.gif";
+    bombImage.onload = function()
+    {
+        for (var i = 0; i < g_bombs.length; i++)
+        {
+            g_ctx.drawImage(bombImage, g_bombs[i].x * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, g_bombs[i].y * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
+        }
+    };
+}
+
 function handleKey(event, state)
 {
     switch (event.keyCode)
@@ -186,7 +200,7 @@ function handleKey(event, state)
         break;
 
         case 16: // shift
-            console.log('bomb');
+            g_bombs.push({x: g_player.matrixX, y: g_player.matrixY, t: 3});
         break;
 
         default: return;
