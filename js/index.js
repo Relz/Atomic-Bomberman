@@ -56,37 +56,55 @@ function update()
     if (g_upKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_UP;
-        g_player.y-=2;
-        if (g_player.y < (g_player.matrixY - 0.5) * CELL_HEIGHT)
+        console.log(g_player.y);
+        console.log(g_player.matrixY * CELL_HEIGHT);
+        if ((g_player.matrixY !== 0 && (map[g_player.matrixY - 1][g_player.matrixX].y === -1)) || (g_player.y > g_player.matrixY * CELL_HEIGHT))
         {
-            g_player.matrixY--;
+            g_player.y-=2;
+            if (g_player.y < (g_player.matrixY - 0.5) * CELL_HEIGHT)
+            {
+                g_player.matrixY--;
+            }
         }
     }
     else if (g_rightKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_RIGHT;
-        g_player.x+=2;
-        if (g_player.x > (g_player.matrixX + 0.5) * CELL_WIDTH)
+        console.log(g_player.x);
+        console.log(g_player.matrixX * CELL_WIDTH + CELL_WIDTH);
+        if ((g_player.matrixX + 1 < CELLS_COUNT_HORIZONTAL && (map[g_player.matrixY][g_player.matrixX + 1].y == -1)) || (g_player.x < g_player.matrixX * CELL_WIDTH))
         {
-            g_player.matrixX++;
+            g_player.x+=2;
+            if (g_player.x > (g_player.matrixX + 0.5) * CELL_WIDTH)
+            {
+                g_player.matrixX++;
+            }
         }
     }
     else if (g_downKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_DOWN;
-        g_player.y+=2;
-        if (g_player.y > (g_player.matrixY + 0.5) * CELL_HEIGHT)
+        if ((g_player.matrixY + 1 < CELLS_COUNT_VERTICAL && (map[g_player.matrixY + 1][g_player.matrixX].y == -1)) || (g_player.y < g_player.matrixY * CELL_HEIGHT))
         {
-            g_player.matrixY++;
+            g_player.y+=2;
+            if (g_player.y > (g_player.matrixY + 0.5) * CELL_HEIGHT)
+            {
+                g_player.matrixY++;
+            }
         }
     }
     else if (g_leftKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_LEFT;
-        g_player.x-=2;
-        if (g_player.x < (g_player.matrixX - 0.5) * CELL_WIDTH)
+        console.log(g_player.x);
+        console.log(g_player.matrixX * CELL_WIDTH);
+        if (g_player.matrixX !== 0 && (map[g_player.matrixY][g_player.matrixX - 1].y === -1) || (g_player.x > g_player.matrixX * CELL_WIDTH))
         {
-            g_player.matrixX--;
+            g_player.x-=2;
+            if (g_player.x < (g_player.matrixX - 0.5) * CELL_WIDTH)
+            {
+                g_player.matrixX--;
+            }
         }
     }
 }
