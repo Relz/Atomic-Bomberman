@@ -12,7 +12,7 @@ PLAYER_DIRECTION_RIGHT = 1;
 PLAYER_DIRECTION_DOWN = 2;
 PLAYER_DIRECTION_LEFT = 3;
 
-var FPS = 1000 / 60;
+PLAYER_SPEED = 2;
 
 g_ctx = null;
 
@@ -24,6 +24,10 @@ g_leftKeyDown = false;
 var g_bombs = [];
 
 var g_player = new Player("green", 0, 0);
+var g_player2 = new Player("green", 14, 10);
+
+var g_bombImage;
+var g_map = [];
 
 function init()
 {
@@ -36,14 +40,18 @@ function init()
     window.addEventListener('keyup', function() {
         handleKey(event, false);
     }, true);
-
-    setInterval(play, FPS);
+    
+    g_bombImage = new Image();
+    g_bombImage.src = "img/bomb.gif";
+    
+    play();
 }
 
 function play()
 {
     draw();
     update();
+    window.requestAnimationFrame(play);
 }
 
 function draw()
@@ -59,184 +67,55 @@ function update()
     if (g_upKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_UP;
-        if ((g_player.matrixY !== 0 && (map[g_player.matrixY - 1][g_player.matrixX].y === -1)) ||
-            (g_player.y > g_player.matrixY * CELL_HEIGHT))
+        if ((g_player.posY !== 0 && (g_map[g_player.posY - 1][g_player.posX].y === -1)) ||
+            (g_player.canvasY > g_player.posY * CELL_HEIGHT))
         {
-            g_player.y-=2;
-            if (g_player.y < (g_player.matrixY - 0.5) * CELL_HEIGHT)
+            g_player.canvasY -= PLAYER_SPEED;
+            if (g_player.canvasY < (g_player.posY - 0.5) * CELL_HEIGHT)
             {
-                g_player.matrixY--;
+                g_player.posY--;
             }
         }
     }
     else if (g_rightKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_RIGHT;
-        if ((g_player.matrixX + 1 < CELLS_COUNT_HORIZONTAL && (map[g_player.matrixY][g_player.matrixX + 1].y == -1)) ||
-            (g_player.x < g_player.matrixX * CELL_WIDTH))
+        if ((g_player.posX + 1 < CELLS_COUNT_HORIZONTAL && (g_map[g_player.posY][g_player.posX + 1].y == -1)) ||
+            (g_player.canvasX  < g_player.posX * CELL_WIDTH))
         {
-            g_player.x+=2;
-            if (g_player.x > (g_player.matrixX + 0.5) * CELL_WIDTH)
+            g_player.canvasX += PLAYER_SPEED;
+            if (g_player.canvasX > (g_player.posX + 0.5) * CELL_WIDTH)
             {
-                g_player.matrixX++;
+                g_player.posX++;
             }
         }
     }
     else if (g_downKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_DOWN;
-        if ((g_player.matrixY + 1 < CELLS_COUNT_VERTICAL && (map[g_player.matrixY + 1][g_player.matrixX].y == -1)) ||
-            (g_player.y < g_player.matrixY * CELL_HEIGHT))
+        if ((g_player.posY + 1 < CELLS_COUNT_VERTICAL && (g_map[g_player.posY + 1][g_player.posX].y == -1)) ||
+            (g_player.canvasY < g_player.posY * CELL_HEIGHT))
         {
-            g_player.y+=2;
-            if (g_player.y > (g_player.matrixY + 0.5) * CELL_HEIGHT)
+            g_player.canvasY += PLAYER_SPEED;
+            if (g_player.canvasY > (g_player.posY + 0.5) * CELL_HEIGHT)
             {
-                g_player.matrixY++;
+                g_player.posY++;
             }
         }
     }
     else if (g_leftKeyDown)
     {
         g_player.direction = PLAYER_DIRECTION_LEFT;
-        if (g_player.matrixX !== 0 && (map[g_player.matrixY][g_player.matrixX - 1].y === -1) ||
-            (g_player.x > g_player.matrixX * CELL_WIDTH))
+        if (g_player.posX !== 0 && (g_map[g_player.posY][g_player.posX - 1].y === -1) ||
+            (g_player.canvasX > g_player.posX * CELL_WIDTH))
         {
-            g_player.x-=2;
-            if (g_player.x < (g_player.matrixX - 0.5) * CELL_WIDTH)
+            g_player.canvasX -= PLAYER_SPEED;
+            if (g_player.canvasX < (g_player.posX - 0.5) * CELL_WIDTH)
             {
-                g_player.matrixX--;
+                g_player.posX--;
             }
         }
     }
-}
-
-function _drawBase()
-{
-    baseImage = new Image();
-    baseImage.src = "img/field0.png";
-    baseImage.onload = function()
-    {
-        g_ctx.drawImage(baseImage, 0, 0);
-    };
-}
-
-function _drawMap()
-{
-    pic = new Image();
-    pic.src = "img/sprite_map.png";
-
-    map =
-    [[{x:0,y:-1},{x:0,y:-1},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:-1},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:-1}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:-1}]];
-
-    pic.onload = function() {
-        for (var j = 0; j < CELLS_COUNT_HORIZONTAL; j ++)
-        {
-            for (var i = 0; i < CELLS_COUNT_VERTICAL; i ++)
-            {
-                var xWhereToStartClipping = map[i][j].x * CELL_WIDTH;
-                var yWhereToStartClipping = map[i][j].y * CELL_HEIGHT;
-                var clippedImageWidth = CELL_WIDTH;
-                var clippedImageHeight = CELL_HEIGHT;
-                var xWhereToPlaceImage = j * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX;
-                var yWhereToPlaceImage = i * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX;
-                var imageWidth = CELL_WIDTH;
-                var imageHeight = CELL_HEIGHT;
-
-                g_ctx.drawImage(pic,
-                  xWhereToStartClipping,
-                  yWhereToStartClipping,
-                  clippedImageWidth,
-                  clippedImageHeight,
-                  xWhereToPlaceImage,
-                  yWhereToPlaceImage,
-                  imageWidth,
-                  imageHeight);
-            }
-        }
-    };
-}
-
-function _drawBombs()
-{
-    bombImage = new Image();
-    bombImage.src = "img/bomb.gif";
-    bombImage.onload = function()
-    {
-        for (var i = 0; i < g_bombs.length; i++)
-        {
-            g_ctx.drawImage(bombImage, g_bombs[i].x * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, g_bombs[i].y * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
-        }
-    };
-}
-
-function handleKey(event, state)
-{
-    switch (event.keyCode)
-    {
-        case 37: case 65: // left
-            g_leftKeyDown = state;
-        break;
-
-        case 38: case 87: // up
-            g_upKeyDown = state;
-        break;
-
-        case 39: case 68: // right
-            g_rightKeyDown = state;
-        break;
-
-        case 40: case 83: // down
-            g_downKeyDown = state;
-        break;
-
-        case 16: // shift
-            g_bombs.push({x: g_player.matrixX, y: g_player.matrixY, t: 3});
-        break;
-
-        default: return;
-    }
-}
-
-function Player(color, matrixX, matrixY)
-{
-    this.color = color;
-    this.matrixX = matrixX;
-    this.matrixY = matrixY;
-    this.x = matrixX * CELL_WIDTH;
-    this.y = matrixY * CELL_HEIGHT;
-    this.direction = PLAYER_DIRECTION_DOWN;
-    this.draw = function() {
-        var self = this;
-        playerImage = new Image();
-        switch(self.direction){
-            case PLAYER_DIRECTION_UP:
-                playerImage.src = "img/players/stand_top.png";
-            break;
-            case PLAYER_DIRECTION_RIGHT:
-                playerImage.src = "img/players/stand_right.png";
-            break;
-            case PLAYER_DIRECTION_DOWN:
-                playerImage.src = "img/players/stand_bottom.png";
-            break;
-            case PLAYER_DIRECTION_LEFT:
-                playerImage.src = "img/players/stand_left.png";
-            break;
-        }
-        playerImage.onload = function()
-        {
-            g_ctx.drawImage(playerImage, self.x + CANVAS_MARGIN_LEFT_PX, self.y + CANVAS_MARGIN_TOP_PX - playerImage.height / 2);
-        };
-    };
 }
 
 init();
