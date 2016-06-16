@@ -1,9 +1,73 @@
+BOMB_ATTACK_RANGE = 2;
+
 function bomb(color, posX, posY, cooldown)
 {
+    function bombAttack(self)
+    {
+        if ((self.posX == g_player.posX) && (self.posY - BOMB_ATTACK_RANGE <= g_player.posY) && (self.posY + BOMB_ATTACK_RANGE >= g_player.posY) ||
+            (self.posY == g_player.posY) && (self.posX - BOMB_ATTACK_RANGE <= g_player.posX) && (self.posX + BOMB_ATTACK_RANGE >= g_player.posX))
+        {
+            g_player.die();
+        }
+        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        {
+            if ((self.posX + i > CELLS_COUNT_HORIZONTAL - 1) || (g_map[self.posY][self.posX + i].y == 1))
+            {
+                break;
+            }
+            if (g_map[self.posY][self.posX + i].y == 0)
+            {
+                g_map[self.posY][self.posX + i].y = -1;
+                break;
+            }
+        }
+        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        {
+            if ((self.posX - i < 0) || (g_map[self.posY][self.posX - i].y == 1))
+            {
+                break;
+            }
+            if (g_map[self.posY][self.posX - i].y == 0)
+            {
+                g_map[self.posY][self.posX - i].y = -1;
+                break;
+            }
+        }
+        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        {
+            if ((self.posY + i > CELLS_COUNT_VERTICAL - 1) || (g_map[self.posY + i][self.posX].y == 1))
+            {
+                break;
+            }
+            if (g_map[self.posY + i][self.posX].y == 0)
+            {
+                g_map[self.posY + i][self.posX].y = -1;
+                break;
+            }
+        }
+        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        {
+            if ((self.posY - i < 0) || (g_map[self.posY - i][self.posX].y == 1))
+            {
+                break;
+            }
+            if (g_map[self.posY - i][self.posX].y == 0)
+            {
+                g_map[self.posY - i][self.posX].y = -1;
+                break;
+            }
+        }
+    }
     function animateBomb(self)
     {
         var timerId = setInterval(function() {
             self.currTime = (self.currTime > 0) ? self.currTime - 0.05 : self.cooldown;
+            if (self.currTime == self.cooldown)
+            {
+                clearInterval(timerId);
+                g_bombs.pop();
+                bombAttack(self);
+            }
         }, 50);
     }
     

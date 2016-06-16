@@ -7,7 +7,8 @@ function Player(color, posX, posY)
     this.canvasX = posX * CELL_WIDTH;
     this.canvasY = posY * CELL_HEIGHT;
     this.direction = PLAYER_DIRECTION_DOWN;
-    this.draw = function() {
+    this.draw = function() 
+    {
         var self = this;
         var playerImage = new Image();
         switch(self.direction){
@@ -29,6 +30,10 @@ function Player(color, posX, posY)
             g_ctx.drawImage(playerImage, self.canvasX + CANVAS_MARGIN_LEFT_PX, self.canvasY + CANVAS_MARGIN_TOP_PX - playerImage.height / 2);
         };
     };
+    this.die = function()
+    {
+        console.log("Я умер");
+    }
 }
 
 function handleKey(event, state)
@@ -72,6 +77,6 @@ function addBombToPlayerPos(player)
     }
     if (allowToPlantBomb)
     {
-        g_bombs.push(new bomb("green", player.posX, player.posY, 3));
+        g_bombs.unshift(new bomb("green", player.posX, player.posY, 3));
     }
 }

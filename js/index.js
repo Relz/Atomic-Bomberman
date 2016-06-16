@@ -26,7 +26,6 @@ var g_bombs = [];
 var g_player = new Player("green", 0, 0);
 
 var g_bombImage;
-var g_map = [];
 
 function init()
 {
