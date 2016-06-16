@@ -62,5 +62,16 @@ function handleKey(event, state)
 
 function addBombToPlayerPos(player)
 {
-    g_bombs.push({x: player.posX, y: player.posY, cooldown: 3});
+    var allowToPlantBomb = true;
+    for (var i = 0; i < g_bombs.length; i++)
+    {
+        if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+        {
+            allowToPlantBomb = false;
+        }
+    }
+    if (allowToPlantBomb)
+    {
+        g_bombs.push(new bomb("green", player.posX, player.posY, 3));
+    }
 }

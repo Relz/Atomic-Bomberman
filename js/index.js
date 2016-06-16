@@ -24,7 +24,6 @@ g_leftKeyDown = false;
 var g_bombs = [];
 
 var g_player = new Player("green", 0, 0);
-var g_player2 = new Player("green", 14, 10);
 
 var g_bombImage;
 var g_map = [];
@@ -42,7 +41,6 @@ function init()
     }, true);
     
     g_bombImage = new Image();
-    g_bombImage.src = "img/bomb.gif";
     
     play();
 }
@@ -58,8 +56,8 @@ function draw()
 {
     _drawBase();
     _drawMap();
-    g_player.draw();
     _drawBombs();
+    g_player.draw();
 }
 
 function update()
