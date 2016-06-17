@@ -2,61 +2,87 @@ BOMB_ATTACK_RANGE = 2;
 
 function bomb(color, posX, posY, cooldown)
 {
-    function bombAttack(self)
+    function tryToKillPlayer(self)
     {
         if ((self.posX == g_player.posX) && (self.posY - BOMB_ATTACK_RANGE <= g_player.posY) && (self.posY + BOMB_ATTACK_RANGE >= g_player.posY) ||
             (self.posY == g_player.posY) && (self.posX - BOMB_ATTACK_RANGE <= g_player.posX) && (self.posX + BOMB_ATTACK_RANGE >= g_player.posX))
         {
             g_player.die();
         }
-        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+    }
+    
+    function tryToDestroyWalls(self)
+    {
+        function tryToDestroyUpperWall(self)
         {
-            if ((self.posX + i > CELLS_COUNT_HORIZONTAL - 1) || (g_map[self.posY][self.posX + i].y == 1))
+            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
             {
-                break;
-            }
-            if (g_map[self.posY][self.posX + i].y == 0)
-            {
-                g_map[self.posY][self.posX + i].y = -1;
-                break;
+                if ((self.posY + i > CELLS_COUNT_VERTICAL - 1) || (g_map[self.posY + i][self.posX].y == 1))
+                {
+                    break;
+                }
+                if (g_map[self.posY + i][self.posX].y == 0)
+                {
+                    g_map[self.posY + i][self.posX].y = -1;
+                    break;
+                }
             }
         }
-        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        function tryToDestroyRightWall(self)
         {
-            if ((self.posX - i < 0) || (g_map[self.posY][self.posX - i].y == 1))
+            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
             {
-                break;
-            }
-            if (g_map[self.posY][self.posX - i].y == 0)
-            {
-                g_map[self.posY][self.posX - i].y = -1;
-                break;
+                if ((self.posX + i > CELLS_COUNT_HORIZONTAL - 1) || (g_map[self.posY][self.posX + i].y == 1))
+                {
+                    break;
+                }
+                if (g_map[self.posY][self.posX + i].y == 0)
+                {
+                    g_map[self.posY][self.posX + i].y = -1;
+                    break;
+                }
             }
         }
-        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        function tryToDestroyLowerWall(self)
         {
-            if ((self.posY + i > CELLS_COUNT_VERTICAL - 1) || (g_map[self.posY + i][self.posX].y == 1))
+            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
             {
-                break;
-            }
-            if (g_map[self.posY + i][self.posX].y == 0)
-            {
-                g_map[self.posY + i][self.posX].y = -1;
-                break;
+                if ((self.posY - i < 0) || (g_map[self.posY - i][self.posX].y == 1))
+                {
+                    break;
+                }
+                if (g_map[self.posY - i][self.posX].y == 0)
+                {
+                    g_map[self.posY - i][self.posX].y = -1;
+                    break;
+                }
             }
         }
-        for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+        function tryToDestroyLeftWall(self)
         {
-            if ((self.posY - i < 0) || (g_map[self.posY - i][self.posX].y == 1))
+            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
             {
-                break;
-            }
-            if (g_map[self.posY - i][self.posX].y == 0)
-            {
-                g_map[self.posY - i][self.posX].y = -1;
-                break;
+                if ((self.posX - i < 0) || (g_map[self.posY][self.posX - i].y == 1))
+                {
+                    break;
+                }
+                if (g_map[self.posY][self.posX - i].y == 0)
+                {
+                    g_map[self.posY][self.posX - i].y = -1;
+                    break;
+                }
             }
         }
+        tryToDestroyUpperWall(self);
+        tryToDestroyRightWall(self);
+        tryToDestroyLowerWall(self);
+        tryToDestroyLeftWall(self);
+    }
+    
+    function bombAttack(self)
+    {
+        tryToKillPlayer(self);
+        tryToDestroyWalls(self);
     }
     function animateBomb(self)
     {
@@ -158,7 +184,6 @@ function getCurrentBombImage(currTime)
 
 function _drawBombs()
 {
-    //console.log(g_bombs.length);
     for (var i = 0; i < g_bombs.length; i++)
     {
         g_bombs[i].draw();
