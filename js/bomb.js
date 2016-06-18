@@ -1,6 +1,18 @@
-function bomb(color, posX, posY, cooldown)
+function Bomb(color, posX, posY, cooldown)
 {
-    function tryToKillPlayer(self)
+    this.color = color;
+    this.posX = posX;
+    this.posY = posY;
+    this.cooldown = cooldown;
+    this.currTime = cooldown;
+    animateBomb(this);
+    this.draw = function() 
+    {
+        g_bombImage.src = getCurrentBombImage(this.currTime);
+        g_ctx.drawImage(g_bombImage, this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
+    }
+    
+     function tryToKillPlayer(self)
     {
         if ((self.posX == g_player.posX) && (self.posY - g_player.bombAttackRange <= g_player.posY) && (self.posY + g_player.bombAttackRange >= g_player.posY) ||
             (self.posY == g_player.posY) && (self.posX - g_player.bombAttackRange <= g_player.posX) && (self.posX + g_player.bombAttackRange >= g_player.posX))
@@ -11,8 +23,9 @@ function bomb(color, posX, posY, cooldown)
     
     function tryToDestroyWalls(self)
     {
-        function tryToDestroyWall(self, dx, dy)
+        function tryToDestroyWallAndGetPos(self, dx, dy)
         {
+            var result = {x: self.posX, y: self.posY};
             for (var i = 0; i <= g_player.bombAttackRange; i++)
             {
                 if (((self.posY + i * dy > CELLS_COUNT_VERTICAL - 1) || (self.posX + i * dx > CELLS_COUNT_HORIZONTAL - 1)  || 
@@ -22,15 +35,27 @@ function bomb(color, posX, posY, cooldown)
                 }
                 if (g_map[self.posY + i * dy][self.posX + i * dx].y == 0)
                 {
+                    result = {x : self.posX + i * dx, y: self.posY + i * dy};
                     g_map[self.posY + i * dy][self.posX + i * dx].y = -1;
                     break;
                 }
+                else if (g_map[self.posY + i * dy][self.posX + i * dx].y == -1)
+                {
+                    result = {x : self.posX + i * dx, y: self.posY + i * dy};
+                }
             }
+            return result;
         }
-        tryToDestroyWall(self, 0, -1);
-        tryToDestroyWall(self, 1, 0);
-        tryToDestroyWall(self, 0, 1);
-        tryToDestroyWall(self, -1, 0);
+        var upperWallPos = tryToDestroyWallAndGetPos(self, 0, -1);
+        var rightWallPos = leftWallPos = tryToDestroyWallAndGetPos(self, 1, 0);
+        var lowerWallPos = tryToDestroyWallAndGetPos(self, 0, 1);
+        var leftWallPos = tryToDestroyWallAndGetPos(self, -1, 0);
+        addFlame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
+    }
+    
+    function addFlame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
+    {
+        g_flames.unshift(new Flame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos));
     }
     
     function bombAttack(self)
@@ -49,18 +74,6 @@ function bomb(color, posX, posY, cooldown)
                 bombAttack(self);
             }
         }, 50);
-    }
-    
-    this.color = color;
-    this.posX = posX;
-    this.posY = posY;
-    this.cooldown = cooldown;
-    this.currTime = cooldown;
-    animateBomb(this);
-    this.draw = function() 
-    {
-        g_bombImage.src = getCurrentBombImage(this.currTime);
-        g_ctx.drawImage(g_bombImage, this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
     }
 }
 
@@ -129,7 +142,7 @@ function getCurrentBombImage(currTime)
         case ((currTime < 2.05 && currTime >= 2.0) || (currTime < 1.05 && currTime >= 1.0) || (currTime < 0.05 && currTime >= 0)):
             result = "img/bomb/01.png";
             break;
-        defaut:
+        default:
             result = "img/bomb/01.png";
             break;
     }

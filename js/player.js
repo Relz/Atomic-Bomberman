@@ -1,3 +1,12 @@
+PLAYER_DIRECTION_UP = 0;
+PLAYER_DIRECTION_RIGHT = 1;
+PLAYER_DIRECTION_DOWN = 2;
+PLAYER_DIRECTION_LEFT = 3;
+
+PLAYER_SPEED = 2;
+
+BOMB_DURATION = 3;
+
 function Player(color, posX, posY)
 {
     this.color = color;
@@ -79,7 +88,7 @@ function addBombToPlayerPos(player, state)
         }
         if (allowToPlantBomb)
         {
-            g_bombs.unshift(new Bomb("green", player.posX, player.posY, 3));
+            g_bombs.unshift(new Bomb("green", player.posX, player.posY, BOMB_DURATION));
         }
     }
     islastStateKeyDown = state;

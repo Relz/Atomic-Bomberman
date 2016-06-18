@@ -7,13 +7,6 @@ CELLS_COUNT_VERTICAL = 11;
 CANVAS_MARGIN_TOP_PX = 68;
 CANVAS_MARGIN_LEFT_PX = 20;
 
-PLAYER_DIRECTION_UP = 0;
-PLAYER_DIRECTION_RIGHT = 1;
-PLAYER_DIRECTION_DOWN = 2;
-PLAYER_DIRECTION_LEFT = 3;
-
-PLAYER_SPEED = 2;
-
 g_ctx = null;
 
 g_upKeyDown = false;
@@ -22,6 +15,7 @@ g_downKeyDown = false;
 g_leftKeyDown = false;
 
 var g_bombs = [];
+var g_flames = [];
 
 var g_player = new Player("green", 0, 0);
 
@@ -32,6 +26,7 @@ function init()
 {
     var canvas = document.getElementById("canvas");
     g_ctx = canvas.getContext('2d');
+    
     var lastDownTarget;
     window.addEventListener('keydown', function() {
         handleKey(event, true);
@@ -58,6 +53,7 @@ function draw()
     _drawBase();
     _drawMap();
     _drawBombs();
+    _drawFlames();
     g_player.draw();
 }
 
