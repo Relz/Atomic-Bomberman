@@ -26,6 +26,7 @@ var g_bombs = [];
 var g_player = new Player("green", 0, 0);
 
 var g_bombImage;
+var g_baseImage;
 
 function init()
 {
@@ -40,6 +41,7 @@ function init()
     }, true);
     
     g_bombImage = new Image();
+    g_baseImage = new Image();
     
     play();
 }

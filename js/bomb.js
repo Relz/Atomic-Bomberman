@@ -1,11 +1,9 @@
-BOMB_ATTACK_RANGE = 2;
-
 function bomb(color, posX, posY, cooldown)
 {
     function tryToKillPlayer(self)
     {
-        if ((self.posX == g_player.posX) && (self.posY - BOMB_ATTACK_RANGE <= g_player.posY) && (self.posY + BOMB_ATTACK_RANGE >= g_player.posY) ||
-            (self.posY == g_player.posY) && (self.posX - BOMB_ATTACK_RANGE <= g_player.posX) && (self.posX + BOMB_ATTACK_RANGE >= g_player.posX))
+        if ((self.posX == g_player.posX) && (self.posY - g_player.bombAttackRange <= g_player.posY) && (self.posY + g_player.bombAttackRange >= g_player.posY) ||
+            (self.posY == g_player.posY) && (self.posX - g_player.bombAttackRange <= g_player.posX) && (self.posX + g_player.bombAttackRange >= g_player.posX))
         {
             g_player.die();
         }
@@ -13,70 +11,26 @@ function bomb(color, posX, posY, cooldown)
     
     function tryToDestroyWalls(self)
     {
-        function tryToDestroyUpperWall(self)
+        function tryToDestroyWall(self, dx, dy)
         {
-            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
+            for (var i = 0; i <= g_player.bombAttackRange; i++)
             {
-                if ((self.posY + i > CELLS_COUNT_VERTICAL - 1) || (g_map[self.posY + i][self.posX].y == 1))
+                if (((self.posY + i * dy > CELLS_COUNT_VERTICAL - 1) || (self.posX + i * dx > CELLS_COUNT_HORIZONTAL - 1)  || 
+                     (self.posX + i * dx < 0) || (self.posY + i * dy < 0)) || (g_map[self.posY + i * dy][self.posX + i * dx].y == 1))
                 {
                     break;
                 }
-                if (g_map[self.posY + i][self.posX].y == 0)
+                if (g_map[self.posY + i * dy][self.posX + i * dx].y == 0)
                 {
-                    g_map[self.posY + i][self.posX].y = -1;
+                    g_map[self.posY + i * dy][self.posX + i * dx].y = -1;
                     break;
                 }
             }
         }
-        function tryToDestroyRightWall(self)
-        {
-            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
-            {
-                if ((self.posX + i > CELLS_COUNT_HORIZONTAL - 1) || (g_map[self.posY][self.posX + i].y == 1))
-                {
-                    break;
-                }
-                if (g_map[self.posY][self.posX + i].y == 0)
-                {
-                    g_map[self.posY][self.posX + i].y = -1;
-                    break;
-                }
-            }
-        }
-        function tryToDestroyLowerWall(self)
-        {
-            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
-            {
-                if ((self.posY - i < 0) || (g_map[self.posY - i][self.posX].y == 1))
-                {
-                    break;
-                }
-                if (g_map[self.posY - i][self.posX].y == 0)
-                {
-                    g_map[self.posY - i][self.posX].y = -1;
-                    break;
-                }
-            }
-        }
-        function tryToDestroyLeftWall(self)
-        {
-            for (var i = 0; i <= BOMB_ATTACK_RANGE; i++)
-            {
-                if ((self.posX - i < 0) || (g_map[self.posY][self.posX - i].y == 1))
-                {
-                    break;
-                }
-                if (g_map[self.posY][self.posX - i].y == 0)
-                {
-                    g_map[self.posY][self.posX - i].y = -1;
-                    break;
-                }
-            }
-        }
-        tryToDestroyUpperWall(self);
-        tryToDestroyRightWall(self);
-        tryToDestroyLowerWall(self);
-        tryToDestroyLeftWall(self);
+        tryToDestroyWall(self, 0, -1);
+        tryToDestroyWall(self, 1, 0);
+        tryToDestroyWall(self, 0, 1);
+        tryToDestroyWall(self, -1, 0);
     }
     
     function bombAttack(self)

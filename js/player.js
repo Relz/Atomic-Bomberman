@@ -7,10 +7,11 @@ function Player(color, posX, posY)
     this.canvasX = posX * CELL_WIDTH;
     this.canvasY = posY * CELL_HEIGHT;
     this.direction = PLAYER_DIRECTION_DOWN;
+    this.bombAttackRange = 1;
+    var playerImage = new Image();
     this.draw = function() 
     {
         var self = this;
-        var playerImage = new Image();
         switch(self.direction){
             case PLAYER_DIRECTION_UP:
                 playerImage.src = "img/players/stand_top.png";
