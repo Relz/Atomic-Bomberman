@@ -78,6 +78,6 @@ function addBombToPlayerPos(player)
     }
     if (allowToPlantBomb)
     {
-        g_bombs.unshift(new bomb("green", player.posX, player.posY, 3));
+        g_bombs.unshift(new Bomb("green", player.posX, player.posY, 3));
     }
 }
