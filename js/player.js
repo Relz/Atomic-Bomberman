@@ -1,4 +1,3 @@
-
 function Player(color, posX, posY)
 {
     this.color = color;
@@ -34,7 +33,7 @@ function Player(color, posX, posY)
     this.die = function()
     {
         console.log("Я умер");
-    }
+    };
 }
 
 function handleKey(event, state)
@@ -58,26 +57,30 @@ function handleKey(event, state)
         break;
 
         case 16: // shift
-            addBombToPlayerPos(g_player);
+            addBombToPlayerPos(g_player, state);
         break;
 
         default: return;
     }
 }
 
-
-function addBombToPlayerPos(player)
+var islastStateKeyDown = false;
+function addBombToPlayerPos(player, state)
 {
-    var allowToPlantBomb = true;
-    for (var i = 0; i < g_bombs.length; i++)
+    if (state && !islastStateKeyDown)
     {
-        if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+        var allowToPlantBomb = true;
+        for (var i = 0; i < g_bombs.length; i++)
         {
-            allowToPlantBomb = false;
+            if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+            {
+                allowToPlantBomb = false;
+            }
+        }
+        if (allowToPlantBomb)
+        {
+            g_bombs.unshift(new Bomb("green", player.posX, player.posY, 3));
         }
     }
-    if (allowToPlantBomb)
-    {
-        g_bombs.unshift(new Bomb("green", player.posX, player.posY, 3));
-    }
+    islastStateKeyDown = state;
 }
