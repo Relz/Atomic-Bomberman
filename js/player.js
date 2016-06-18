@@ -5,8 +5,6 @@ PLAYER_DIRECTION_LEFT = 3;
 
 PLAYER_SPEED = 2;
 
-BOMB_DURATION = 3;
-
 function Player(color, posX, posY)
 {
     this.color = color;

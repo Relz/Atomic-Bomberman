@@ -1,3 +1,5 @@
+BOMB_DURATION = 3;
+
 function Bomb(color, posX, posY, cooldown)
 {
     this.color = color;
