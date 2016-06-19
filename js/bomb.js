@@ -71,12 +71,12 @@ function Bomb(color, posX, posY, cooldown)
     {
         var i = 0;
         var decrementMS = BOMB_ANIMATION_DURATION / g_bombImages.length;
-        var timerId = setInterval(function()
+        var timer = setInterval(function()
         {
             self.currTime = (self.currTime > 0) ? self.currTime - decrementMS : self.cooldown;
             if (self.currTime == self.cooldown)
             {
-                clearInterval(timerId);
+                clearInterval(timer);
                 g_bombs.pop();
                 bombAttack(self);
             }

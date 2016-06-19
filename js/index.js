@@ -28,8 +28,8 @@ function init()
     g_ctx = canvas.getContext('2d');
     
     var lastDownTarget;
-    window.addEventListener('keydown', keyDownEventListener, true);
-    window.addEventListener('keyup', keyUpEventListener, true);
+    window.addEventListener("keydown", keyDownEventListener, true);
+    window.addEventListener("keyup", keyUpEventListener, true);
 
     g_baseImage = new Image();
     
