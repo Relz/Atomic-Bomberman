@@ -28,14 +28,9 @@ function init()
     g_ctx = canvas.getContext('2d');
     
     var lastDownTarget;
-    window.addEventListener('keydown', function() {
-        handleKey(event, true);
-    }, true);
-    window.addEventListener('keyup', function() {
-        handleKey(event, false);
-    }, true);
-    
-    g_bombImage = new Image();
+    window.addEventListener('keydown', keyDownEventListener, true);
+    window.addEventListener('keyup', keyUpEventListener, true);
+
     g_baseImage = new Image();
     
     play();
