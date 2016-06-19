@@ -3,8 +3,10 @@ FLAME_ANIMATION_COEF = 5;
 FLAME_LINE_WIDTH = 10;
 FLAME_COLOR = "red";
 
-function Flame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
+function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
 {
+    this.posX = posX;
+    this.posY = posY;
     this.horizontalFlameFromX = leftWallPos.x * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX + CELL_WIDTH / 2;
     this.horizontalFlameToX = rightWallPos.x * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX + CELL_WIDTH / 2;
     this.horizontalFlameFromY = leftWallPos.y * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX + CELL_HEIGHT / 2;
@@ -28,18 +30,29 @@ function Flame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
         g_ctx.moveTo(this.verticalFlameFromX, this.verticalFlameFromY);
         g_ctx.lineTo(this.verticalFlameToX, this.verticalFlameToY);
         g_ctx.stroke();
-    }
+    };
     
+    function tryToKillPlayer(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
+    {
+        if (g_player.alive &&
+            ((self.posX == g_player.posX) && (upperWallPos.y <= g_player.posY) && (lowerWallPos.y >= g_player.posY) ||
+            (self.posY == g_player.posY) && (leftWallPos.x <= g_player.posX) && (rightWallPos.x >= g_player.posX)))
+        {
+            g_player.die();
+        }
+    }
+
     function animateFlame(self)
     {
-        var timerId = setInterval(function() {
+        var timerId = setInterval(function()
+        {
+            tryToKillPlayer(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
             self.currTime = (self.currTime > 0) ? self.currTime - 0.05 : self.cooldown;
             self.lineWidth = (self.lineWidth < FLAME_LINE_WIDTH ? self.lineWidth + FLAME_ANIMATION_COEF : self.lineWidth - FLAME_ANIMATION_COEF);
             if (self.currTime == self.cooldown)
             {
-                clearInterval(timerId);
                 g_flames.pop();
-                //bombAttack(self);
+                clearInterval(timerId);
             }
         }, 50);
     }

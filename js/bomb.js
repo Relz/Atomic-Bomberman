@@ -46,25 +46,16 @@ function Bomb(color, posX, posY, cooldown)
             return result;
         }
 
-        function addFlame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
+        function addFlame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
         {
-            g_flames.unshift(new Flame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos));
+            g_flames.unshift(new Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos));
         }
 
-        function tryToKillPlayer(upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
-        {
-            if ((self.posX == g_player.posX) && (upperWallPos.y <= g_player.posY) && (lowerWallPos.y >= g_player.posY) ||
-                (self.posY == g_player.posY) && (leftWallPos.x <= g_player.posX) && (rightWallPos.x >= g_player.posX))
-            {
-                g_player.die();
-            }
-        }
         var upperWallPos = tryToDestroyWallAndGetPos(self, 0, -1);
         var rightWallPos = tryToDestroyWallAndGetPos(self, 1, 0);
         var lowerWallPos = tryToDestroyWallAndGetPos(self, 0, 1);
         var leftWallPos = tryToDestroyWallAndGetPos(self, -1, 0);
-        addFlame(upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
-        tryToKillPlayer(upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
+        addFlame(self.posX, self.posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
     }
 
     function animateBomb(self)

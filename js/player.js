@@ -49,6 +49,7 @@ function Player(color, posX, posY)
     this.direction = PLAYER_DIRECTION_DOWN;
     this.bombAttackRange = 5;
     this.playerImagePath = "img/player/stand_bottom.png";
+    this.alive = true;
     var playerImage = new Image();
     var walking = false;
     this.draw = function() 
@@ -73,13 +74,13 @@ function Player(color, posX, posY)
         }
         else
         {
-            if (!walking)
+            if (!walking && self.alive)
             {
                 walk(self);
             }
         }
         playerImage.src = playerImagePath;
-        if (self.direction == PLAYER_DIRECTION_NONE)
+        if (!self.alive)
         {
             self.canvasX = (self.posX * CELL_WIDTH) - (playerImage.width - CELL_WIDTH) / 2;
         }
@@ -88,6 +89,7 @@ function Player(color, posX, posY)
 
     this.die = function()
     {
+        this.alive = false;
         window.removeEventListener("keydown" , keyDownEventListener, true);
         window.removeEventListener("keyup", keyUpEventListener, true);
         this.direction = PLAYER_DIRECTION_NONE;
@@ -141,7 +143,7 @@ function Player(color, posX, posY)
             {
                 i = 0;
             }
-            if (isStaying())
+            if (isStaying() || !self.alive)
             {
                 walking = false;
                 clearInterval(timer);
