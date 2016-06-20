@@ -14,39 +14,34 @@ g_rightKeyDown = false;
 g_downKeyDown = false;
 g_leftKeyDown = false;
 
-var g_bombs = [];
-var g_flames = [];
-
 var g_player = new Player("green", 0, 0);
-
-var g_bombImage;
-var g_baseImage;
 
 function init()
 {
     var canvas = document.getElementById("canvas");
     g_ctx = canvas.getContext('2d');
-    
-    var lastDownTarget;
+    var baseImage = new Image();
+    var spriteMapImage = new Image();
     window.addEventListener("keydown", keyDownEventListener, true);
     window.addEventListener("keyup", keyUpEventListener, true);
-
-    g_baseImage = new Image();
-    
-    play();
+    play(baseImage, spriteMapImage);
 }
 
-function play()
+function play(baseImage, spriteMapImage)
 {
-    draw();
+    draw(baseImage, spriteMapImage);
     update();
-    window.requestAnimationFrame(play);
+    window.requestAnimationFrame(
+    function()
+    {
+        play(baseImage, spriteMapImage);
+    });
 }
 
-function draw()
+function draw(baseImage, spriteMapImage)
 {
-    _drawBase();
-    _drawMap();
+    _drawBase(baseImage);
+    _drawMap(spriteMapImage);
     _drawBombs();
     _drawFlames();
     g_player.draw();

@@ -1,21 +1,20 @@
 
 var g_map = [
-    [{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:-1},{x:0,y:1},{x:0,y:-1},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:-1},{x:0,y:1},{x:0,y:-1},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:-1},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:-1},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1},{x:0,y:-1}],
-    [{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:0},{x:0,y:1},{x:0,y:-1}],
-    [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:-1},{x:0,y:-1}]
+    [{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE}],
+    [{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:0,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE},{x:0,y:-1,bonus:BONUS_NONE}]
 ];
 
-function _drawBase()
+function _drawBase(baseImage)
 {
-    var baseImage = new Image();
     baseImage.src = "img/field0.png";
     baseImage.onload = function()
     {
@@ -23,11 +22,9 @@ function _drawBase()
     };
 }
 
-function _drawMap()
+function _drawMap(spriteMapImage)
 {
-    var spriteMapImage = new Image();
     spriteMapImage.src = "img/sprite_map.png";
-
     spriteMapImage.onload = function() 
     {
         for (var j = 0; j < CELLS_COUNT_HORIZONTAL; j ++)

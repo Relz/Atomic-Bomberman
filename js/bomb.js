@@ -1,6 +1,8 @@
 BOMB_DURATION = 3000;
 BOMB_ANIMATION_DURATION = 1000;
 
+var g_bombs = [];
+
 var g_bombImages = ["img/bomb/01.png", "img/bomb/02.png", "img/bomb/03.png", "img/bomb/04.png", "img/bomb/05.png",
                     "img/bomb/06.png", "img/bomb/07.png", "img/bomb/08.png", "img/bomb/09.png", "img/bomb/10.png",
                     "img/bomb/10.png", "img/bomb/09.png", "img/bomb/08.png", "img/bomb/07.png", "img/bomb/06.png",
@@ -13,11 +15,11 @@ function Bomb(color, posX, posY, cooldown)
     this.posY = posY;
     this.cooldown = cooldown;
     this.currTime = cooldown;
-    var g_bombImage = new Image();
+    var bombImage = new Image();
     animateBomb(this);
     this.draw = function() 
     {
-        g_ctx.drawImage(g_bombImage, this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
+        g_ctx.drawImage(bombImage, this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX, this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX);
     };
     
     function bombAttack(self)
@@ -56,6 +58,7 @@ function Bomb(color, posX, posY, cooldown)
         var lowerWallPos = tryToDestroyWallAndGetPos(self, 0, 1);
         var leftWallPos = tryToDestroyWallAndGetPos(self, -1, 0);
         addFlame(self.posX, self.posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
+        delete(self);
     }
 
     function animateBomb(self)
@@ -71,7 +74,7 @@ function Bomb(color, posX, posY, cooldown)
                 g_bombs.pop();
                 bombAttack(self);
             }
-            g_bombImage.src = g_bombImages[i];
+            bombImage.src = g_bombImages[i];
             i++;
             if (i == g_bombImages.length)
             {

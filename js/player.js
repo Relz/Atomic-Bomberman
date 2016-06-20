@@ -89,14 +89,15 @@ function Player(color, posX, posY)
 
     this.die = function()
     {
-        this.alive = false;
+        self = this;
+        self.alive = false;
         window.removeEventListener("keydown" , keyDownEventListener, true);
         window.removeEventListener("keyup", keyUpEventListener, true);
         g_upKeyDown = false;
         g_rightKeyDown = false;
         g_downKeyDown = false;
         g_leftKeyDown = false;
-        this.direction = PLAYER_DIRECTION_NONE;
+        self.direction = PLAYER_DIRECTION_NONE;
         var i = 0;
         var delay = PLAYER_DEATH_DURATION / g_playerDeathImages.length;
         var timer = setInterval(function()
@@ -106,6 +107,7 @@ function Player(color, posX, posY)
             if (i == g_playerDeathImages.length)
             {
                 clearInterval(timer);
+                delete(self);
             }
         }, delay);
     };
@@ -149,7 +151,6 @@ function Player(color, posX, posY)
             }
             if (isStaying() || !self.alive)
             {
-                console.log("stop");
                 walking = false;
                 clearInterval(timer);
             }

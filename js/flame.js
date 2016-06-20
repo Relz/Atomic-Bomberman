@@ -3,6 +3,8 @@ FLAME_ANIMATION_COEF = 5;
 FLAME_LINE_WIDTH = 10;
 FLAME_COLOR = "red";
 
+var g_flames = [];
+
 function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
 {
     this.posX = posX;
