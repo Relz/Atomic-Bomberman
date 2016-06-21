@@ -1,18 +1,15 @@
 CELL_WIDTH = 40;
 CELL_HEIGHT = 36;
 
-CELLS_COUNT_HORIZONTAL = 15;
-CELLS_COUNT_VERTICAL = 11;
-
 CANVAS_MARGIN_TOP_PX = 68;
 CANVAS_MARGIN_LEFT_PX = 20;
 
-g_ctx = null;
+var g_ctx = null;
 
-g_upKeyDown = false;
-g_rightKeyDown = false;
-g_downKeyDown = false;
-g_leftKeyDown = false;
+var g_upKeyDown = false;
+var g_rightKeyDown = false;
+var g_downKeyDown = false;
+var g_leftKeyDown = false;
 
 var g_player = new Player("green", 0, 0);
 
@@ -24,6 +21,7 @@ function init()
     var spriteMapImage = new Image();
     window.addEventListener("keydown", keyDownEventListener, true);
     window.addEventListener("keyup", keyUpEventListener, true);
+    generateBonuses();
     play(baseImage, spriteMapImage);
 }
 
@@ -42,6 +40,7 @@ function draw(baseImage, spriteMapImage)
 {
     _drawBase(baseImage);
     _drawMap(spriteMapImage);
+    _drawBonuses();
     _drawBombs();
     _drawFlames();
     g_player.draw();

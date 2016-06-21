@@ -38,6 +38,10 @@ function Bomb(color, posX, posY, cooldown)
                 {
                     result = {x : self.posX + i * dx, y: self.posY + i * dy};
                     g_map[self.posY + i * dy][self.posX + i * dx].y = -1;
+                    if (g_map[self.posY + i * dy][self.posX + i * dx].bonus != null)
+                    {
+                        g_bonuses.push(new Bonus(g_map[self.posY + i * dy][self.posX + i * dx].bonus, self.posX + i * dx, self.posY + i * dy));
+                    }
                     break;
                 }
                 else if (g_map[self.posY + i * dy][self.posX + i * dx].y == -1)
