@@ -8,9 +8,9 @@ BOMB_SPRITE_STANDART_COUNT = 10;
 
 var g_bombs = [];
 
-function Bomb(color, posX, posY, cooldown)
+function Bomb(player, posX, posY, cooldown)
 {
-    this.color = color;
+    this.color = player.color;
     this.posX = posX;
     this.posY = posY;
     this.cooldown = cooldown;
@@ -73,6 +73,7 @@ function Bomb(color, posX, posY, cooldown)
         var lowerWallPos = tryToDestroyWallAndGetPos(self, 0, 1);
         var leftWallPos = tryToDestroyWallAndGetPos(self, -1, 0);
         addFlame(self.posX, self.posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
+        player.bombCount--;
         delete(self);
     }
 

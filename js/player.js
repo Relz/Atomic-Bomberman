@@ -56,6 +56,9 @@ function Player(color, posX, posY)
     this.bombAttackRange = PLAYER_START_BOMB_ATTACK_RANGE;
     this.alive = true;
 
+    this.bombCount = 0;
+    this.maxBomb = 1;
+
     var spritePlayerImage = new Image();
     spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URL;
     var walking = false;
@@ -130,11 +133,26 @@ function Player(color, posX, posY)
     {
         if (g_map[this.posY][this.posX].bonus !== null)
         {
-            var bonus = g_map[this.posY][this.posX].bonus;
+            _useBonus(this, g_map[this.posY][this.posX].bonus.id);
+            _removeBonusFromMap(this);
+        }
+
+        function _useBonus(self, bonusId)
+        {
+            switch (bonusId)
+            {
+                case BONUS_BOMB_ID:
+                    self.maxBomb++;
+                    break;
+            }
+        }
+
+        function _removeBonusFromMap(self)
+        {
             var bonusIndex = -1;
             for (var i = 0; i < g_bonuses.length; i++)
             {
-                if (g_bonuses[i].posX == this.posX && g_bonuses[i].posY == this.posY)
+                if (g_bonuses[i].posX == self.posX && g_bonuses[i].posY == self.posY)
                 {
                     bonusIndex = i;
                 }
@@ -235,16 +253,24 @@ function addBombToPlayerPos(player, state)
     if (state && !islastStateKeyDown)
     {
         var allowToPlantBomb = true;
-        for (var i = 0; i < g_bombs.length; i++)
+        if (player.bombCount == player.maxBomb)
         {
-            if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+            allowToPlantBomb = false;
+        }
+        else
+        {
+            for (var i = 0; i < g_bombs.length; i++)
             {
-                allowToPlantBomb = false;
+                if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+                {
+                    allowToPlantBomb = false;
+                }
             }
         }
         if (allowToPlantBomb)
         {
-            g_bombs.unshift(new Bomb("green", player.posX, player.posY, BOMB_DURATION));
+            player.bombCount++;
+            g_bombs.unshift(new Bomb(player, player.posX, player.posY, BOMB_DURATION));
         }
     }
     islastStateKeyDown = state;
