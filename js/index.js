@@ -14,6 +14,8 @@ function init()
     var spriteMapImage = new Image();
     g_players.push(new Player("green", 0, 0));
     g_players.push(new Player("red", CELLS_COUNT_HORIZONTAL - 1, CELLS_COUNT_VERTICAL - 1));
+    g_players.push(new Player("red", 1, 0));
+    g_players.push(new Player("red", 2, 0));
     generateBonuses();
     play(baseImage, spriteMapImage);
 }

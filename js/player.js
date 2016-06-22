@@ -30,7 +30,7 @@ PLAYER1_KEY_UP = 38;
 PLAYER1_KEY_RIGHT = 39;
 PLAYER1_KEY_DOWN = 40;
 PLAYER1_KEY_LEFT = 37;
-PLAYER1_KEY_PLATE_BOMB = 45;
+PLAYER1_KEY_PLATE_BOMB = 96;
 
 PLAYER2_KEY_UP = 87;
 PLAYER2_KEY_RIGHT = 68;
@@ -38,10 +38,10 @@ PLAYER2_KEY_DOWN = 83;
 PLAYER2_KEY_LEFT = 65;
 PLAYER2_KEY_PLATE_BOMB = 32;
 
-PLAYER3_KEY_UP = 38;
-PLAYER3_KEY_RIGHT = 39;
-PLAYER3_KEY_DOWN = 12;
-PLAYER3_KEY_LEFT = 37;
+PLAYER3_KEY_UP = 104;
+PLAYER3_KEY_RIGHT = 102;
+PLAYER3_KEY_DOWN = 101;
+PLAYER3_KEY_LEFT = 100;
 PLAYER3_KEY_PLATE_BOMB = 107;
 
 PLAYER4_KEY_UP = 85;
@@ -146,10 +146,6 @@ function Player(color, posX, posY)
         spritePlayerImage.src = PLAYER_DEATH_SPRITE_IMAGE_URL;
         imageWidth = PLAYER_DEATH_SPRITE_ELEMENT_WIDTH;
         imageHeight = PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT;
-        g_upKeyDown = false;
-        g_rightKeyDown = false;
-        g_downKeyDown = false;
-        g_leftKeyDown = false;
         self.direction = PLAYER_DIRECTION_NONE;
         var i = 0;
         var delay = PLAYER_DEATH_DURATION / PLAYER_DEATH_SPRITE_ELEMENT_COUNT;
@@ -193,17 +189,17 @@ function Player(color, posX, posY)
                     }
                     break;
                 case BONUS_CURSE_ID:
-                    g_upKeyDown = false;
-                    g_rightKeyDown = false;
-                    g_downKeyDown = false;
-                    g_leftKeyDown = false;
+                    self.upKeyDown = false;
+                    self.rightKeyDown = false;
+                    self.downKeyDown = false;
+                    self.leftKeyDown = false;
                     self.cursed = true;
                     break;
                 case BONUS_EXHAUST_ID:
-                    g_upKeyDown = false;
-                    g_rightKeyDown = false;
-                    g_downKeyDown = false;
-                    g_leftKeyDown = false;
+                    self.upKeyDown = false;
+                    self.rightKeyDown = false;
+                    self.downKeyDown = false;
+                    self.leftKeyDown = false;
                     self.cursed = true;
                     break;
                 case BONUS_DETONATOR_ID:
@@ -300,7 +296,7 @@ function Player(color, posX, posY)
                 }
             }
         }
-    }
+    };
 
     function _isStaying(self)
     {
