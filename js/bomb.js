@@ -19,7 +19,7 @@ function Bomb(player, posX, posY, cooldown)
     bombImage.src = BOMB_SPRITE_IMAGE_URL;
     var imagePosX = 0;
     var imagePosY = 0;
-    animateBomb(this);
+    animateBomb(player, this);
     this.draw = function() 
     {
         g_ctx.drawImage(bombImage,
@@ -33,12 +33,12 @@ function Bomb(player, posX, posY, cooldown)
           BOMB_SPRITE_ELEMENT_HEIGHT);
     };
     
-    function bombAttack(self)
+    function bombAttack(player, self)
     {
         function tryToDestroyWallAndGetPos(self, dx, dy)
         {
             var result = {x: self.posX, y: self.posY};
-            for (var i = 1; i <= g_player.bombAttackRange; i++)
+            for (var i = 1; i <= player.bombAttackRange; i++)
             {
                 if (((self.posY + i * dy > CELLS_COUNT_VERTICAL - 1) || (self.posX + i * dx > CELLS_COUNT_HORIZONTAL - 1)  || 
                      (self.posX + i * dx < 0) || (self.posY + i * dy < 0)) || (g_map[self.posY + i * dy][self.posX + i * dx].y == 1))
@@ -77,7 +77,7 @@ function Bomb(player, posX, posY, cooldown)
         delete(self);
     }
 
-    function animateBomb(self)
+    function animateBomb(player, self)
     {
         var i = 0;
         var decrementMS = BOMB_ANIMATION_DURATION / (BOMB_SPRITE_STANDART_COUNT * 2);
@@ -89,7 +89,7 @@ function Bomb(player, posX, posY, cooldown)
             {
                 clearInterval(timer);
                 g_bombs.pop();
-                bombAttack(self);
+                bombAttack(player, self);
             }
             imagePosY = i;
             if (inc)

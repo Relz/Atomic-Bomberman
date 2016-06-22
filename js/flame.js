@@ -34,13 +34,16 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
         g_ctx.stroke();
     };
     
-    function tryToKillPlayer(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
+    function tryToKillPlayers(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos)
     {
-        if (g_player.alive &&
-            ((self.posX == g_player.posX) && (upperWallPos.y <= g_player.posY) && (lowerWallPos.y >= g_player.posY) ||
-            (self.posY == g_player.posY) && (leftWallPos.x <= g_player.posX) && (rightWallPos.x >= g_player.posX)))
+        for (var i = 0; i < g_players.length; i++)
         {
-            g_player.die();
+            if (g_players[i].alive &&
+                ((self.posX == g_players[i].posX) && (upperWallPos.y <= g_players[i].posY) && (lowerWallPos.y >= g_players[i].posY) ||
+                (self.posY == g_players[i].posY) && (leftWallPos.x <= g_players[i].posX) && (rightWallPos.x >= g_players[i].posX)))
+            {
+                g_players[i].die();
+            }
         }
     }
 
@@ -48,7 +51,7 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
     {
         var timerId = setInterval(function()
         {
-            tryToKillPlayer(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
+            tryToKillPlayers(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
             self.currTime = (self.currTime > 0) ? self.currTime - 0.05 : self.cooldown;
             self.lineWidth = (self.lineWidth < FLAME_LINE_WIDTH ? self.lineWidth + FLAME_ANIMATION_COEF : self.lineWidth - FLAME_ANIMATION_COEF);
             if (self.currTime == self.cooldown)
