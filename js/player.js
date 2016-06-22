@@ -7,8 +7,9 @@ PLAYER_DIRECTION_LEFT = 4;
 PLAYER_DEATH_DURATION = 3000;
 PLAYER_WALK_DURATION = 300;
 
-PLAYER_SPEED = 3;
-PLAYER_START_BOMB_ATTACK_RANGE = 3;
+PLAYER_MAX_SPEED = 4;
+PLAYER_START_SPEED = 2;
+PLAYER_START_BOMB_ATTACK_RANGE = 1;
 
 PLAYER_SPRITE_IMAGE_URL = "img/player/sprite_player.png";
 PLAYER_SPRITE_ELEMENT_WIDTH = 47;
@@ -25,10 +26,10 @@ PLAYER_SPRITE_WALK_BOTTOM_POS_Y = 34;
 PLAYER_SPRITE_WALK_LEFT_POS_Y = 49;
 PLAYER_SPRITE_WALK_EACH_COUNT = 15;
 
-PLAYER1_KEY_UP = 37;
-PLAYER1_KEY_RIGHT = 38;
-PLAYER1_KEY_DOWN = 39;
-PLAYER1_KEY_LEFT = 40;
+PLAYER1_KEY_UP = 38;
+PLAYER1_KEY_RIGHT = 39;
+PLAYER1_KEY_DOWN = 40;
+PLAYER1_KEY_LEFT = 37;
 PLAYER1_KEY_PLATE_BOMB = 16;
 
 PLAYER2_KEY_UP = 65;
@@ -53,11 +54,13 @@ function Player(color, posX, posY)
     this.canvasX = posX * CELL_WIDTH;
     this.canvasY = posY * CELL_HEIGHT;
     this.direction = PLAYER_DIRECTION_DOWN;
-    this.bombAttackRange = PLAYER_START_BOMB_ATTACK_RANGE;
     this.alive = true;
 
     this.bombCount = 0;
     this.maxBomb = 1;
+    this.bombAttackRange = PLAYER_START_BOMB_ATTACK_RANGE;
+    this.speed = PLAYER_START_SPEED;
+    this.cursed = false;
 
     var spritePlayerImage = new Image();
     spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URL;
@@ -144,6 +147,47 @@ function Player(color, posX, posY)
                 case BONUS_BOMB_ID:
                     self.maxBomb++;
                     break;
+                case BONUS_FLAME_ID:
+                    self.bombAttackRange++;
+                    break;
+                case BONUS_DOUBLE_FLAME_ID:
+                    self.bombAttackRange+=2;
+                    break;
+                case BONUS_SPEED_ID:
+                    if (self.speed != PLAYER_MAX_SPEED)
+                    {
+                        self.speed++;
+                    }
+                    break;
+                case BONUS_CURSE_ID:
+                    g_upKeyDown = false;
+                    g_rightKeyDown = false;
+                    g_downKeyDown = false;
+                    g_leftKeyDown = false;
+                    self.cursed = true;
+                    break;
+                case BONUS_EXHAUST_ID:
+                    g_upKeyDown = false;
+                    g_rightKeyDown = false;
+                    g_downKeyDown = false;
+                    g_leftKeyDown = false;
+                    self.cursed = true;
+                    break;
+                case BONUS_DETONATOR_ID:
+
+                    break;
+                case BONUS_KICK_ID:
+
+                    break;
+                case BONUS_PUNCH_ID:
+
+                    break;
+                case BONUS_GRAB_ID:
+
+                    break;
+                case BONUS_RANDOM_ID:
+
+                    break;
             }
         }
 
@@ -159,7 +203,8 @@ function Player(color, posX, posY)
             }
             if (bonusIndex >= 0)
             {
-              g_bonuses.splice(bonusIndex, 1);
+                g_map[self.posY][self.posX].bonus = null;
+                g_bonuses.splice(bonusIndex, 1);
             }
         }
     };
@@ -224,19 +269,47 @@ function handleKey(event, state)
     switch (event.keyCode)
     {
         case PLAYER1_KEY_UP:
-            g_leftKeyDown = state;
+            if (!g_player.cursed)
+            {
+                g_upKeyDown = state;
+            }
+            else
+            {
+                g_downKeyDown = state;
+            }
         break;
 
         case PLAYER1_KEY_RIGHT:
-            g_upKeyDown = state;
+            if (!g_player.cursed)
+            {
+                g_rightKeyDown = state;
+            }
+            else
+            {
+                g_leftKeyDown = state;
+            }
         break;
 
         case PLAYER1_KEY_DOWN:
-            g_rightKeyDown = state;
+            if (!g_player.cursed)
+            {
+                g_downKeyDown = state;
+            }
+            else
+            {
+                g_upKeyDown = state;
+            }
         break;
 
         case PLAYER1_KEY_LEFT:
-            g_downKeyDown = state;
+            if (!g_player.cursed)
+            {
+                g_leftKeyDown = state;
+            }
+            else
+            {
+                g_rightKeyDown = state;
+            }
         break;
 
         case PLAYER1_KEY_PLATE_BOMB:

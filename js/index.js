@@ -56,7 +56,7 @@ function update()
         if ((g_player.posY !== 0 && (g_map[g_player.posY - 1][g_player.posX].y === -1)) ||
             (g_player.canvasY > g_player.posY * CELL_HEIGHT))
         {
-            g_player.canvasY -= PLAYER_SPEED;
+            g_player.canvasY -= g_player.speed;
             if (g_player.canvasY < (g_player.posY - 0.5) * CELL_HEIGHT)
             {
                 g_player.posY--;
@@ -70,7 +70,7 @@ function update()
         if ((g_player.posX + 1 < CELLS_COUNT_HORIZONTAL && (g_map[g_player.posY][g_player.posX + 1].y == -1)) ||
             (g_player.canvasX  < g_player.posX * CELL_WIDTH))
         {
-            g_player.canvasX += PLAYER_SPEED;
+            g_player.canvasX += g_player.speed;
             if (g_player.canvasX > (g_player.posX + 0.5) * CELL_WIDTH)
             {
                 g_player.posX++;
@@ -84,7 +84,7 @@ function update()
         if ((g_player.posY + 1 < CELLS_COUNT_VERTICAL && (g_map[g_player.posY + 1][g_player.posX].y == -1)) ||
             (g_player.canvasY < g_player.posY * CELL_HEIGHT))
         {
-            g_player.canvasY += PLAYER_SPEED;
+            g_player.canvasY += g_player.speed;
             if (g_player.canvasY > (g_player.posY + 0.5) * CELL_HEIGHT)
             {
                 g_player.posY++;
@@ -98,7 +98,7 @@ function update()
         if (g_player.posX !== 0 && (g_map[g_player.posY][g_player.posX - 1].y === -1) ||
             (g_player.canvasX > g_player.posX * CELL_WIDTH))
         {
-            g_player.canvasX -= PLAYER_SPEED;
+            g_player.canvasX -= g_player.speed;
             if (g_player.canvasX < (g_player.posX - 0.5) * CELL_WIDTH)
             {
                 g_player.posX--;
