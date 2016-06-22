@@ -30,7 +30,7 @@ PLAYER1_KEY_UP = 38;
 PLAYER1_KEY_RIGHT = 39;
 PLAYER1_KEY_DOWN = 40;
 PLAYER1_KEY_LEFT = 37;
-PLAYER1_KEY_PLATE_BOMB = 17;
+PLAYER1_KEY_PLATE_BOMB = 45;
 
 PLAYER2_KEY_UP = 87;
 PLAYER2_KEY_RIGHT = 68;
@@ -473,6 +473,9 @@ function drawPlayers()
     for (var i = 0; i < g_players.length; i++)
     {
         g_players[i].draw();
-        g_players[i].update();
+        if (g_players[i].alive)
+        {
+            g_players[i].update();
+        }
     }
 }
