@@ -11,16 +11,18 @@ var g_rightKeyDown = false;
 var g_downKeyDown = false;
 var g_leftKeyDown = false;
 
-var g_player = new Player("green", 0, 0);
+var g_player; //Временный костыль
 
 function init()
 {
     var canvas = document.getElementById("canvas");
-    g_ctx = canvas.getContext('2d');
+    g_ctx = canvas.getContext("2d");
     var baseImage = new Image();
     var spriteMapImage = new Image();
     window.addEventListener("keydown", keyDownEventListener, true);
     window.addEventListener("keyup", keyUpEventListener, true);
+    g_players.unshift(new Player("green", 0, 0));
+    g_player = g_players[0]; //Временный костыль
     generateBonuses();
     play(baseImage, spriteMapImage);
 }
@@ -38,12 +40,12 @@ function play(baseImage, spriteMapImage)
 
 function draw(baseImage, spriteMapImage)
 {
-    _drawBase(baseImage);
-    _drawMap(spriteMapImage);
-    _drawBonuses();
-    _drawBombs();
-    _drawFlames();
-    g_player.draw();
+    drawBase(baseImage);
+    drawMap(spriteMapImage);
+    drawBonuses();
+    drawBombs();
+    drawFlames();
+    drawPlayers();
 }
 
 function update()

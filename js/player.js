@@ -7,37 +7,43 @@ PLAYER_DIRECTION_LEFT = 4;
 PLAYER_DEATH_DURATION = 3000;
 PLAYER_WALK_DURATION = 300;
 
-PLAYER_SPEED = 2;
+PLAYER_SPEED = 3;
+PLAYER_START_BOMB_ATTACK_RANGE = 3;
 
-g_playerDeathImages = ["img/player/death/01.png", "img/player/death/02.png", "img/player/death/03.png", "img/player/death/04.png", "img/player/death/05.png",
-                       "img/player/death/06.png", "img/player/death/07.png", "img/player/death/08.png", "img/player/death/09.png", "img/player/death/10.png",
-                       "img/player/death/11.png", "img/player/death/12.png", "img/player/death/13.png", "img/player/death/14.png", "img/player/death/15.png",
-                       "img/player/death/16.png", "img/player/death/17.png", "img/player/death/18.png", "img/player/death/19.png", "img/player/death/20.png",
-                       "img/player/death/21.png", "img/player/death/22.png", "img/player/death/23.png", "img/player/death/24.png", "img/player/death/25.png",
-                       "img/player/death/26.png", "img/player/death/27.png", "img/player/death/28.png", "img/player/death/29.png", "img/player/death/30.png",
-                       "img/player/death/31.png", "img/player/death/32.png", "img/player/death/33.png", "img/player/death/34.png", "img/player/death/35.png",
-                       "img/player/death/36.png", "img/player/death/37.png", "img/player/death/38.png", "img/player/death/39.png", "img/player/death/40.png",
-                       "img/player/death/41.png"];
+PLAYER_SPRITE_IMAGE_URL = "img/player/sprite_player.png";
+PLAYER_SPRITE_ELEMENT_WIDTH = 47;
+PLAYER_SPRITE_ELEMENT_HEIGHT = 73;
 
-g_playerWalkUpImages = ["img/player/walk/up/01.png", "img/player/walk/up/02.png", "img/player/walk/up/03.png", "img/player/walk/up/04.png",
-                      "img/player/walk/up/05.png", "img/player/walk/up/06.png", "img/player/walk/up/07.png", "img/player/walk/up/08.png",
-                      "img/player/walk/up/09.png", "img/player/walk/up/10.png", "img/player/walk/up/11.png", "img/player/walk/up/12.png",
-                      "img/player/walk/up/13.png", "img/player/walk/up/14.png", "img/player/walk/up/15.png"];
+PLAYER_SPRITE_STAND_TOP_POS_Y = 0;
+PLAYER_SPRITE_STAND_RIGHT_POS_Y = 1;
+PLAYER_SPRITE_STAND_DOWN_POS_Y = 2;
+PLAYER_SPRITE_STAND_LEFT_POS_Y = 3;
 
-g_playerWalkRightImages = ["img/player/walk/right/01.png", "img/player/walk/right/02.png", "img/player/walk/right/03.png", "img/player/walk/right/04.png",
-                      "img/player/walk/right/05.png", "img/player/walk/right/06.png", "img/player/walk/right/07.png", "img/player/walk/right/08.png",
-                      "img/player/walk/right/09.png", "img/player/walk/right/10.png", "img/player/walk/right/11.png", "img/player/walk/right/12.png",
-                      "img/player/walk/right/13.png", "img/player/walk/right/14.png", "img/player/walk/right/15.png"];
+PLAYER_SPRITE_WALK_TOP_POS_Y = 4;
+PLAYER_SPRITE_WALK_RIGHT_POS_Y = 19;
+PLAYER_SPRITE_WALK_BOTTOM_POS_Y = 34;
+PLAYER_SPRITE_WALK_LEFT_POS_Y = 49;
+PLAYER_SPRITE_WALK_EACH_COUNT = 15;
 
-g_playerWalkDownImages = ["img/player/walk/down/01.png", "img/player/walk/down/02.png", "img/player/walk/down/03.png", "img/player/walk/down/04.png",
-                      "img/player/walk/down/05.png", "img/player/walk/down/06.png", "img/player/walk/down/07.png", "img/player/walk/down/08.png",
-                      "img/player/walk/down/09.png", "img/player/walk/down/10.png", "img/player/walk/down/11.png", "img/player/walk/down/12.png",
-                      "img/player/walk/down/13.png", "img/player/walk/down/14.png", "img/player/walk/down/15.png"];
+PLAYER1_KEY_UP = 37;
+PLAYER1_KEY_RIGHT = 38;
+PLAYER1_KEY_DOWN = 39;
+PLAYER1_KEY_LEFT = 40;
+PLAYER1_KEY_PLATE_BOMB = 16;
 
-g_playerWalkLeftImages = ["img/player/walk/left/01.png", "img/player/walk/left/02.png", "img/player/walk/left/03.png", "img/player/walk/left/04.png",
-                      "img/player/walk/left/05.png", "img/player/walk/left/06.png", "img/player/walk/left/07.png", "img/player/walk/left/08.png",
-                      "img/player/walk/left/09.png", "img/player/walk/left/10.png", "img/player/walk/left/11.png", "img/player/walk/left/12.png",
-                      "img/player/walk/left/13.png", "img/player/walk/left/14.png", "img/player/walk/left/15.png"];
+PLAYER2_KEY_UP = 65;
+PLAYER2_KEY_RIGHT = 87;
+PLAYER2_KEY_DOWN = 68;
+PLAYER2_KEY_LEFT = 83;
+PLAYER2_KEY_PLATE_BOMB = 0;
+
+PLAYER_DEATH_SPRITE_IMAGE_URL = "img/player/death/sprite_death.png";
+PLAYER_DEATH_SPRITE_ELEMENT_WIDTH = 73;
+PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT = 73;
+PLAYER_DEATH_SPRITE_ELEMENT_COUNT = 41;
+PLAYER_DEATH_SPRITE_START = 0;
+
+var g_players = [];
 
 function Player(color, posX, posY)
 {
@@ -47,50 +53,58 @@ function Player(color, posX, posY)
     this.canvasX = posX * CELL_WIDTH;
     this.canvasY = posY * CELL_HEIGHT;
     this.direction = PLAYER_DIRECTION_DOWN;
-    this.bombAttackRange = 5;
-    this.playerImagePath = "img/player/stand_bottom.png";
+    this.bombAttackRange = PLAYER_START_BOMB_ATTACK_RANGE;
     this.alive = true;
-    var playerImage = new Image();
+
+    var spritePlayerImage = new Image();
+    spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URL;
     var walking = false;
+    var imageWidth = PLAYER_SPRITE_ELEMENT_WIDTH;
+    var imageHeight = PLAYER_SPRITE_ELEMENT_HEIGHT;
+    var imagePosX = 0;
+    var imagePosY = 0;
     this.draw = function() 
     {
         var self = this;
-        if (isStaying())
+        if (_isStaying())
         {
             switch(self.direction){
                 case PLAYER_DIRECTION_UP:
-                    playerImagePath = "img/player/stand_top.png";
+                    imagePosY = PLAYER_SPRITE_STAND_TOP_POS_Y;
                 break;
                 case PLAYER_DIRECTION_RIGHT:
-                    playerImagePath = "img/player/stand_right.png";
+                    imagePosY = PLAYER_SPRITE_STAND_RIGHT_POS_Y;
                 break;
                 case PLAYER_DIRECTION_DOWN:
-                    playerImagePath = "img/player/stand_bottom.png";
+                    imagePosY = PLAYER_SPRITE_STAND_DOWN_POS_Y;
                 break;
                 case PLAYER_DIRECTION_LEFT:
-                    playerImagePath = "img/player/stand_left.png";
+                    imagePosY = PLAYER_SPRITE_STAND_LEFT_POS_Y;
                 break;
             }
         }
-        else
+        else if (!walking && self.alive)
         {
-            if (!walking && self.alive)
-            {
-                walkAnimation(self);
-            }
+            _walkAnimation(self);
         }
-        playerImage.src = playerImagePath;
-        if (!self.alive)
-        {
-            self.canvasX = (self.posX * CELL_WIDTH) - (playerImage.width - CELL_WIDTH) / 2;
-        }
-        g_ctx.drawImage(playerImage, self.canvasX + CANVAS_MARGIN_LEFT_PX, self.canvasY + CANVAS_MARGIN_TOP_PX - playerImage.height / 2);
+        g_ctx.drawImage(spritePlayerImage,
+          imageWidth * imagePosX,
+          imageHeight * imagePosY,
+          imageWidth,
+          imageHeight,
+          self.canvasX + CANVAS_MARGIN_LEFT_PX - (imageWidth - CELL_WIDTH) / 2,
+          self.canvasY + CANVAS_MARGIN_TOP_PX - imageHeight / 2,
+          imageWidth,
+          imageHeight);
     };
 
     this.die = function()
     {
         self = this;
         self.alive = false;
+        spritePlayerImage.src = PLAYER_DEATH_SPRITE_IMAGE_URL;
+        imageWidth = PLAYER_DEATH_SPRITE_ELEMENT_WIDTH;
+        imageHeight = PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT;
         window.removeEventListener("keydown" , keyDownEventListener, true);
         window.removeEventListener("keyup", keyUpEventListener, true);
         g_upKeyDown = false;
@@ -99,12 +113,12 @@ function Player(color, posX, posY)
         g_leftKeyDown = false;
         self.direction = PLAYER_DIRECTION_NONE;
         var i = 0;
-        var delay = PLAYER_DEATH_DURATION / g_playerDeathImages.length;
+        var delay = PLAYER_DEATH_DURATION / PLAYER_DEATH_SPRITE_ELEMENT_COUNT;
         var timer = setInterval(function()
         {
-            this.playerImagePath = g_playerDeathImages[i];
+            imagePosY = i + PLAYER_DEATH_SPRITE_START;
             i++;
-            if (i == g_playerDeathImages.length)
+            if (i == PLAYER_DEATH_SPRITE_ELEMENT_COUNT)
             {
                 clearInterval(timer);
                 delete(self);
@@ -112,44 +126,43 @@ function Player(color, posX, posY)
         }, delay);
     };
 
-    function isStaying()
+    function _isStaying()
     {
         return !g_upKeyDown && !g_rightKeyDown && !g_downKeyDown && !g_leftKeyDown;
     }
 
-    function walkAnimation(self)
+    function _walkAnimation(self)
     {
         walking = true;
-        var walkImages = g_playerWalkDownImages;
         var i = 0;
-        var delay = PLAYER_WALK_DURATION / walkImages.length;
+        var delay = PLAYER_WALK_DURATION / PLAYER_SPRITE_WALK_EACH_COUNT;
+        var playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
         var timer = setInterval(function()
         {
             switch(self.direction){
                 case PLAYER_DIRECTION_UP:
-                    walkImages = g_playerWalkUpImages;
-                break;
+                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_TOP_POS_Y;
+                    break;
                 case PLAYER_DIRECTION_RIGHT:
-                    walkImages = g_playerWalkRightImages;
-                break;
+                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_RIGHT_POS_Y;
+                    break;
                 case PLAYER_DIRECTION_DOWN:
-                    walkImages = g_playerWalkDownImages;
-                break;
+                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
+                    break;
                 case PLAYER_DIRECTION_LEFT:
-                    walkImages = g_playerWalkLeftImages;
-                break;
+                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_LEFT_POS_Y;
+                    break;
                 default:
-                    walkImages = g_playerWalkDownImages;
+                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
                     break;
             }
-            delay = PLAYER_WALK_DURATION / walkImages.length;
-            this.playerImagePath = walkImages[i];
+            imagePosY = i + playerSpriteWalkStartPosY;
             i++;
-            if (i == walkImages.length)
+            if (i == PLAYER_SPRITE_WALK_EACH_COUNT)
             {
                 i = 0;
             }
-            if (isStaying() || !self.alive)
+            if (_isStaying() || !self.alive)
             {
                 walking = false;
                 clearInterval(timer);
@@ -172,23 +185,23 @@ function handleKey(event, state)
 {
     switch (event.keyCode)
     {
-        case 37: case 65: // left
+        case PLAYER1_KEY_UP:
             g_leftKeyDown = state;
         break;
 
-        case 38: case 87: // up
+        case PLAYER1_KEY_RIGHT:
             g_upKeyDown = state;
         break;
 
-        case 39: case 68: // right
+        case PLAYER1_KEY_DOWN:
             g_rightKeyDown = state;
         break;
 
-        case 40: case 83: // down
+        case PLAYER1_KEY_LEFT:
             g_downKeyDown = state;
         break;
 
-        case 16: // shift
+        case PLAYER1_KEY_PLATE_BOMB:
             addBombToPlayerPos(g_player, state);
         break;
 
@@ -215,4 +228,12 @@ function addBombToPlayerPos(player, state)
         }
     }
     islastStateKeyDown = state;
+}
+
+function drawPlayers()
+{
+    for (var i = 0; i < g_players.length; i++)
+    {
+        g_players[i].draw();
+    }
 }

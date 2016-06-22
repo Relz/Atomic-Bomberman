@@ -1,6 +1,8 @@
 CELLS_COUNT_HORIZONTAL = 15;
 CELLS_COUNT_VERTICAL = 11;
 
+SPRITE_MAP = "img/sprite_map.png";
+
 var g_map = [
     [{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
     [{x:0,y:-1,bonus:null},{x:0,y:1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null}],
@@ -15,18 +17,18 @@ var g_map = [
     [{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null}]
 ];
 
-function _drawBase(baseImage)
+function drawBase(baseImage)
 {
-    baseImage.src = "img/field0.png";
+    baseImage.src = "img/field0.png"; // В дальнейшем здесь возврат пути до базового файла по настройке пользователя
     baseImage.onload = function()
     {
         g_ctx.drawImage(baseImage, 0, 0);
     };
 }
 
-function _drawMap(spriteMapImage)
+function drawMap(spriteMapImage)
 {
-    spriteMapImage.src = "img/sprite_map.png";
+    spriteMapImage.src = SPRITE_MAP;
     spriteMapImage.onload = function() 
     {
         for (var j = 0; j < CELLS_COUNT_HORIZONTAL; j ++)

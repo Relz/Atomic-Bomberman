@@ -60,7 +60,7 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
     }
 }
 
-function _drawFlames()
+function drawFlames()
 {
     for (var i = 0; i < g_flames.length; i++)
     {

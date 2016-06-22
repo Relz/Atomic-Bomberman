@@ -116,7 +116,7 @@ function generateBonuses()
     console.log(bonusCount);
 }
 
-function _drawBonuses()
+function drawBonuses()
 {
     for(var i = 0; i < g_bonuses.length; i++)
     {
