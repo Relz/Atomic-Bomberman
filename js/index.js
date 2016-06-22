@@ -60,6 +60,7 @@ function update()
             if (g_player.canvasY < (g_player.posY - 0.5) * CELL_HEIGHT)
             {
                 g_player.posY--;
+                g_player.tryToPickUpBonus();
             }
         }
     }
@@ -73,6 +74,7 @@ function update()
             if (g_player.canvasX > (g_player.posX + 0.5) * CELL_WIDTH)
             {
                 g_player.posX++;
+                g_player.tryToPickUpBonus();
             }
         }
     }
@@ -86,6 +88,7 @@ function update()
             if (g_player.canvasY > (g_player.posY + 0.5) * CELL_HEIGHT)
             {
                 g_player.posY++;
+                g_player.tryToPickUpBonus();
             }
         }
     }
@@ -99,6 +102,7 @@ function update()
             if (g_player.canvasX < (g_player.posX - 0.5) * CELL_WIDTH)
             {
                 g_player.posX--;
+                g_player.tryToPickUpBonus();
             }
         }
     }

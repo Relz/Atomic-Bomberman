@@ -92,13 +92,12 @@ function generateBonuses()
     {
         for (var j = 0; j < CELLS_COUNT_VERTICAL; j++)
         {
-            if (g_map[j][i].y == 0)
+            if (g_map[j][i].y === 0)
             {
                 freeSpaceForBonuses++;
             }
         }
     }
-    console.log(freeSpaceForBonuses);
     for (var key in BONUS_CONFIG)
     {
         bonusCount += BONUS_CONFIG[key].count;
@@ -109,11 +108,10 @@ function generateBonuses()
                 randPosX = Math.floor(Math.random() * CELLS_COUNT_HORIZONTAL);
                 randPosY = Math.floor(Math.random() * CELLS_COUNT_VERTICAL);
             }
-            while (g_map[randPosY][randPosX].y != 0 && g_map[randPosY][randPosX].bonus == null);
+            while (g_map[randPosY][randPosX].y !== 0 && g_map[randPosY][randPosX].bonus === null);
             g_map[randPosY][randPosX].bonus = BONUS_CONFIG[key];
         }
     }
-    console.log(bonusCount);
 }
 
 function drawBonuses()

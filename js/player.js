@@ -126,6 +126,26 @@ function Player(color, posX, posY)
         }, delay);
     };
 
+    this.tryToPickUpBonus = function()
+    {
+        if (g_map[this.posY][this.posX].bonus !== null)
+        {
+            var bonus = g_map[this.posY][this.posX].bonus;
+            var bonusIndex = -1;
+            for (var i = 0; i < g_bonuses.length; i++)
+            {
+                if (g_bonuses[i].posX == this.posX && g_bonuses[i].posY == this.posY)
+                {
+                    bonusIndex = i;
+                }
+            }
+            if (bonusIndex >= 0)
+            {
+              g_bonuses.splice(bonusIndex, 1);
+            }
+        }
+    };
+
     function _isStaying()
     {
         return !g_upKeyDown && !g_rightKeyDown && !g_downKeyDown && !g_leftKeyDown;
