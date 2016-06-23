@@ -11,7 +11,7 @@ PLAYER_MAX_SPEED = 4;
 PLAYER_START_SPEED = 2;
 PLAYER_START_BOMB_ATTACK_RANGE = 1;
 
-PLAYER_SPRITE_IMAGE_URL = "img/player/sprite_player.png";
+PLAYER_SPRITE_IMAGE_URL = "img/game/player/sprite_player.png";
 PLAYER_SPRITE_ELEMENT_WIDTH = 47;
 PLAYER_SPRITE_ELEMENT_HEIGHT = 73;
 
@@ -50,7 +50,7 @@ PLAYER4_KEY_DOWN = 74;
 PLAYER4_KEY_LEFT = 72;
 PLAYER4_KEY_PLATE_BOMB = 18;
 
-PLAYER_DEATH_SPRITE_IMAGE_URL = "img/player/sprite_death.png";
+PLAYER_DEATH_SPRITE_IMAGE_URL = "img/game/player/sprite_death.png";
 PLAYER_DEATH_SPRITE_ELEMENT_WIDTH = 73;
 PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT = 73;
 PLAYER_DEATH_SPRITE_ELEMENT_COUNT = 41;
@@ -79,14 +79,14 @@ function Player(color, posX, posY)
     {
         if (self.alive)
         {
-            handleKey(self, event, true);
+            handleKey(self, event.keyCode, true);
         }
     }, true);
     window.addEventListener("keyup", function()
     {
         if (self.alive)
         {
-            handleKey(self, event, false);
+            handleKey(self, event.keyCode, false);
         }
     }, true);
     g_totalPlayers++;
@@ -106,28 +106,7 @@ function Player(color, posX, posY)
     var imagePosY = 0;
     this.draw = function() 
     {
-        var self = this;
-        if (_isStaying(self))
-        {
-            switch(self.direction){
-                case PLAYER_DIRECTION_UP:
-                    imagePosY = PLAYER_SPRITE_STAND_TOP_POS_Y;
-                break;
-                case PLAYER_DIRECTION_RIGHT:
-                    imagePosY = PLAYER_SPRITE_STAND_RIGHT_POS_Y;
-                break;
-                case PLAYER_DIRECTION_DOWN:
-                    imagePosY = PLAYER_SPRITE_STAND_DOWN_POS_Y;
-                break;
-                case PLAYER_DIRECTION_LEFT:
-                    imagePosY = PLAYER_SPRITE_STAND_LEFT_POS_Y;
-                break;
-            }
-        }
-        else if (!walking && self.alive)
-        {
-            _walkAnimation(self);
-        }
+        _setImagePosY(this);
         g_ctx.drawImage(spritePlayerImage,
           imageWidth * imagePosX,
           imageHeight * imagePosY,
@@ -155,8 +134,9 @@ function Player(color, posX, posY)
             i++;
             if (i == PLAYER_DEATH_SPRITE_ELEMENT_COUNT)
             {
-                clearInterval(timer);
+                g_players.splice(g_players.indexOf(self), 1);
                 delete(self);
+                clearInterval(timer);
             }
         }, delay);
     };
@@ -298,147 +278,82 @@ function Player(color, posX, posY)
         }
     };
 
-    function _isStaying(self)
+    function _setImagePosY(self)
     {
-        return !self.upKeyDown && !self.rightKeyDown && !self.downKeyDown && !self.leftKeyDown;
-    }
-
-    function _walkAnimation(self)
-    {
-        walking = true;
-        var i = 0;
-        var delay = PLAYER_WALK_DURATION / PLAYER_SPRITE_WALK_EACH_COUNT;
-        var playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
-        var timer = setInterval(function()
+        if (_isStaying(self))
         {
             switch(self.direction){
                 case PLAYER_DIRECTION_UP:
-                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_TOP_POS_Y;
-                    break;
+                    imagePosY = PLAYER_SPRITE_STAND_TOP_POS_Y;
+                break;
                 case PLAYER_DIRECTION_RIGHT:
-                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_RIGHT_POS_Y;
-                    break;
+                    imagePosY = PLAYER_SPRITE_STAND_RIGHT_POS_Y;
+                break;
                 case PLAYER_DIRECTION_DOWN:
-                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
-                    break;
+                    imagePosY = PLAYER_SPRITE_STAND_DOWN_POS_Y;
+                break;
                 case PLAYER_DIRECTION_LEFT:
-                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_LEFT_POS_Y;
-                    break;
-                default:
-                    playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
-                    break;
+                    imagePosY = PLAYER_SPRITE_STAND_LEFT_POS_Y;
+                break;
             }
-            imagePosY = i + playerSpriteWalkStartPosY;
-            i++;
-            if (i == PLAYER_SPRITE_WALK_EACH_COUNT)
+        }
+        else if (!walking && self.alive)
+        {
+            _walkAnimation(self);
+        }
+
+        function _isStaying(self)
+        {
+            return !self.upKeyDown && !self.rightKeyDown && !self.downKeyDown && !self.leftKeyDown;
+        }
+
+        function _walkAnimation(self)
+        {
+            walking = true;
+            var i = 0;
+            var delay = PLAYER_WALK_DURATION / PLAYER_SPRITE_WALK_EACH_COUNT;
+            var playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
+            var timer = setInterval(function()
             {
-                i = 0;
-            }
-            if (_isStaying(self) || !self.alive)
-            {
-                walking = false;
-                clearInterval(timer);
-            }
-        }, delay);
+                switch(self.direction)
+                {
+                    case PLAYER_DIRECTION_UP:
+                        playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_TOP_POS_Y;
+                        break;
+                    case PLAYER_DIRECTION_RIGHT:
+                        playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_RIGHT_POS_Y;
+                        break;
+                    case PLAYER_DIRECTION_DOWN:
+                        playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
+                        break;
+                    case PLAYER_DIRECTION_LEFT:
+                        playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_LEFT_POS_Y;
+                        break;
+                    default:
+                        playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
+                        break;
+                }
+                imagePosY = i + playerSpriteWalkStartPosY;
+                i++;
+                if (i == PLAYER_SPRITE_WALK_EACH_COUNT)
+                {
+                    i = 0;
+                }
+                if (_isStaying(self) || !self.alive)
+                {
+                    walking = false;
+                    clearInterval(timer);
+                }
+            }, delay);
+        }
     }
+
 }
 
-function handleKey(self, event, state)
-{
-    var keyUp = PLAYER1_KEY_UP;
-    var keyRight = PLAYER1_KEY_RIGHT;
-    var keyDown = PLAYER1_KEY_DOWN;
-    var keyLeft = PLAYER1_KEY_LEFT;
-    var keyPlateBomb = PLAYER1_KEY_PLATE_BOMB;
-    switch (self.playerId)
-    {
-        case 0:
-            keyUp = PLAYER1_KEY_UP;
-            keyRight = PLAYER1_KEY_RIGHT;
-            keyDown = PLAYER1_KEY_DOWN;
-            keyLeft = PLAYER1_KEY_LEFT;
-            keyPlateBomb = PLAYER1_KEY_PLATE_BOMB;
-            break;
-        case 1:
-            keyUp = PLAYER2_KEY_UP;
-            keyRight = PLAYER2_KEY_RIGHT;
-            keyDown = PLAYER2_KEY_DOWN;
-            keyLeft = PLAYER2_KEY_LEFT;
-            keyPlateBomb = PLAYER2_KEY_PLATE_BOMB;
-            break;
-        case 2:
-            keyUp = PLAYER3_KEY_UP;
-            keyRight = PLAYER3_KEY_RIGHT;
-            keyDown = PLAYER3_KEY_DOWN;
-            keyLeft = PLAYER3_KEY_LEFT;
-            keyPlateBomb = PLAYER3_KEY_PLATE_BOMB;
-            break;
-        case 3:
-            keyUp = PLAYER4_KEY_UP;
-            keyRight = PLAYER4_KEY_RIGHT;
-            keyDown = PLAYER4_KEY_DOWN;
-            keyLeft = PLAYER4_KEY_LEFT;
-            keyPlateBomb = PLAYER4_KEY_PLATE_BOMB;
-            break;
-    }
-    switch (event.keyCode)
-    {
-        case keyUp:
-            if (!self.cursed)
-            {
-                self.upKeyDown = state;
-            }
-            else
-            {
-                self.downKeyDown = state;
-            }
-        break;
-
-        case keyRight:
-            if (!self.cursed)
-            {
-                self.rightKeyDown = state;
-            }
-            else
-            {
-                self.leftKeyDown = state;
-            }
-        break;
-
-        case keyDown:
-            if (!self.cursed)
-            {
-                self.downKeyDown = state;
-            }
-            else
-            {
-                self.upKeyDown = state;
-            }
-        break;
-
-        case keyLeft:
-            if (!self.cursed)
-            {
-                self.leftKeyDown = state;
-            }
-            else
-            {
-                self.rightKeyDown = state;
-            }
-        break;
-
-        case keyPlateBomb:
-            addBombToPlayerPos(self, state);
-        break;
-
-        default: return;
-    }
-}
-
-var islastStateKeyDown = false;
+var isLastStateKeyDown = false;
 function addBombToPlayerPos(player, state)
 {
-    if (state && !islastStateKeyDown)
+    if (state && !isLastStateKeyDown)
     {
         var allowToPlantBomb = true;
         if (player.bombCount == player.maxBomb)
@@ -461,7 +376,7 @@ function addBombToPlayerPos(player, state)
             g_bombs.unshift(new Bomb(player, player.posX, player.posY, BOMB_DURATION));
         }
     }
-    islastStateKeyDown = state;
+    isLastStateKeyDown = state;
 }
 
 function drawPlayers()

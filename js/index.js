@@ -23,8 +23,7 @@ function init()
 function play(baseImage, spriteMapImage)
 {
     draw(baseImage, spriteMapImage);
-    window.requestAnimationFrame(
-    function()
+    window.requestAnimationFrame(function()
     {
         play(baseImage, spriteMapImage);
     });

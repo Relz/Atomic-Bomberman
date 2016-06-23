@@ -1,7 +1,7 @@
 CELLS_COUNT_HORIZONTAL = 15;
 CELLS_COUNT_VERTICAL = 11;
 
-SPRITE_MAP = "img/sprite_map.png";
+SPRITE_MAP = "img/game/sprite_map.png";
 
 var g_map = [
     [{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
@@ -19,7 +19,7 @@ var g_map = [
 
 function drawBase(baseImage)
 {
-    baseImage.src = "img/field0.png"; // В дальнейшем здесь возврат пути до базового файла по настройке пользователя
+    baseImage.src = "img/game/field0.png"; // В дальнейшем здесь возврат пути до базового файла по настройке пользователя
     baseImage.onload = function()
     {
         g_ctx.drawImage(baseImage, 0, 0);
@@ -44,15 +44,17 @@ function drawMap(spriteMapImage)
                 var imageWidth = CELL_WIDTH;
                 var imageHeight = CELL_HEIGHT;
 
-                g_ctx.drawImage(spriteMapImage,
-                  xWhereToStartClipping,
-                  yWhereToStartClipping,
-                  clippedImageWidth,
-                  clippedImageHeight,
-                  xWhereToPlaceImage,
-                  yWhereToPlaceImage,
-                  imageWidth,
-                  imageHeight);
+                g_ctx.drawImage(
+                    spriteMapImage,
+                    xWhereToStartClipping,
+                    yWhereToStartClipping,
+                    clippedImageWidth,
+                    clippedImageHeight,
+                    xWhereToPlaceImage,
+                    yWhereToPlaceImage,
+                    imageWidth,
+                    imageHeight
+                );
             }
         }
     };

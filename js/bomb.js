@@ -1,7 +1,7 @@
 BOMB_DURATION = 3000;
 BOMB_ANIMATION_DURATION = 1000;
 
-BOMB_SPRITE_IMAGE_URL = "img/sprite_bomb.png";
+BOMB_SPRITE_IMAGE_URL = "img/game/sprite_bomb.png";
 BOMB_SPRITE_ELEMENT_WIDTH = 36;
 BOMB_SPRITE_ELEMENT_HEIGHT = 37;
 BOMB_SPRITE_STANDART_COUNT = 10;
@@ -92,14 +92,7 @@ function Bomb(player, posX, posY, cooldown)
                 bombAttack(player, self);
             }
             imagePosY = i;
-            if (inc)
-            {
-                i++;
-            }
-            else
-            {
-                i--;
-            }
+            i += (inc ? 1 : -1);
             if (i == BOMB_SPRITE_STANDART_COUNT)
             {
                 inc = false;

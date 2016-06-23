@@ -14,69 +14,69 @@ BONUS_CONFIG =
 {
     "bomb" :
     {
-        id: 1,
+        id: BONUS_BOMB_ID,
         count: 7,
-        img: "img/power/bomb.png"
+        img: "img/game/power/bomb.png"
     },
     flame :
     {
-        id: 2,
+        id: BONUS_FLAME_ID,
         count: 6,
-        img: "img/power/flame.png"
+        img: "img/game/power/flame.png"
     },
     "doubleFlame" :
     {
-        id: 3,
+        id: BONUS_DOUBLE_FLAME_ID,
         count: 4,
-        img: "img/power/double_flame.png"
+        img: "img/game/power/double_flame.png"
     },
     "speed" :
     {
-        id: 4,
+        id: BONUS_SPEED_ID,
         count: 8,
-        img: "img/power/speed.png"
+        img: "img/game/power/speed.png"
     },
     "curse" :
     {
-        id: 5,
+        id: BONUS_CURSE_ID,
         count: 7,
-        img: "img/power/curse.png"
+        img: "img/game/power/curse.png"
     },
     "exhaust" :
     {
-        id: 6,
+        id: BONUS_EXHAUST_ID,
         count: 5,
-        img: "img/power/exhaust.png"
+        img: "img/game/power/exhaust.png"
     },
     "detonator" :
     {
-        id: 7,
+        id: BONUS_DETONATOR_ID,
         count: 2,
-        img: "img/power/detonator.png"
+        img: "img/game/power/detonator.png"
     },
     "kick" :
     {
-        id: 8,
+        id: BONUS_KICK_ID,
         count: 3,
-        img: "img/power/kick.png"
+        img: "img/game/power/kick.png"
     },
     "punch" :
     {
-        id: 9,
+        id: BONUS_PUNCH_ID,
         count: 4,
-        img: "img/power/punch.png"
+        img: "img/game/power/punch.png"
     },
     "grab" :
     {
-        id: 10,
+        id: BONUS_GRAB_ID,
         count: 5,
-        img: "img/power/grab.png"
+        img: "img/game/power/grab.png"
     },
     "random" :
     {
-        id: 11,
+        id: BONUS_RANDOM_ID,
         count: 1,
-        img: "img/power/random.png"
+        img: "img/game/power/random.png"
     }
 };
 var g_bonuses = [];
@@ -99,7 +99,6 @@ function generateBonuses()
     var randPosX;
     var randPosY;
     var freeSpaceForBonuses = 0;
-    var bonusCount = 0;
     for (var i = 0; i < CELLS_COUNT_HORIZONTAL; i++)
     {
         for (var j = 0; j < CELLS_COUNT_VERTICAL; j++)
@@ -112,7 +111,6 @@ function generateBonuses()
     }
     for (var key in BONUS_CONFIG)
     {
-        bonusCount += BONUS_CONFIG[key].count;
         for (var i = 0; i < BONUS_CONFIG[key].count; i++)
         {
             do
@@ -128,7 +126,7 @@ function generateBonuses()
 
 function drawBonuses()
 {
-    for(var i = 0; i < g_bonuses.length; i++)
+    for (var i = 0; i < g_bonuses.length; i++)
     {
         g_bonuses[i].draw();
     }
