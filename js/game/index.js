@@ -4,6 +4,9 @@ CELL_HEIGHT = 36;
 CANVAS_MARGIN_TOP_PX = 68;
 CANVAS_MARGIN_LEFT_PX = 20;
 
+var g_ctx = null;
+var g_playerId = null;
+
 function init()
 {
     initSocket();

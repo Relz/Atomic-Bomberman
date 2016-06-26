@@ -4,12 +4,12 @@
 {/block}
 {block name="login-form"}
     <div class="content">
-      <div class="login-form">
-        <input type="text" class="input_name" placeholder="{$input_name_placeholder}"/>
-        <a class="btn_login" href="#" title="Войти">{$btn_login_text}</a>
-      </div>
+      <form class="login-form" action="index.php?lang={$lang}" method="post">
+        <input type="text" name="username" class="input_name" placeholder="{$inputNamePlaceholder}"/>
+        <input type="submit" id="btnLogin" class="btn_login" href="#" title="Войти" value="{$btnLoginText}"/>
+      </form>
     </div>
 {/block}
 {block name="scripts"}
-
+    <script type="text/javascript" src="js/website/index.js"></script>
 {/block}

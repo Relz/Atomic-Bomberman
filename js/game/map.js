@@ -1,6 +1,20 @@
 CELLS_COUNT_HORIZONTAL = 15;
 CELLS_COUNT_VERTICAL = 11;
 
+var g_map = [
+    [{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null}],
+    [{x:0,y:-1,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:-1,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null}],
+    [{x:0,y:-1,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:1,bonus:null},{x:0,y:-1,bonus:null}],
+    [{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:0,bonus:null},{x:0,y:-1,bonus:null},{x:0,y:-1,bonus:null}]
+];
+
 SPRITE_MAP = "img/game/sprite_map.png";
 
 function drawBase(baseImage)

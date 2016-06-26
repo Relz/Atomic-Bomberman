@@ -74,6 +74,16 @@ li
     background-position: -30px 0 !important;
 }
 
+.logout_image
+{
+    float: right;
+    margin: 20px 5% 0 0;
+    width: 32px;
+    height: 32px;
+    background: url(../img/website/logout.png) no-repeat scroll 0 0;
+    cursor: pointer;
+}
+
 .background-image0
 {
     background: url(../img/website/background0.png) center center no-repeat;

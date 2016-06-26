@@ -22,41 +22,32 @@
     {
         case "":
             session_start();
-            if (isset($_SESSION["username"]))
+            if (isset($_POST["username"]) && !empty($_POST["username"]))
             {
-//                echo "Вы авторизированы, " . $_SESSION["username"];
+                $_SESSION["username"] = $_POST["username"];
+            }
+            $smarty->assign("rootDir", ROOT_DIR);
+            $smarty->assign("lang", $lang);
+            $smarty->assign("title", "Atomic Bomberman");
+            $smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
+            $smarty->assign("logoutText", $LOGOUT_TEXT);
+            $smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
+            $smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
+            $smarty->assign("username", "");
+
+            if (isset($_SESSION["username"]) && !empty($_SESSION["username"]))
+            {
+                $smarty->assign("username", $_SESSION["username"]);
+                $smarty->display("game.tpl");
             }
             else
             {
-//                echo "Вы неавторизированы";
-                $_SESSION["username"] = "Relz";
+                $smarty->display("mainpage.tpl");
             }
-            $smarty->assign("rootDir", ROOT_DIR);
-            $smarty->assign("title", "Atomic Bomberman");
-            $smarty->assign("btn_login_text", $BTN_LOGIN_TEXT);
-            $smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
-            $smarty->assign("input_name_placeholder", $INPUT_NAME_PLACEHOLDER);
-
-            $smarty->display("mainpage.tpl");
             break;
         case "logout":
             session_start();
             unset($_SESSION["username"]);
-            /*$smarty->assign("title", "Atomic Bomberman");
-            $smarty->assign("btn_login_text", $BTN_LOGIN_TEXT);
-            $smarty->assign("rand", rand(0, 2));
-            $smarty->assign("input_name_placeholder", $INPUT_NAME_PLACEHOLDER);
-
-            $smarty->display("mainpage.tpl");*/
-            break;
-        case "game":
-            session_start();
-            $smarty->assign("rootDir", ROOT_DIR);
-            $smarty->assign("title", "Atomic Bomberman");
-            $smarty->assign("btn_login_text", $BTN_LOGIN_TEXT);
-            $smarty->assign("rand", rand(0, 2));
-            $smarty->assign("input_name_placeholder", $INPUT_NAME_PLACEHOLDER);
-
-            $smarty->display("game.tpl");
+            header("Location: ?lang=" . $lang);
             break;
     }
