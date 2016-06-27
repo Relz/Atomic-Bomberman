@@ -1,9 +1,8 @@
 {extends file="layout.tpl"}
 {block name="main_content"}
-{block name="room_list"}{/block}
+{block name="login-form"}{/block}
 {/block}
-
-{block name="room_list"}
+{block name="login-form"}
     <div class="content">
       <form class="login-form" action="index.php?lang={$lang}" method="post">
         <input type="text" name="username" class="input_name" placeholder="{$inputNamePlaceholder}"/>
@@ -12,5 +11,4 @@
     </div>
 {/block}
 {block name="scripts"}
-    <script type="text/javascript" src="js/website/index.js"></script>
 {/block}

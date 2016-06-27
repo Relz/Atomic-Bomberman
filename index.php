@@ -10,44 +10,73 @@
     require_once(INCLUDE_DIR . "common.inc.php");
 
     $BACKGROUND_IMAGES = 2;
-    $smarty = new Smarty();
 
-    $smarty->template_dir = ROOT_DIR . "template/";
-    $smarty->compile_dir = ROOT_DIR . "template_c/";
-    $smarty->config_dir = ROOT_DIR . "config/";
-    $smarty->cache_dir = ROOT_DIR . "cache/";
+    $g_smarty = new Smarty();
+    $g_smarty->template_dir = ROOT_DIR . "template/";
+    $g_smarty->compile_dir = ROOT_DIR . "template_c/";
+    $g_smarty->config_dir = ROOT_DIR . "config/";
+    $g_smarty->cache_dir = ROOT_DIR . "cache/";
 
     $action = getGetParam("action");
     switch ($action)
     {
         case "":
             session_start();
-            if (isset($_POST["username"]) && !empty($_POST["username"]))
+            processPostRequest();
+            //initSmartyVariables();
+            $g_smarty->assign("rootDir", ROOT_DIR);
+            $g_smarty->assign("lang", $lang);
+            $g_smarty->assign("title", "Atomic Bomberman");
+            $g_smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
+            $g_smarty->assign("logoutText", $LOGOUT_TEXT);
+            $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
+            $g_smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
+            $g_smarty->assign("username", "");
+            if (isAuthorized())
             {
-                $_SESSION["username"] = $_POST["username"];
-            }
-            $smarty->assign("rootDir", ROOT_DIR);
-            $smarty->assign("lang", $lang);
-            $smarty->assign("title", "Atomic Bomberman");
-            $smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
-            $smarty->assign("logoutText", $LOGOUT_TEXT);
-            $smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
-            $smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
-            $smarty->assign("username", "");
-
-            if (isset($_SESSION["username"]) && !empty($_SESSION["username"]))
-            {
-                $smarty->assign("username", $_SESSION["username"]);
-                $smarty->display("game.tpl");
+                $g_smarty->assign("username", $_SESSION["username"]);
+                $g_smarty->display("mainpage.tpl");
             }
             else
             {
-                $smarty->display("mainpage.tpl");
+                $g_smarty->display("login.tpl");
             }
             break;
         case "logout":
-            session_start();
-            unset($_SESSION["username"]);
-            header("Location: ?lang=" . $lang);
+            logout();
             break;
+    }
+
+    function logout()
+    {
+        session_start();
+        unset($_SESSION["username"]);
+        header("Location: ?lang=" . $lang);
+    }
+
+
+    function processPostRequest()
+    {
+        if (isset($_POST["username"]) && !empty($_POST["username"]))
+        {
+            $_SESSION["username"] = $_POST["username"];
+        }
+    }
+
+    /*function initSmartyVariables()
+    {
+        global $g_smarty;
+        $g_smarty->assign("rootDir", ROOT_DIR);
+        $g_smarty->assign("lang", $lang);
+        $g_smarty->assign("title", "Atomic Bomberman");
+        $g_smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
+        $g_smarty->assign("logoutText", $LOGOUT_TEXT);
+        $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
+        $g_smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
+        $g_smarty->assign("username", "");
+    }*/
+
+    function isAuthorized()
+    {
+        return (isset($_SESSION["username"]) && !empty($_SESSION["username"]));
     }
