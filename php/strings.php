@@ -6,5 +6,10 @@
     {
         $lang = "ru_RU";
     }
-
     require_once(TRANSLATION_DIR . $lang . ".php");
+
+    function t($string)
+    {
+        global $translations;
+        return $translations[$string];
+    }

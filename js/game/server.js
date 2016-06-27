@@ -1,7 +1,6 @@
 var http = require('http');
 
 var app = http.createServer(function(req, res) {
-        console.log('createServer');
 });
 app.listen(3000);
 
@@ -28,7 +27,6 @@ io.on("connection", function(socket)
 
     socket.on("sendMap", function(map)
     {
-        //console.log(map);
         savedMap = map;
     });
 

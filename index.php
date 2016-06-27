@@ -9,7 +9,7 @@
     require_once(PHP_DIR . "strings.php");
     require_once(INCLUDE_DIR . "common.inc.php");
 
-    $BACKGROUND_IMAGES = 2;
+    $BACKGROUND_IMAGES_COUNT = 2;
 
     $g_smarty = new Smarty();
     $g_smarty->template_dir = ROOT_DIR . "template/";
@@ -27,15 +27,15 @@
             $g_smarty->assign("rootDir", ROOT_DIR);
             $g_smarty->assign("lang", $lang);
             $g_smarty->assign("title", "Atomic Bomberman");
-            $g_smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
-            $g_smarty->assign("logoutText", $LOGOUT_TEXT);
-            $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
-            $g_smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
+            $g_smarty->assign("btnLoginText", t("BTN_LOGIN_TEXT"));
+            $g_smarty->assign("logoutText", t("LOGOUT_TEXT"));
+            $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES_COUNT - 1));
+            $g_smarty->assign("inputNamePlaceholder", t("INPUT_NAME_PLACEHOLDER"));
             $g_smarty->assign("username", "");
             if (isAuthorized())
             {
                 $g_smarty->assign("username", $_SESSION["username"]);
-                $g_smarty->display("mainpage.tpl");
+                $g_smarty->display("game.tpl");
             }
             else
             {
