@@ -11,7 +11,13 @@ PLAYER_MAX_SPEED = 4;
 PLAYER_START_SPEED = 2;
 PLAYER_START_BOMB_ATTACK_RANGE = 1;
 
-PLAYER_SPRITE_IMAGE_URL = "img/game/player/sprite_player.png";
+PLAYER_SPRITE_IMAGE_URLS = {
+    "black": "img/game/player/sprite_player_black.png",
+    "red": "img/game/player/sprite_player_red.png",
+    "green": "img/game/player/sprite_player_green.png",
+    "blue": "img/game/player/sprite_player_blue.png",
+    "purple": "img/game/player/sprite_player_purple.png"
+};
 PLAYER_SPRITE_ELEMENT_WIDTH = 47;
 PLAYER_SPRITE_ELEMENT_HEIGHT = 73;
 
@@ -32,24 +38,6 @@ PLAYER1_KEY_DOWN = 40;
 PLAYER1_KEY_LEFT = 37;
 PLAYER1_KEY_PLATE_BOMB = 32;
 
-/*PLAYER2_KEY_UP = 87;
-PLAYER2_KEY_RIGHT = 68;
-PLAYER2_KEY_DOWN = 83;
-PLAYER2_KEY_LEFT = 65;
-PLAYER2_KEY_PLATE_BOMB = 32;
-
-PLAYER3_KEY_UP = 104;
-PLAYER3_KEY_RIGHT = 102;
-PLAYER3_KEY_DOWN = 101;
-PLAYER3_KEY_LEFT = 100;
-PLAYER3_KEY_PLATE_BOMB = 107;
-
-PLAYER4_KEY_UP = 85;
-PLAYER4_KEY_RIGHT = 75;
-PLAYER4_KEY_DOWN = 74;
-PLAYER4_KEY_LEFT = 72;
-PLAYER4_KEY_PLATE_BOMB = 18;*/
-
 PLAYER_DEATH_SPRITE_IMAGE_URL = "img/game/player/sprite_death.png";
 PLAYER_DEATH_SPRITE_ELEMENT_WIDTH = 73;
 PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT = 73;
@@ -57,6 +45,7 @@ PLAYER_DEATH_SPRITE_ELEMENT_COUNT = 41;
 PLAYER_DEATH_SPRITE_START = 0;
 
 var g_players = [];
+var g_playerId = null;
 
 function Player(color, posX, posY)
 {
@@ -96,12 +85,18 @@ function Player(color, posX, posY)
     this.cursed = false;
 
     var spritePlayerImage = new Image();
-    spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URL;
     var walking = false;
     var imageWidth = PLAYER_SPRITE_ELEMENT_WIDTH;
     var imageHeight = PLAYER_SPRITE_ELEMENT_HEIGHT;
     var imagePosX = 0;
     var imagePosY = 0;
+
+    this.setSpritePlayerImageByColor = function(color)
+    {
+        spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URLS[color];
+    };
+    this.setSpritePlayerImageByColor(this.color);
+
     this.draw = function()
     {
         _setImagePosY(this);

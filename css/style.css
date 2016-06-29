@@ -97,6 +97,11 @@ li
     background: url(../img/website/background2.png) center center no-repeat;
 }
 
+.required_field
+{
+    color: #FF0000;
+}
+
 .login-form
 {
     max-width: 300px;
@@ -105,6 +110,7 @@ li
     padding: 20px;
     background: rgba(237, 241, 245, 0.9);
     border-radius: 39px;
+    font: bold 20px sans-serif;
 }
 
 .input_name
@@ -137,6 +143,7 @@ li
     box-shadow: inset 0 -3px 0 #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
     margin-top: 10px;
     outline: none;
+    cursor: pointer;
 }
 
 .btn_login:hover
@@ -151,10 +158,334 @@ li
     box-shadow: inset 0 0 0 2px #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
 }
 
-.canvas
+.content
 {
-    width: 640px;
-    height: 480px;
+    height: 80%;
+}
+
+.rooms
+{
+    float: left;
+    padding: 20px;
+    margin: 20px 0 0 20px;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.5);
+    color: #333;
+    width: 65%;
+    height: 95%;
+}
+
+.rooms_header_text
+{
     display: block;
     margin: 0 auto;
+    text-align: center;
+    font: bold 20px sans-serif;
+}
+
+.room_list
+{
+    height: 90%;
+    overflow-y: scroll;
+}
+
+.rooms_empty
+{
+    display: block;
+    color: #FDD;
+    font: bold 30px sans-serif;
+    text-align: center;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    margin-top: 10%;
+}
+
+.rooms_empty_hidden
+{
+    display: none;
+}
+
+.room_list li
+{
+    border: 1px solid #666;
+    background: rgba(237, 241, 245, 0.9);
+    color: #333;
+    padding: 10px;
+    margin-top: 3px;
+    border-radius: 39px;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+
+.room_list li:hover
+{
+    background: rgba(100, 100, 245, 0.6);
+    color: #FFF;
+}
+
+.room_create_form
+{
+    float: right;
+    padding: 20px;
+    margin: 20px 20px 0 0;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+    color: #333;
+}
+
+.room_create_form .room_header_text
+{
+    display: block;
+    font: bold 20px sans-serif;
+}
+
+.room_create_form .block_room_name
+{
+    padding: 20px;
+    font: 20px sans-serif;
+}
+
+.room_create_form .room_name
+{
+    display: block;
+    font: 20px sans-serif;
+    border-radius: 39px;
+    outline: none;
+}
+
+.room_create_form .block_room_password
+{
+    padding: 20px;
+    font: 20px sans-serif;
+}
+
+.room_create_form .room_password
+{
+    display: block;
+    font: 20px sans-serif;
+    border-radius: 39px;
+    outline: none;
+}
+
+.room_create_form .submit
+{
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    line-height: 10px;
+    border-radius: 39px;
+    background-color: #0000EF;
+    padding: 10px 40px;
+    margin: 0 auto;
+    text-align: center;
+    font: bold 20px sans-serif;
+    box-shadow: inset 0 -3px 0 #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
+    margin-top: 10px;
+    outline: none;
+    cursor: pointer;
+}
+
+.room_create_form .submit:hover
+{
+    background-color: #5555FF;
+    box-shadow: inset 0 -3px 0 #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
+}
+
+.room_create_form .submit:active
+{
+    background-color: #5555FF;
+    box-shadow: inset 0 0 0 2px #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
+}
+
+.left_block
+{
+    float: left;
+    width: 15%;
+    height: 100%;
+}
+
+.players
+{
+    height: 40%;
+    padding: 20px;
+    margin: 20px 0 0 20px;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.5);
+}
+
+.players_header_text
+{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    font: bold 20px sans-serif;
+}
+
+.player_models
+{
+    padding: 20px;
+    margin: 20px 0 0 20px;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.5);
+    color: #333;
+    height: 40%;
+}
+
+.player_model_list
+{
+    overflow-y: scroll;
+    padding: 20px 0;
+    height: 80%;
+    cursor: pointer;
+}
+
+.player_model
+{
+    width: 47px;
+    height: 73px;
+    margin: 0 auto;
+}
+
+.player_model0
+{
+    background: url(../img/game/player/sprite_player_black.png) no-repeat scroll 0 -146px;
+}
+
+.player_model1
+{
+    background: url(../img/game/player/sprite_player_red.png) no-repeat scroll 0 -146px;
+}
+
+.player_model2
+{
+    background: url(../img/game/player/sprite_player_green.png) no-repeat scroll 0 -146px;
+}
+
+.player_model3
+{
+    background: url(../img/game/player/sprite_player_blue.png) no-repeat scroll 0 -146px;
+}
+
+.player_model4
+{
+    background: url(../img/game/player/sprite_player_purple.png) no-repeat scroll 0 -146px;
+}
+
+.game
+{
+    position: relative;
+    float: left;
+    width: 640px;
+    height: 480px;
+    margin: 20px 0 0 20px;
+}
+
+.canvas
+{
+    position: absolute;
+    width: 640px;
+    height: 480px;
+}
+
+.choose_map
+{
+    color: white;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    background-color: rgba(237, 241, 245, 0.7);
+}
+
+.previews
+{
+    cursor: pointer;
+}
+
+.preview0
+{
+    background-image: url(../img/game/map/preview/00.png);
+}
+
+.preview1
+{
+    background-image: url(../img/game/map/preview/01.png);
+}
+
+.preview2
+{
+    background-image: url(../img/game/map/preview/02.png);
+}
+
+.preview3
+{
+    background-image: url(../img/game/map/preview/03.png);
+}
+
+.preview4
+{
+    background-image: url(../img/game/map/preview/04.png);
+}
+
+.preview5
+{
+    background-image: url(../img/game/map/preview/05.png);
+}
+
+.preview6
+{
+    background-image: url(../img/game/map/preview/06.png);
+}
+
+.preview7
+{
+    background-image: url(../img/game/map/preview/07.png);
+}
+
+.preview8
+{
+    background-image: url(../img/game/map/preview/08.png);
+}
+
+.preview9
+{
+    background-image: url(../img/game/map/preview/09.png);
+}
+
+.preview10
+{
+    background-image: url(../img/game/map/preview/10.png);
+}
+
+.chat
+{
+    float: right;
+    display: block;
+    width: 30%;
+    height: 95%;
+    padding: 20px;
+    margin: 20px 20px 0 0;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.5);
+}
+
+.chat_header_text
+{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    font: bold 20px sans-serif;
+}
+
+.tip_for_future
+{
+    display: block;
+    color: #FDD;
+    font: bold 30px sans-serif;
+    text-align: center;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    margin-top: 40%;
 }

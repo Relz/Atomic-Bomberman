@@ -9,8 +9,6 @@
     require_once(PHP_DIR . "strings.php");
     require_once(INCLUDE_DIR . "common.inc.php");
 
-    $BACKGROUND_IMAGES_COUNT = 2;
-
     $g_smarty = new Smarty();
     $g_smarty->template_dir = ROOT_DIR . "template/";
     $g_smarty->compile_dir = ROOT_DIR . "template_c/";
@@ -23,19 +21,19 @@
         case "":
             session_start();
             processPostRequest();
-            //initSmartyVariables();
-            $g_smarty->assign("rootDir", ROOT_DIR);
-            $g_smarty->assign("lang", $lang);
-            $g_smarty->assign("title", "Atomic Bomberman");
-            $g_smarty->assign("btnLoginText", t("BTN_LOGIN_TEXT"));
-            $g_smarty->assign("logoutText", t("LOGOUT_TEXT"));
-            $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES_COUNT - 1));
-            $g_smarty->assign("inputNamePlaceholder", t("INPUT_NAME_PLACEHOLDER"));
-            $g_smarty->assign("username", "");
-            if (isAuthorized())
+            initSmartyVariables();
+            if (isUserAuthorized())
             {
                 $g_smarty->assign("username", $_SESSION["username"]);
-                $g_smarty->display("game.tpl");
+                if (inGame())
+                {
+                    $g_smarty->display("game.tpl");
+                }
+                else
+                {
+                    $g_smarty->assign("rooms", getRooms());
+                    $g_smarty->display("mainpage.tpl");
+                }
             }
             else
             {
@@ -43,40 +41,67 @@
             }
             break;
         case "logout":
-            logout();
+            logoutUser();
+            break;
+        default:
+            header("HTTP/1.1 404 Not Found");
+            echo "404 NOT FOUND!";
             break;
     }
 
-    function logout()
+    function initSmartyVariables()
     {
-        session_start();
-        unset($_SESSION["username"]);
-        header("Location: ?lang=" . $lang);
+        global $g_smarty;
+        $BACKGROUND_IMAGES_COUNT = 2;
+        $g_smarty->assign("rootDir", ROOT_DIR);
+        $g_smarty->assign("lang", $lang);
+        $g_smarty->assign("title", "Atomic Bomberman");
+        $g_smarty->assign("symbolRequired", t("SYMBOL_REQUIRED"));
+        $g_smarty->assign("btnLoginText", t("BTN_LOGIN_TEXT"));
+        $g_smarty->assign("logoutText", t("LOGOUT_TEXT"));
+        $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES_COUNT - 1));
+        $g_smarty->assign("inputNamePlaceholder", t("INPUT_NAME_PLACEHOLDER"));
+        $g_smarty->assign("headerCreateRoom", t("HEADER_CREATE_ROOM"));
+        $g_smarty->assign("labelRoomName", t("LABEL_ROOM_NAME"));
+        $g_smarty->assign("labelRoomPassword", t("LABEL_ROOM_PASSWORD"));
+        $g_smarty->assign("btnCreateRoomText", t("BTN_CREATE_ROOM_TEXT"));
+        $g_smarty->assign("username", "");
     }
-
 
     function processPostRequest()
     {
         if (isset($_POST["username"]) && !empty($_POST["username"]))
         {
-            $_SESSION["username"] = $_POST["username"];
+            $username = $_POST["username"];
+            dbInitialConnect();
+            if (mysqli_num_rows(dbQueryGetResult("SELECT * FROM user WHERE BINARY name='$username'")) == 0)
+            {
+                registerNewUser($username);
+            }
+            else
+            {
+                loginUser($username);
+            }
         }
     }
 
-    /*function initSmartyVariables()
+    function getRooms()
     {
-        global $g_smarty;
-        $g_smarty->assign("rootDir", ROOT_DIR);
-        $g_smarty->assign("lang", $lang);
-        $g_smarty->assign("title", "Atomic Bomberman");
-        $g_smarty->assign("btnLoginText", $BTN_LOGIN_TEXT);
-        $g_smarty->assign("logoutText", $LOGOUT_TEXT);
-        $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES - 1));
-        $g_smarty->assign("inputNamePlaceholder", $INPUT_NAME_PLACEHOLDER);
-        $g_smarty->assign("username", "");
-    }*/
+        $result = [];
+        dbInitialConnect();
+        $queryResult = dbQueryGetResult("SELECT title FROM room");
+        if (mysqli_num_rows($queryResult) > 0)
+        {
+            while ($row = mysqli_fetch_assoc($queryResult))
+            {
+                array_push($result, $row["title"]);
+            }
+            mysqli_free_result($queryResult);
+        }
+        return $result;
+    }
 
-    function isAuthorized()
+    function inGame()
     {
-        return (isset($_SESSION["username"]) && !empty($_SESSION["username"]));
+        return (isset($_SESSION["in_game"]) && !empty($_SESSION["in_game"]));
     }

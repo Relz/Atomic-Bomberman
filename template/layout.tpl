@@ -1,5 +1,3 @@
-{* Smarty *}
-
 <!DOCTYPE html>
 <html>
   {include file="head.tpl"}

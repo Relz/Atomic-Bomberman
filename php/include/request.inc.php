@@ -8,3 +8,13 @@
         }
         return $result;
     }
+
+    function getPostParam($str)
+    {
+        $result = "";
+        if (isset($_POST[$str]))
+        {
+            $result = $_POST[$str];
+        }
+        return $result;
+    }

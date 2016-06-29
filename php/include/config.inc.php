@@ -3,4 +3,4 @@
     define("DB_USER", "root");
     define("DB_PASS", "eybdthcb88life");
     define("DB_NAME", "AtomicBomberman");
-    define("DB_PORT", 80);
+    define("DB_PORT", 3306);
