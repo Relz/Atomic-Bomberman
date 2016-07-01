@@ -10,6 +10,12 @@
       <a class="icon ru" href="?lang=ru_RU" title="RU"></a>
       <a class="icon en" href="?lang=en_US" title="EN"></a>
     </div>
+    {if $inGameRoom}
+      <a class="room_exit" id="roomExit">Покинуть комнату</a>
+    {/if}
+    {if $inGameRoom && $isRoomOwner}
+      <a class="room_start" id="roomStart">Начать игру</a>
+    {/if}
     <div class="clearboth"></div>
   </div>
 {/block}

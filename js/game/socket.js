@@ -1,89 +1,156 @@
-var g_socket = null;
+var g_gameSocket = null;
+var g_websiteSocket = null;
 
-function initSocket()
+function initGameSocket()
 {
-    g_socket = io.connect(":3000");
-    g_socket.emit("playerConnect");
-    g_socket.on("playerConnect", function(id)
+    myRoomName = getCookie("room_name");
+    g_gameSocket = io.connect(":3000");
+    g_gameSocket.emit("playerConnect", myRoomName);
+    g_gameSocket.on("playerConnect", function(roomName, id)
     {
-        if (g_playerId === null)
+        if (myRoomName == roomName)
         {
-            g_playerId = id;
-            if (g_playerId === 0)
+            if (g_playerId === null)
             {
-                generateBonuses();
-                g_socket.emit("sendMap", g_map);
-            }
-            else
-            {
-                g_socket.emit("getMap");
+                g_playerId = id;
             }
         }
     });
 
-    g_socket.on("playerUpKeyDown", function(object)
+    g_gameSocket.on("playerDisconnect", function(roomName, id)
     {
-        for (var i = 0; i < g_players.length; i++)
+        if (myRoomName == roomName)
         {
-            if (object.playerId == g_players[i].playerId)
+            for (var i = 0; i < g_players.length; i++)
             {
-                g_players[i].upKeyDown = object.upKeyDown;
-                break;
+                if (id == g_players[i].playerId)
+                {
+                    g_players.splice(i, 1);
+                    break;
+                }
             }
         }
     });
 
-    g_socket.on("playerRightKeyDown", function(object)
+    g_gameSocket.on("startRoom", function(roomName, map, mapIndex, playerCount)
     {
-        for (var i = 0; i < g_players.length; i++)
+        if (myRoomName == roomName)
         {
-            if (object.playerId == g_players[i].playerId)
+            g_map = map;
+            g_mapIndex = mapIndex;
+            initGame(playerCount);
+        }
+    });
+
+    g_gameSocket.on("playerChoosedColor", function(roomName, playerId, color)
+    {
+        if (myRoomName == roomName)
+        {
+            g_players[playerId].setSpritePlayerImageByColor(color);
+        }
+    });
+
+    g_gameSocket.on("playerUpKeyDown", function(roomName, object)
+    {
+        if (myRoomName == roomName)
+        {
+            for (var i = 0; i < g_players.length; i++)
             {
-                g_players[i].rightKeyDown = object.rightKeyDown;
-                break;
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].upKeyDown = object.upKeyDown;
+                    break;
+                }
             }
         }
     });
 
-    g_socket.on("playerDownKeyDown", function(object)
+    g_gameSocket.on("playerRightKeyDown", function(roomName, object)
     {
-        for (var i = 0; i < g_players.length; i++)
+        if (myRoomName == roomName)
         {
-            if (object.playerId == g_players[i].playerId)
+            for (var i = 0; i < g_players.length; i++)
             {
-                g_players[i].downKeyDown = object.downKeyDown;
-                break;
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].rightKeyDown = object.rightKeyDown;
+                    break;
+                }
             }
         }
     });
 
-    g_socket.on("playerLeftKeyDown", function(object)
+    g_gameSocket.on("playerDownKeyDown", function(roomName, object)
     {
-        for (var i = 0; i < g_players.length; i++)
+        if (myRoomName == roomName)
         {
-            if (object.playerId == g_players[i].playerId)
+            for (var i = 0; i < g_players.length; i++)
             {
-                g_players[i].leftKeyDown = object.leftKeyDown;
-                break;
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].downKeyDown = object.downKeyDown;
+                    break;
+                }
             }
         }
     });
 
-    g_socket.on("playerPlateBomb", function(object)
+    g_gameSocket.on("playerLeftKeyDown", function(roomName, object)
     {
-        for (var i = 0; i < g_players.length; i++)
+        if (myRoomName == roomName)
         {
-            if (object.playerId == g_players[i].playerId)
+            for (var i = 0; i < g_players.length; i++)
             {
-                addBombToPlayerPos(g_players[i], object.state);
-                break;
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].leftKeyDown = object.leftKeyDown;
+                    break;
+                }
             }
         }
     });
 
-    g_socket.on("getMap", function(map)
+    g_gameSocket.on("playerPlateBomb", function(roomName, object)
     {
-        g_map = map;
-        console.log(g_map);
+        if (myRoomName == roomName)
+        {
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    addBombToPlayerPos(g_players[i], object.state);
+                    break;
+                }
+            }
+        }
     });
+}
+
+function initWebsiteSocket()
+{
+    g_websiteSocket = io.connect(":3001");
+}
+
+function getCookie(name)
+{
+    var cookie = " " + document.cookie;
+    var search = " " + name + "=";
+    var setStr = null;
+    var offset = 0;
+    var end = 0;
+    if (cookie.length > 0)
+    {
+        offset = cookie.indexOf(search);
+        if (offset != -1)
+        {
+            offset += search.length;
+            end = cookie.indexOf(";", offset);
+            if (end == -1)
+            {
+                end = cookie.length;
+            }
+            setStr = unescape(cookie.substring(offset, end));
+        }
+    }
+    return(setStr);
 }

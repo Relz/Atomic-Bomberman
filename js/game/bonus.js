@@ -94,25 +94,6 @@ function Bonus(bonus, posX, posY)
     };
 }
 
-function generateBonuses()
-{
-    var randPosX;
-    var randPosY;
-    for (var key in BONUS_CONFIG)
-    {
-        for (var i = 0; i < BONUS_CONFIG[key].count; i++)
-        {
-            do
-            {
-                randPosX = Math.floor(Math.random() * CELLS_COUNT_HORIZONTAL);
-                randPosY = Math.floor(Math.random() * CELLS_COUNT_VERTICAL);
-            }
-            while (g_map[randPosY][randPosX].y !== 0 && g_map[randPosY][randPosX].bonus === null);
-            g_map[randPosY][randPosX].bonus = BONUS_CONFIG[key];
-        }
-    }
-}
-
 function drawBonuses()
 {
     for (var i = 0; i < g_bonuses.length; i++)

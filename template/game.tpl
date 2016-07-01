@@ -7,7 +7,9 @@
     </div>
     <div class="game">
       <canvas height="480" width="640" id="canvas" class="canvas">Обновите браузер</canvas>
-      {block name="choose_map"}{/block}
+      {if $isRoomOwner}
+        {block name="choose_map"}{/block}
+      {/if}
     </div>
     {block name="chat"}{/block}
     <div class="clearboth"></div>
@@ -54,6 +56,7 @@
 
 {block name="scripts"}
   <script type="text/javascript" src="js/vendor/socket.io-1.4.5-min.js"></script>
+  <script type="text/javascript" src="js/vendor/jquery-3.0.0.min.js"></script>
   <script type="text/javascript" src="js/game/socket.js"></script>
   <script type="text/javascript" src="js/game/key_bind.js"></script>
   <script type="text/javascript" src="js/game/bonus.js"></script>

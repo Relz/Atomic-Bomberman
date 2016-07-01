@@ -1,9 +1,11 @@
 <?php
+    $RANDOM_KEY_TIMEOUT = "00:05:00";
+
     function initIdByUsername($username)
     {
         session_start();
         dbInitialConnect();
-        $result = dbQueryGetResult("SELECT id FROM user WHERE BINARY name='$username'");
+        $result = dbQueryGetResult("SELECT id FROM user WHERE BINARY name='" . dbQuote($username) . "'");
         if (mysqli_num_rows($result) == 1)
         {
             $row = mysqli_fetch_assoc($result);
@@ -24,7 +26,7 @@
         session_start();
         dbInitialConnect();
         $randomKey = randMD5(10);
-        if (dbQuery("INSERT INTO user SET name='$username', random_key='$randomKey'"))
+        if (dbQuery("INSERT INTO user SET name='" . dbQuote($username) . "', random_key='$randomKey'"))
         {
             initSession($username, $randomKey);
         }
@@ -35,7 +37,7 @@
         session_start();
         dbInitialConnect();
         $randomKey = randMD5(10);
-        if (dbQuery("UPDATE user SET random_key='$randomKey', random_key_expire=ADDTIME(NOW(), '00:05:00') WHERE BINARY name='$username'"))
+        if (dbQuery("UPDATE user SET random_key='$randomKey', random_key_expire=ADDTIME(NOW(), '$RANDOM_KEY_TIMEOUT') WHERE BINARY name='" . dbQuote($username) . "'"))
         {
             initSession($username, $randomKey);
         }
@@ -47,11 +49,11 @@
         dbInitialConnect();
         $username = $_SESSION["username"];
         $myRandomKey = $_SESSION["random_key"];
-        if (dbQuery("UPDATE user SET random_key='$myRandomKey', random_key_expire=NOW() WHERE BINARY name='$username'"))
+        if (dbQuery("UPDATE user SET random_key='$myRandomKey', random_key_expire=NOW() WHERE BINARY name='" . dbQuote($username) . "'"))
         {
             unset($_SESSION["username"]);
             unset($_SESSION["random_key"]);
-            unset($_SESSION["in_game"]);
+            unset($_SESSION["room_name"]);
             header("Location: ?lang=" . $lang);
         }
     }
@@ -67,7 +69,7 @@
     {
         session_start();
         dbInitialConnect();
-        $result = dbQueryGetResult("SELECT random_key, random_key_expire FROM user WHERE BINARY name='$username'");
+        $result = dbQueryGetResult("SELECT random_key, random_key_expire FROM user WHERE BINARY name='" . dbQuote($username) . "'");
         $row = mysqli_fetch_assoc($result);
         mysqli_free_result($result);
         return ($row["random_key"] == $_SESSION["random_key"] && (strtotime($row["random_key_expire"]) > time()));

@@ -19,14 +19,16 @@
     switch ($action)
     {
         case "":
-            session_start();
             processPostRequest();
             initSmartyVariables();
             if (isUserAuthorized())
             {
+                session_start();
                 $g_smarty->assign("username", $_SESSION["username"]);
                 if (inGame())
                 {
+                    $g_smarty->assign("inGameRoom", true);
+                    $g_smarty->assign("isRoomOwner", $_SESSION["room_owner"]);
                     $g_smarty->display("game.tpl");
                 }
                 else
@@ -103,5 +105,6 @@
 
     function inGame()
     {
-        return (isset($_SESSION["in_game"]) && !empty($_SESSION["in_game"]));
+        session_start();
+        return (isset($_SESSION["room_name"]) && !empty($_SESSION["room_name"]));
     }

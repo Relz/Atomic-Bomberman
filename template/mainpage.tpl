@@ -11,11 +11,9 @@
   <div class="rooms">
     <span class="rooms_header_text">Игровые комнаты</span>
     <ul class="room_list" id="room_list">
+    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">Не найдено ни одной игровой комнаты</span>
     {foreach from=$rooms item=roomName}
-      <span class="rooms_empty_hidden" id="roomsEmptyText">Не найдено ни одной игровой комнаты</span>
-      <li>{$roomName}</li>
-    {foreachelse}
-      <span class="rooms_empty" id="roomsEmptyText">Не найдено ни одной игровой комнаты</span>
+      <li class="room">{$roomName}</li>
     {/foreach}
     </ul>
   </div>
@@ -24,9 +22,9 @@
 {block name="room_create"}
   <form class="room_create_form">
     <span class="room_header_text">{$headerCreateRoom}</span>
+    <input style="display:none" type="text" name="fake_username_remembered"/>
+    <input style="display:none" type="password" name="fake_password_remembered"/>
     <div class="block_room_name">
-      <input style="display:none" type="text" name="fake_username_remembered"/>
-      <input style="display:none" type="password" name="fake_password_remembered"/>
       <label for="roomName">{$labelRoomName}<span class="required_field">{$symbolRequired}</span></label>
       <input type="text" class="room_name" id="roomName"/>
     </div>

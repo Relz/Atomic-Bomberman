@@ -44,6 +44,8 @@ PLAYER_DEATH_SPRITE_ELEMENT_HEIGHT = 73;
 PLAYER_DEATH_SPRITE_ELEMENT_COUNT = 41;
 PLAYER_DEATH_SPRITE_START = 0;
 
+PLAYER_COLOR_DEFAULT = "green";
+
 var g_players = [];
 var g_playerId = null;
 
@@ -69,14 +71,14 @@ function Player(color, posX, posY)
         {
             handleKey(self, event.keyCode, true);
         }
-    }, true);
+    });
     window.addEventListener("keyup", function()
     {
         if (self.alive && self.playerId == g_playerId)
         {
             handleKey(self, event.keyCode, false);
         }
-    }, true);
+    });
 
     this.bombCount = 0;
     this.maxBomb = 1;

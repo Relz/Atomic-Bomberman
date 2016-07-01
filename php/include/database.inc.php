@@ -28,3 +28,9 @@
         global $g_dbLink;
         return mysqli_query($g_dbLink, $query);
     }
+
+    function dbQuote($value)
+    {
+        global $g_dbLink;
+        return mysqli_real_escape_string($g_dbLink, $value);
+    }

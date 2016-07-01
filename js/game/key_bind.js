@@ -29,7 +29,7 @@ function handleKey(self, keyCode, state)
 
         case keyPlateBomb:
             addBombToPlayerPos(self, state);
-            g_socket.emit('playerPlateBomb', {playerId: self.playerId, state: state});
+            g_gameSocket.emit('playerPlateBomb', myRoomName, {playerId: self.playerId, state: state});
         break;
 
         default: return;
@@ -44,6 +44,6 @@ function handleKey(self, keyCode, state)
         message[keyName] = state;
 
         eventName = self.cursed ? invertedEvent : event;
-        g_socket.emit(eventName, message);
+        g_gameSocket.emit(eventName, myRoomName, message);
     }
 }
