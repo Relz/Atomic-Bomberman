@@ -54,6 +54,7 @@
     function initSmartyVariables()
     {
         global $g_smarty;
+        global $lang;
         $BACKGROUND_IMAGES_COUNT = 2;
         $g_smarty->assign("rootDir", ROOT_DIR);
         $g_smarty->assign("lang", $lang);
@@ -63,6 +64,7 @@
         $g_smarty->assign("logoutText", t("LOGOUT_TEXT"));
         $g_smarty->assign("bodyClass", "background-image" . rand(0, $BACKGROUND_IMAGES_COUNT - 1));
         $g_smarty->assign("inputNamePlaceholder", t("INPUT_NAME_PLACEHOLDER"));
+        $g_smarty->assign("inGameRoom", false);
         $g_smarty->assign("headerCreateRoom", t("HEADER_CREATE_ROOM"));
         $g_smarty->assign("labelRoomName", t("LABEL_ROOM_NAME"));
         $g_smarty->assign("labelRoomPassword", t("LABEL_ROOM_PASSWORD"));
