@@ -6,13 +6,22 @@ CANVAS_MARGIN_LEFT_PX = 20;
 
 var g_ctx = null;
 var g_myColor = null;
-var myRoomName = null;
+var g_myRoomName = getCookie("room_name");
+var g_myPlayerName = getCookie("player_name");
 
 function setUpGame()
 {
     var onPlayerModelsClick = function()
     {
         g_myColor = this.getAttribute("data-color");
+        for (var i = 0; i < playerModels.length; i++)
+        {
+            if (playerModels[i] != this)
+            {
+                playerModels[i].style.display = "none";
+            }
+        }
+
     };
 
     var playerModels = document.getElementsByClassName("player_model");
@@ -57,7 +66,7 @@ function setUpGame()
                     {
                         g_websiteSocket.emit("removeRoom", data);
                     }
-                    g_gameSocket.emit("playerDisconnect", myRoomName, g_playerId);
+                    g_gameSocket.emit("playerDisconnect", g_myRoomName, g_playerId);
                     location.reload();
                 }
             }
@@ -73,61 +82,29 @@ function setUpGame()
             if (g_mapIndex !== null && g_myColor !== null)
             {
                 this.style.display = "none";
-                g_gameSocket.emit("startRoom", myRoomName);
+                g_gameSocket.emit("startRoom", g_myRoomName);
+            }
+            else
+            {
+
             }
         });
     }
 }
 
-function initGame(playerCount)
+function initGame()
 {
     var canvas = document.getElementById("canvas");
     g_ctx = canvas.getContext("2d");
     var baseImage = new Image();
+    baseImage.src = "img/game/map/field" + g_mapIndex + ".png";
     var spriteMapImage = new Image();
-    for (var i = 0; i < playerCount; i++)
-    {
-        var startPlayerPos = getStartPlayerPos(i);
-        g_players.push(new Player(PLAYER_COLOR_DEFAULT, startPlayerPos.x, startPlayerPos.y));
-    }
-    g_gameSocket.emit("playerChoosedColor", myRoomName, g_playerId, g_myColor);
+    spriteMapImage.src = SPRITE_MAP;
+    g_gameSocket.emit("playerChoosedColor", g_myRoomName, g_playerId, g_myColor);
     play(baseImage, spriteMapImage);
 }
 
-function getStartPlayerPos(playerId)
-{
-    var result = {x: 0, y: 0};
-    switch (playerId)
-    {
-        case 0:
-            result = {x: 0, y: 0};
-            break;
-        case 1:
-            result = {x: CELLS_COUNT_HORIZONTAL - 1, y: 0};
-            break;
-        case 2:
-            result = {x: 0, y: CELLS_COUNT_VERTICAL - 1};
-            break;
-        case 3:
-            result = {x: CELLS_COUNT_HORIZONTAL - 1, y: CELLS_COUNT_VERTICAL - 1};
-            break;
-        default:
-            result.x = 0;
-            break;
-    }
-    return result;
-}
-
 function play(baseImage, spriteMapImage)
-{
-    draw(baseImage, spriteMapImage);
-    window.requestAnimationFrame(function()
-    {
-        play(baseImage, spriteMapImage);
-    });
-}
-
-function draw(baseImage, spriteMapImage)
 {
     drawBase(baseImage);
     drawMap(spriteMapImage);
@@ -135,6 +112,10 @@ function draw(baseImage, spriteMapImage)
     drawBombs();
     drawFlames();
     drawPlayers();
+    window.requestAnimationFrame(function()
+    {
+        play(baseImage, spriteMapImage);
+    });
 }
 
 initGameSocket();

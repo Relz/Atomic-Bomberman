@@ -82,12 +82,12 @@ function Bomb(player, posX, posY, cooldown)
         var i = 0;
         var decrementMS = BOMB_ANIMATION_DURATION / (BOMB_SPRITE_STANDART_COUNT * 2);
         var inc = true;
-        var timer = setInterval(function()
+        mySetInterval(function(animationFrame)
         {
             self.currTime = (self.currTime > 0) ? self.currTime - decrementMS : self.cooldown;
             if (self.currTime == self.cooldown)
             {
-                clearInterval(timer);
+                cancelAnimationFrame(animationFrame);
                 g_bombs.pop();
                 bombAttack(player, self);
             }

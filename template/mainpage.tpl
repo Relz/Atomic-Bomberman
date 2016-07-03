@@ -37,6 +37,7 @@
 {/block}
 
 {block name="scripts"}
+  <script type="text/javascript" src="js/vendor/cookie.js"></script>
   <script type="text/javascript" src="js/vendor/socket.io-1.4.5-min.js"></script>
   <script type="text/javascript" src="js/vendor/jquery-3.0.0.min.js"></script>
   <script type="text/javascript" src="js/website/socket.js"></script>

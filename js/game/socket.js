@@ -3,28 +3,38 @@ var g_websiteSocket = null;
 
 function initGameSocket()
 {
-    myRoomName = getCookie("room_name");
+    var playerListUl = document.getElementById("player_list");
     g_gameSocket = io.connect(":3000");
-    g_gameSocket.emit("playerConnect", myRoomName);
-    g_gameSocket.on("playerConnect", function(roomName, id)
+    g_gameSocket.emit("playerConnect", g_myRoomName, g_myPlayerName);
+    g_gameSocket.on("playerConnect", function(roomName, playerId, playerName)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
             if (g_playerId === null)
             {
-                g_playerId = id;
+                g_playerId = playerId;
+                g_playerName = playerName;
+                g_gameSocket.emit("getPlayerNames", g_myRoomName);
             }
         }
     });
 
     g_gameSocket.on("playerDisconnect", function(roomName, id)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
             for (var i = 0; i < g_players.length; i++)
             {
                 if (id == g_players[i].playerId)
                 {
+                    var playerNamesLi = playerListUl.children;
+                    for (var j = 0; j < playerNamesLi.length; j++)
+                    {
+                        if (playerNamesLi[j].innerHTML == g_players[i].name)
+                        {
+                            playerListUl.removeChild(playerNamesLi[j]);
+                        }
+                    }
                     g_players.splice(i, 1);
                     break;
                 }
@@ -32,96 +42,142 @@ function initGameSocket()
         }
     });
 
-    g_gameSocket.on("startRoom", function(roomName, map, mapIndex, playerCount)
+    g_gameSocket.on("startRoom", function(roomName, map, mapIndex)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
             g_map = map;
             g_mapIndex = mapIndex;
-            initGame(playerCount);
+            initGame();
         }
     });
 
     g_gameSocket.on("playerChoosedColor", function(roomName, playerId, color)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
             g_players[playerId].setSpritePlayerImageByColor(color);
+            var playerNames = playerListUl.children;
+            playerNames[playerId].style.color = color;
+        }
+    });
+
+    g_gameSocket.on("getPlayerNames", function(roomName, players)
+    {
+        if (g_myRoomName == roomName)
+        {
+            playerListUl.innerHTML = "";
+            for (var i = 0; i < players.length; i++)
+            {
+                if (players.length > g_players.length)
+                {
+                    playerIdFound = false;
+                    for (var j = 0; j < g_players.length; j++)
+                    {
+                        if (g_players[j].playerId == players[i].id)
+                        {
+                            playerIdFound = true;
+                        }
+                    }
+                    if (!playerIdFound)
+                    {
+                        var startPlayerPos = getStartPlayerPos(players[i].id);
+                        g_players.push(new Player(players[i].id, players[i].name, PLAYER_COLOR_DEFAULT, startPlayerPos.x, startPlayerPos.y));
+                    }
+                }
+                var li = document.createElement("li");
+                li.className = "player_name";
+                li.appendChild(document.createTextNode(players[i].name));
+                playerListUl.appendChild(li);
+            }
+        }
+
+        function getStartPlayerPos(playerId)
+        {
+            var result = {x: 0, y: 0};
+            switch (playerId)
+            {
+                case 0:
+                    result = {x: 0, y: 0};
+                    break;
+                case 1:
+                    result = {x: CELLS_COUNT_HORIZONTAL - 1, y: 0};
+                    break;
+                case 2:
+                    result = {x: 0, y: CELLS_COUNT_VERTICAL - 1};
+                    break;
+                case 3:
+                    result = {x: CELLS_COUNT_HORIZONTAL - 1, y: CELLS_COUNT_VERTICAL - 1};
+                    break;
+                default:
+                    result.x = 0;
+                    break;
+            }
+            return result;
         }
     });
 
     g_gameSocket.on("playerUpKeyDown", function(roomName, object)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
-            for (var i = 0; i < g_players.length; i++)
-            {
-                if (object.playerId == g_players[i].playerId)
-                {
-                    g_players[i].upKeyDown = object.upKeyDown;
-                    break;
-                }
-            }
+            g_players[object.playerId].upKeyDown = object.upKeyDown;
         }
     });
 
     g_gameSocket.on("playerRightKeyDown", function(roomName, object)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
-            for (var i = 0; i < g_players.length; i++)
-            {
-                if (object.playerId == g_players[i].playerId)
-                {
-                    g_players[i].rightKeyDown = object.rightKeyDown;
-                    break;
-                }
-            }
+            g_players[object.playerId].rightKeyDown = object.rightKeyDown;
         }
     });
 
     g_gameSocket.on("playerDownKeyDown", function(roomName, object)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
-            for (var i = 0; i < g_players.length; i++)
-            {
-                if (object.playerId == g_players[i].playerId)
-                {
-                    g_players[i].downKeyDown = object.downKeyDown;
-                    break;
-                }
-            }
+            g_players[object.playerId].downKeyDown = object.downKeyDown;
         }
     });
 
     g_gameSocket.on("playerLeftKeyDown", function(roomName, object)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
-            for (var i = 0; i < g_players.length; i++)
-            {
-                if (object.playerId == g_players[i].playerId)
-                {
-                    g_players[i].leftKeyDown = object.leftKeyDown;
-                    break;
-                }
-            }
+            g_players[object.playerId].leftKeyDown = object.leftKeyDown;
         }
     });
 
     g_gameSocket.on("playerPlateBomb", function(roomName, object)
     {
-        if (myRoomName == roomName)
+        if (g_myRoomName == roomName)
         {
-            for (var i = 0; i < g_players.length; i++)
-            {
-                if (object.playerId == g_players[i].playerId)
-                {
-                    addBombToPlayerPos(g_players[i], object.state);
-                    break;
-                }
-            }
+            addBombToPlayerPos(g_players[object.playerId], object.state);
+        }
+    });
+
+    g_gameSocket.on("canvasXChanged", function(roomName, playerId, canvasX)
+    {
+        if (g_myRoomName == roomName)
+        {
+            g_players[playerId].canvasX = canvasX;
+        }
+    });
+
+    g_gameSocket.on("canvasYChanged", function(roomName, playerId, canvasY)
+    {
+        if (g_myRoomName == roomName)
+        {
+            g_players[playerId].canvasY = canvasY;
+        }
+    });
+
+    g_gameSocket.on("playerDied", function(roomName, playerId)
+    {
+        if (g_myRoomName == roomName)
+        {
+            g_players[playerId].die();
         }
     });
 }
@@ -129,28 +185,4 @@ function initGameSocket()
 function initWebsiteSocket()
 {
     g_websiteSocket = io.connect(":3001");
-}
-
-function getCookie(name)
-{
-    var cookie = " " + document.cookie;
-    var search = " " + name + "=";
-    var setStr = null;
-    var offset = 0;
-    var end = 0;
-    if (cookie.length > 0)
-    {
-        offset = cookie.indexOf(search);
-        if (offset != -1)
-        {
-            offset += search.length;
-            end = cookie.indexOf(";", offset);
-            if (end == -1)
-            {
-                end = cookie.length;
-            }
-            setStr = unescape(cookie.substring(offset, end));
-        }
-    }
-    return(setStr);
 }

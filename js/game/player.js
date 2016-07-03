@@ -48,10 +48,13 @@ PLAYER_COLOR_DEFAULT = "green";
 
 var g_players = [];
 var g_playerId = null;
+var g_playerName = null;
+var g_playerNames = [];
 
-function Player(color, posX, posY)
+function Player(id, name, color, posX, posY)
 {
-    this.playerId = g_players.length;
+    this.playerId = id;
+    this.name = name;
     this.color = color;
     this.posX = posX;
     this.posY = posY;
@@ -64,6 +67,7 @@ function Player(color, posX, posY)
 
     this.direction = PLAYER_DIRECTION_DOWN;
     this.alive = true;
+    this.showing = true;
     var self = this;
     window.addEventListener("keydown", function()
     {
@@ -92,6 +96,8 @@ function Player(color, posX, posY)
     var imageHeight = PLAYER_SPRITE_ELEMENT_HEIGHT;
     var imagePosX = 0;
     var imagePosY = 0;
+    var playerOffsetX = CANVAS_MARGIN_LEFT_PX - (imageWidth - CELL_WIDTH) / 2;
+    var playerOffsetY = CANVAS_MARGIN_TOP_PX - imageHeight / 2;
 
     this.setSpritePlayerImageByColor = function(color)
     {
@@ -107,8 +113,8 @@ function Player(color, posX, posY)
           imageHeight * imagePosY,
           imageWidth,
           imageHeight,
-          self.canvasX + CANVAS_MARGIN_LEFT_PX - (imageWidth - CELL_WIDTH) / 2,
-          self.canvasY + CANVAS_MARGIN_TOP_PX - imageHeight / 2,
+          self.canvasX + playerOffsetX,
+          self.canvasY + playerOffsetY,
           imageWidth,
           imageHeight);
     };
@@ -123,15 +129,15 @@ function Player(color, posX, posY)
         self.direction = PLAYER_DIRECTION_NONE;
         var i = 0;
         var delay = PLAYER_DEATH_DURATION / PLAYER_DEATH_SPRITE_ELEMENT_COUNT;
-        var timer = setInterval(function()
+
+        mySetInterval(function(animationFrame)
         {
             imagePosY = i + PLAYER_DEATH_SPRITE_START;
             i++;
             if (i == PLAYER_DEATH_SPRITE_ELEMENT_COUNT)
             {
-                g_players.splice(g_players.indexOf(self), 1);
-                delete(self);
-                clearInterval(timer);
+                self.showing = false;
+                cancelAnimationFrame(animationFrame);
             }
         }, delay);
     };
@@ -222,6 +228,7 @@ function Player(color, posX, posY)
                 (this.canvasY > this.posY * CELL_HEIGHT))
             {
                 this.canvasY -= this.speed;
+                g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
                 if (this.canvasY < (this.posY - 0.5) * CELL_HEIGHT)
                 {
                     this.posY--;
@@ -236,6 +243,7 @@ function Player(color, posX, posY)
                 (this.canvasX  < this.posX * CELL_WIDTH))
             {
                 this.canvasX += this.speed;
+                g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
                 if (this.canvasX > (this.posX + 0.5) * CELL_WIDTH)
                 {
                     this.posX++;
@@ -250,6 +258,7 @@ function Player(color, posX, posY)
                 (this.canvasY < this.posY * CELL_HEIGHT))
             {
                 this.canvasY += this.speed;
+                g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
                 if (this.canvasY > (this.posY + 0.5) * CELL_HEIGHT)
                 {
                     this.posY++;
@@ -264,6 +273,7 @@ function Player(color, posX, posY)
                 (this.canvasX > this.posX * CELL_WIDTH))
             {
                 this.canvasX -= this.speed;
+                g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
                 if (this.canvasX < (this.posX - 0.5) * CELL_WIDTH)
                 {
                     this.posX--;
@@ -308,7 +318,8 @@ function Player(color, posX, posY)
             var i = 0;
             var delay = PLAYER_WALK_DURATION / PLAYER_SPRITE_WALK_EACH_COUNT;
             var playerSpriteWalkStartPosY = PLAYER_SPRITE_WALK_BOTTOM_POS_Y;
-            var timer = setInterval(function()
+
+            mySetInterval(function(animationFrame)
             {
                 switch(self.direction)
                 {
@@ -337,7 +348,7 @@ function Player(color, posX, posY)
                 if (_isStaying(self) || !self.alive)
                 {
                     walking = false;
-                    clearInterval(timer);
+                    cancelAnimationFrame(animationFrame);
                 }
             }, delay);
         }
@@ -378,7 +389,10 @@ function drawPlayers()
 {
     for (var i = 0; i < g_players.length; i++)
     {
-        g_players[i].draw();
+        if (g_players[i].showing)
+        {
+            g_players[i].draw();
+        }
         if (g_players[i].alive)
         {
             g_players[i].update();

@@ -42,14 +42,17 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
                 ((self.posX == g_players[i].posX) && (upperWallPos.y <= g_players[i].posY) && (lowerWallPos.y >= g_players[i].posY) ||
                 (self.posY == g_players[i].posY) && (leftWallPos.x <= g_players[i].posX) && (rightWallPos.x >= g_players[i].posX)))
             {
-                g_players[i].die();
+                if (g_players[i].playerId == g_playerId)
+                {
+                    g_gameSocket.emit("playerDied", g_myRoomName, g_playerId);
+                }
             }
         }
     }
 
     function animateFlame(self)
     {
-        var timerId = setInterval(function()
+        mySetInterval(function(animationFrame)
         {
             tryToKillPlayers(self, upperWallPos, rightWallPos, lowerWallPos, leftWallPos);
             self.currTime = (self.currTime > 0) ? self.currTime - 0.05 : self.cooldown;
@@ -57,7 +60,7 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
             if (self.currTime == self.cooldown)
             {
                 g_flames.pop();
-                clearInterval(timerId);
+                cancelAnimationFrame(animationFrame);
             }
         }, 50);
     }

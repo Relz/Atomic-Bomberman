@@ -3,17 +3,18 @@ exports.processGame = function(io)
     COLOR_DEFAULT = "green";
     MAX_PLAYERS_COUNT = 4;
     var rooms = [];
-    var g_players = [];
+    var g_playerNames = [];
     var g_mapIndex = null;
 
     io.on("connection", function(socket)
     {
         socket.roomName = null;
-        socket.on("playerConnect", function(roomName)
+        socket.on("playerConnect", function(roomName, playerName)
         {
             if (socket.roomName === null)
             {
                 socket.roomName = roomName;
+            }
                 var roomNameFound = false;
                 for (var i = 0; i < rooms.length; i++)
                 {
@@ -27,19 +28,28 @@ exports.processGame = function(io)
                 {
                     rooms.push({roomName: roomName, players: []});
                 }
-                if (g_players.length != MAX_PLAYERS_COUNT)
+                for (var i = 0; i < rooms.length; i++)
                 {
-                    for (var i = 0; i < rooms.length; i++)
+                    if (rooms[i].roomName == roomName)
                     {
-                        if (rooms[i].roomName == roomName)
+                        var playerNameFound = false;
+                        for (var j = 0; j < rooms[i].players.length; j++)
                         {
-                            io.emit("playerConnect", roomName, rooms[i].players.length);
-                            rooms[i].players.push({playerId: rooms[i].players.length, color: COLOR_DEFAULT});
-                            break;
+                            if (rooms[i].players[j].playerName == playerName)
+                            {
+                                io.emit("playerConnect", roomName, rooms[i].players[j].playerId, playerName);
+                                playerNameFound = true;
+                                break;
+                            }
                         }
+                        if (!playerNameFound)
+                        {
+                            rooms[i].players.push({playerId: rooms[i].players.length, playerName: playerName, color: COLOR_DEFAULT});
+                            io.emit("playerConnect", roomName, rooms[i].players.length - 1, playerName);
+                        }
+                        break;
                     }
                 }
-            }
         });
 
         socket.on("playerDisconnect", function(roomName, playerId)
@@ -88,13 +98,29 @@ exports.processGame = function(io)
             g_mapIndex = mapIndex;
         });
 
+        socket.on("getPlayerNames", function(roomName)
+        {
+            for (var i = 0; i < rooms.length; i++)
+            {
+                if (rooms[i].roomName == roomName)
+                {
+                    var players = [];
+                    for (var j = 0; j < rooms[i].players.length; j++)
+                    {
+                        players.push({id: rooms[i].players[j].playerId, name: rooms[i].players[j].playerName});
+                    }
+                    io.emit("getPlayerNames", roomName, players);
+                }
+            }
+        });
+
         socket.on("startRoom", function(roomName)
         {
             for (var i = 0; i < rooms.length; i++)
             {
                 if (rooms[i].roomName == roomName)
                 {
-                    io.emit("startRoom", roomName, generateMap(), g_mapIndex, rooms[i].players.length);
+                    io.emit("startRoom", roomName, generateMap(), g_mapIndex);
                     break;
                 }
             }
@@ -125,6 +151,20 @@ exports.processGame = function(io)
             io.emit("playerPlateBomb", roomName, clientData);
         });
 
+        socket.on("canvasXChanged", function(roomName, playerId, canvasX)
+        {
+            io.emit("canvasXChanged", roomName, playerId, canvasX);
+        });
+
+        socket.on("canvasYChanged", function(roomName, playerId, canvasY)
+        {
+            io.emit("canvasYChanged", roomName, playerId, canvasY);
+        });
+
+        socket.on("playerDied", function(roomName, playerId)
+        {
+            io.emit("playerDied", roomName, playerId);
+        });
     });
 
     function generateMap()

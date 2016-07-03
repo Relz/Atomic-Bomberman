@@ -5,7 +5,7 @@ function initWebsiteSocket()
     g_websiteSocket = io.connect(":3001");
     g_websiteSocket.emit("playerConnect");
 
-    var ul = document.getElementById("room_list");
+    var roomList = document.getElementById("room_list");
     var roomsEmptyText = document.getElementById("roomsEmptyText");
 
     g_websiteSocket.on("playerConnect", function()
@@ -20,17 +20,17 @@ function initWebsiteSocket()
         li.className = "room";
         li.appendChild(document.createTextNode(roomName));
         li.addEventListener('click', onGameRoomClick);
-        ul.appendChild(li);
+        roomList.appendChild(li);
     });
 
     g_websiteSocket.on("removeRoom", function(roomName)
     {
-        var collectionLi = ul.getElementsByTagName("li");
+        var collectionLi = roomList.getElementsByTagName("li");
         for (var i = 0; i < collectionLi.length; i++)
         {
             if (collectionLi[i].innerHTML == roomName)
             {
-                ul.removeChild(collectionLi[i]);
+                roomList.removeChild(collectionLi[i]);
             }
         }
         if (collectionLi.length === 0)
