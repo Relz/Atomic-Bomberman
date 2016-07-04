@@ -164,7 +164,7 @@ li
 
 .content
 {
-    height: 89%;
+    height: 88%;
 }
 
 .rooms
@@ -246,7 +246,7 @@ li
 
 .room_create_form .block_room_name
 {
-    padding: 20px;
+    padding: 10px;
     font: 20px sans-serif;
 }
 
@@ -256,11 +256,12 @@ li
     font: 20px sans-serif;
     border-radius: 39px;
     outline: none;
+    padding: 0 10px;
 }
 
 .room_create_form .block_room_password
 {
-    padding: 20px;
+    padding: 10px;
     font: 20px sans-serif;
 }
 
@@ -270,6 +271,7 @@ li
     font: 20px sans-serif;
     border-radius: 39px;
     outline: none;
+    padding: 0 10px;
 }
 
 .room_create_form .submit
@@ -460,11 +462,29 @@ li
 
 .choose_map
 {
-    color: white;
     position: absolute;
     width: 640px;
     height: 480px;
     background-color: rgba(237, 241, 245, 0.7);
+}
+
+.wait_message
+{
+    font: bold 20px sans-serif;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    background-color: rgba(237, 241, 245, 0.4);
+}
+
+.wait_message_text
+{
+    text-align: center;
+    display: block;
+    margin: 200px auto 0 auto;
+    padding: 10px;
+    background-color: rgba(237, 241, 245, 0.8);
+    box-shadow: 0 0 7px rgba(0,0,0,0.5);
 }
 
 .previews
@@ -531,13 +551,13 @@ li
 {
     float: right;
     display: block;
-    width: 30%;
+    width: 25%;
     height: 80%;
     padding: 20px;
     margin: 20px 20px 0 0;
     background: rgba(237, 241, 245, 0.9);
     border-radius: 39px;
-    box-shadow: 0 0 7px rgba(0,0,0,0.5);
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
 }
 
 .chat_header_text
@@ -548,12 +568,40 @@ li
     font: bold 20px sans-serif;
 }
 
-.tip_for_future
+.chat_table
 {
     display: block;
-    color: #FDD;
-    font: bold 30px sans-serif;
+    font: 15px sans-serif;
     text-align: center;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    margin-top: 40%;
+    height: 85%;
+}
+
+.chat_table tbody td
+{
+    padding: 5px;
+}
+
+.chat_name
+{
+    font-weight: bold;
+    text-align: right;
+}
+
+.chat_message
+{
+    width: 100%;
+    text-align: left;
+}
+
+.chat_input_message
+{
+    display: block;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 39px;
+    line-height: 10px;
+    padding: 5px 5px;
+    font: bold 15px sans-serif;
+    color: #666;
+    outline: none;
 }

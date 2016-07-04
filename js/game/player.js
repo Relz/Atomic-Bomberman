@@ -228,7 +228,10 @@ function Player(id, name, color, posX, posY)
                 (this.canvasY > this.posY * CELL_HEIGHT))
             {
                 this.canvasY -= this.speed;
-                g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                if (this.playerId == g_playerId)
+                {
+                    g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                }
                 if (this.canvasY < (this.posY - 0.5) * CELL_HEIGHT)
                 {
                     this.posY--;
@@ -243,7 +246,10 @@ function Player(id, name, color, posX, posY)
                 (this.canvasX  < this.posX * CELL_WIDTH))
             {
                 this.canvasX += this.speed;
-                g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                if (this.playerId == g_playerId)
+                {
+                    g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                }
                 if (this.canvasX > (this.posX + 0.5) * CELL_WIDTH)
                 {
                     this.posX++;
@@ -258,7 +264,10 @@ function Player(id, name, color, posX, posY)
                 (this.canvasY < this.posY * CELL_HEIGHT))
             {
                 this.canvasY += this.speed;
-                g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                if (this.playerId == g_playerId)
+                {
+                    g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                }
                 if (this.canvasY > (this.posY + 0.5) * CELL_HEIGHT)
                 {
                     this.posY++;
@@ -273,7 +282,10 @@ function Player(id, name, color, posX, posY)
                 (this.canvasX > this.posX * CELL_WIDTH))
             {
                 this.canvasX -= this.speed;
-                g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                if (this.playerId == g_playerId)
+                {
+                    g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                }
                 if (this.canvasX < (this.posX - 0.5) * CELL_WIDTH)
                 {
                     this.posX--;
@@ -357,7 +369,7 @@ function Player(id, name, color, posX, posY)
 }
 
 var isLastStateKeyDown = false;
-function addBombToPlayerPos(player, state)
+function addBombToPlayerPos(player, posX, posY, state)
 {
     if (state && !isLastStateKeyDown)
     {
@@ -370,7 +382,7 @@ function addBombToPlayerPos(player, state)
         {
             for (var i = 0; i < g_bombs.length; i++)
             {
-                if (g_bombs[i].posX == player.posX &&  g_bombs[i].posY == player.posY)
+                if (g_bombs[i].posX == posX &&  g_bombs[i].posY == posY)
                 {
                     allowToPlantBomb = false;
                 }
@@ -379,7 +391,7 @@ function addBombToPlayerPos(player, state)
         if (allowToPlantBomb)
         {
             player.bombCount++;
-            g_bombs.unshift(new Bomb(player, player.posX, player.posY, BOMB_DURATION));
+            g_bombs.unshift(new Bomb(player, posX, posY, BOMB_DURATION));
         }
     }
     isLastStateKeyDown = state;

@@ -4,6 +4,7 @@ CELLS_COUNT_VERTICAL = 11;
 SPRITE_MAP = "img/game/map/sprite_map.png";
 
 var g_mapIndex = null;
+var g_map = [];
 
 function drawBase(baseImage)
 {

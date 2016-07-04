@@ -28,8 +28,7 @@ function handleKey(self, keyCode, state)
         break;
 
         case keyPlateBomb:
-            addBombToPlayerPos(self, state);
-            g_gameSocket.emit('playerPlateBomb', g_myRoomName, {playerId: self.playerId, state: state});
+            g_gameSocket.emit('playerPlateBomb', g_myRoomName, {playerId: self.playerId, posX: self.posX, posY: self.posY, state: state});
         break;
 
         default: return;

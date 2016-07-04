@@ -31,6 +31,7 @@ function init()
                 {
                     g_websiteSocket.emit("createNewRoom", data);
                     setCookie("room_name", inputRoomName.value);
+                    setCookie("room_owner", "true");
                     location.reload();
                 }
             }
@@ -69,6 +70,7 @@ function onGameRoomClick()
             {
                 g_websiteSocket.emit("enterRoom", data);
                 setCookie("room_name", roomName);
+                setCookie("room_owner", "false");
                 location.reload();
             }
         }

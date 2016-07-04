@@ -7,8 +7,9 @@
     </div>
     <div class="game">
       <canvas height="480" width="640" id="canvas" class="canvas">Обновите браузер</canvas>
-      {if $isRoomOwner}
-        {block name="choose_map"}{/block}
+      {block name="choose_map"}{/block}
+      {if !$isRoomOwner}
+      {block name="wait_message"}{/block}
       {/if}
     </div>
     {block name="chat"}{/block}
@@ -19,7 +20,7 @@
 {block name="player_list"}
   <div class="players">
     <span class="players_header_text">Игроки</span>
-    <ul class="player_list" id="player_list">
+    <ul class="player_list" id="playerList">
     {foreach from=$players item=playerName}
       <li>{$playerName}</li>
     {/foreach}
@@ -40,17 +41,27 @@
 {/block}
 
 {block name="choose_map"}
-  <table class="choose_map" id="choose_map" cellspacing="20">
+  <table class="choose_map" id="chooseMap" cellspacing="20">
     <tr><td class="previews preview0" data-index="0"></td><td class="previews preview1" data-index="1"></td><td class="previews preview2" data-index="2"></td><td class="previews preview3" data-index="3"></td></tr>
     <tr><td class="previews preview4" data-index="4"></td><td class="previews preview5" data-index="5"></td><td class="previews preview6" data-index="6"></td><td class="previews preview7" data-index="7"></td></tr>
-    <tr><td class="previews preview8" data-index="8"></td><td class="previews preview9" data-index="9"></td><td class="previews preview10 data-index="10""></td></tr>
+    <tr><td class="previews preview8" data-index="8"></td><td class="previews preview9" data-index="9"></td><td class="previews preview10" data-index="10"></td></tr>
   </table>
+{/block}
+
+{block name="wait_message"}
+  <div class="wait_message" id="waitMessage">
+    <span class="wait_message_text">Выберите модель игрока и ожидайте начала игры</span>
+  </div>
 {/block}
 
 {block name="chat"}
   <div class="chat">
     <span class="chat_header_text">Чат</span>
-    <span class="tip_for_future">Здесь будет чат</span>
+    <table class="chat_table" id="chatTable">
+      <tbody>
+      </tbody>
+    </table>
+  <input type="text" class="chat_input_message" id="chatInputMessage"/>
   </div>
 {/block}
 

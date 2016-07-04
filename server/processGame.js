@@ -3,8 +3,6 @@ exports.processGame = function(io)
     COLOR_DEFAULT = "green";
     MAX_PLAYERS_COUNT = 4;
     var rooms = [];
-    var g_playerNames = [];
-    var g_mapIndex = null;
 
     io.on("connection", function(socket)
     {
@@ -15,114 +13,91 @@ exports.processGame = function(io)
             {
                 socket.roomName = roomName;
             }
-                var roomNameFound = false;
-                for (var i = 0; i < rooms.length; i++)
-                {
-                    if (rooms[i].roomName == roomName)
-                    {
-                        roomNameFound = true;
-                        break;
-                    }
-                }
-                if (!roomNameFound)
-                {
-                    rooms.push({roomName: roomName, players: []});
-                }
-                for (var i = 0; i < rooms.length; i++)
-                {
-                    if (rooms[i].roomName == roomName)
-                    {
-                        var playerNameFound = false;
-                        for (var j = 0; j < rooms[i].players.length; j++)
-                        {
-                            if (rooms[i].players[j].playerName == playerName)
-                            {
-                                io.emit("playerConnect", roomName, rooms[i].players[j].playerId, playerName);
-                                playerNameFound = true;
-                                break;
-                            }
-                        }
-                        if (!playerNameFound)
-                        {
-                            rooms[i].players.push({playerId: rooms[i].players.length, playerName: playerName, color: COLOR_DEFAULT});
-                            io.emit("playerConnect", roomName, rooms[i].players.length - 1, playerName);
-                        }
-                        break;
-                    }
-                }
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos == -1)
+            {
+                rooms.push({roomName: roomName, mapIndex: 0, players: []});
+                roomNamePos = rooms.length - 1;
+            }
+            var playerNamePos = getPlayerNamePos(roomNamePos, playerName);
+            if (playerNamePos == -1)
+            {
+                rooms[roomNamePos].players.push({playerId: rooms[roomNamePos].players.length, playerName: playerName, color: COLOR_DEFAULT});
+                io.emit("playerConnect", roomName, rooms[roomNamePos].players.length - 1, playerName);
+            }
+            else
+            {
+                io.emit("playerConnect", roomName, rooms[roomNamePos].players[playerNamePos].playerId, playerName);
+            }
         });
 
         socket.on("playerDisconnect", function(roomName, playerId)
         {
-            for (var i = 0; i < rooms.length; i++)
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
             {
-                if (rooms[i].roomName == roomName)
+                playerIdPos = getPlayerIdPos(roomNamePos, playerId);
+                if (playerIdPos != -1)
                 {
-                    for (var j = 0; j < rooms[i].players.length; j++)
-                    {
-                        if (rooms[i].players[j].playerId == playerId)
-                        {
-                            rooms[i].players.splice(j, 1);
-                            io.emit("playerDisconnect", roomName, playerId);
-                            break;
-                        }
-                    }
-                    break;
+                    rooms[roomNamePos].players.splice(playerIdPos, 1);
+                    io.emit("playerDisconnect", roomName, playerId);
                 }
-
             }
         });
 
         socket.on("playerChoosedColor", function(roomName, playerId, color)
         {
-            for (var i = 0; i < rooms.length; i++)
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
             {
-                if (rooms[i].roomName == roomName)
+                playerIdPos = getPlayerIdPos(roomNamePos, playerId);
+                if (playerIdPos != -1)
                 {
-                    for (var j = 0; j < rooms[i].players.length; j++)
-                    {
-                        if (rooms[i].players[j].playerId == playerId)
-                        {
-                            rooms[i].players[j].color = color;
-                            break;
-                        }
-                    }
+                    rooms[roomNamePos].players[playerIdPos].color = color;
                     io.emit("playerChoosedColor", roomName, playerId, color);
-                    break;
                 }
             }
         });
 
-        socket.on("setMapIndex", function(mapIndex)
+        socket.on("setMapIndex", function(roomName, mapIndex)
         {
-            g_mapIndex = mapIndex;
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
+            {
+                rooms[roomNamePos].mapIndex = mapIndex;
+                io.emit("getMapIndex", roomName, mapIndex);
+            }
+        });
+
+        socket.on("getMapIndex", function(roomName)
+        {
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
+            {
+                io.emit("getMapIndex", roomName, rooms[roomNamePos].mapIndex);
+            }
         });
 
         socket.on("getPlayerNames", function(roomName)
         {
-            for (var i = 0; i < rooms.length; i++)
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
             {
-                if (rooms[i].roomName == roomName)
+                var players = [];
+                for (var i = 0; i < rooms[roomNamePos].players.length; i++)
                 {
-                    var players = [];
-                    for (var j = 0; j < rooms[i].players.length; j++)
-                    {
-                        players.push({id: rooms[i].players[j].playerId, name: rooms[i].players[j].playerName});
-                    }
-                    io.emit("getPlayerNames", roomName, players);
+                    players.push({id: rooms[roomNamePos].players[i].playerId, name: rooms[roomNamePos].players[i].playerName});
                 }
+                io.emit("getPlayerNames", roomName, players);
             }
         });
 
         socket.on("startRoom", function(roomName)
         {
-            for (var i = 0; i < rooms.length; i++)
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
             {
-                if (rooms[i].roomName == roomName)
-                {
-                    io.emit("startRoom", roomName, generateMap(), g_mapIndex);
-                    break;
-                }
+                io.emit("startRoom", roomName, generateMap(rooms[roomNamePos].mapIndex));
             }
         });
 
@@ -165,9 +140,56 @@ exports.processGame = function(io)
         {
             io.emit("playerDied", roomName, playerId);
         });
+
+        socket.on("sendMessage", function(roomName, playerName, message)
+        {
+            io.emit("newMessage", roomName, playerName, message);
+        });
     });
 
-    function generateMap()
+    function getRoomNamePos(roomName)
+    {
+        var result = -1;
+        for (var i = 0; i < rooms.length; i++)
+        {
+            if (rooms[i].roomName == roomName)
+            {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    function getPlayerIdPos(roomNamePos, playerId)
+    {
+        var result = -1;
+        for (var i = 0; i < rooms[roomNamePos].players.length; i++)
+        {
+            if (rooms[roomNamePos].players[i].playerId == playerId)
+            {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    function getPlayerNamePos(roomIndex, playerName)
+    {
+        var result = -1;
+        for (var i = 0; i < rooms[roomIndex].players.length; i++)
+        {
+            if (rooms[roomIndex].players[i].playerName == playerName)
+            {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    function generateMap(mapIndex)
     {
         CELLS_COUNT_HORIZONTAL = 15;
         CELLS_COUNT_VERTICAL = 11;
@@ -254,17 +276,17 @@ exports.processGame = function(io)
         };
 
         var map = [
-            [{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:-1,bonus:null}],
-            [{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:-1,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null}],
-            [{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:1,bonus:null},{x:g_mapIndex,y:-1,bonus:null}],
-            [{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:0,bonus:null},{x:g_mapIndex,y:-1,bonus:null},{x:g_mapIndex,y:-1,bonus:null}]
+            [{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:-1,bonus:null}],
+            [{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:-1,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null}],
+            [{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:1,bonus:null},{x:mapIndex,y:-1,bonus:null}],
+            [{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:0,bonus:null},{x:mapIndex,y:-1,bonus:null},{x:mapIndex,y:-1,bonus:null}]
         ];
 
         generateBonuses();

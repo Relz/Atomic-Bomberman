@@ -4,6 +4,8 @@ CELL_HEIGHT = 36;
 CANVAS_MARGIN_TOP_PX = 68;
 CANVAS_MARGIN_LEFT_PX = 20;
 
+KEYCODE_ENTER = 13;
+
 var g_ctx = null;
 var g_myColor = null;
 var g_myRoomName = getCookie("room_name");
@@ -30,21 +32,22 @@ function setUpGame()
     {
         playerModels[i].addEventListener('click', onPlayerModelsClick);
     }
-
-    var onMapPreviewsClick = function()
+    if (getCookie("room_owner") == "true")
     {
-        g_mapIndex = this.getAttribute("data-index");
-        var chooseMapTable = document.getElementById("choose_map");
-        chooseMapTable.style.display = "none";
-        g_gameSocket.emit("setMapIndex", g_mapIndex);
-    };
+        var onMapPreviewsClick = function()
+        {
+            g_mapIndex = this.getAttribute("data-index");
+            g_gameSocket.emit("setMapIndex", g_myRoomName, g_mapIndex);
+        };
 
-    var mapPreviews = document.getElementsByClassName("previews");
+        var mapPreviews = document.getElementsByClassName("previews");
 
-    for (var i = 0; i < mapPreviews.length; i++)
-    {
-        mapPreviews[i].addEventListener('click', onMapPreviewsClick);
+        for (var i = 0; i < mapPreviews.length; i++)
+        {
+            mapPreviews[i].addEventListener('click', onMapPreviewsClick);
+        }
     }
+    g_gameSocket.emit("getMapIndex", g_myRoomName);
 
     var exitRoom = document.getElementById("roomExit");
     exitRoom.addEventListener("click", function()
@@ -90,6 +93,16 @@ function setUpGame()
             }
         });
     }
+
+    var inputSendChatMessage = document.getElementById("chatInputMessage");
+    inputSendChatMessage.addEventListener('keypress', function()
+    {
+        if (event.keyCode == KEYCODE_ENTER && this.value !== "")
+        {
+            g_gameSocket.emit("sendMessage", g_myRoomName, g_myPlayerName, this.value);
+            this.value = "";
+        }
+    });
 }
 
 function initGame()

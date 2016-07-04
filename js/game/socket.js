@@ -3,7 +3,9 @@ var g_websiteSocket = null;
 
 function initGameSocket()
 {
-    var playerListUl = document.getElementById("player_list");
+    var playerListUl = document.getElementById("playerList");
+    var chatTable = document.getElementById("chatTable");
+    var chooseMapTable = document.getElementById("chooseMap");
     g_gameSocket = io.connect(":3000");
     g_gameSocket.emit("playerConnect", g_myRoomName, g_myPlayerName);
     g_gameSocket.on("playerConnect", function(roomName, playerId, playerName)
@@ -33,22 +35,50 @@ function initGameSocket()
                         if (playerNamesLi[j].innerHTML == g_players[i].name)
                         {
                             playerListUl.removeChild(playerNamesLi[j]);
+                            break;
                         }
                     }
-                    g_players.splice(i, 1);
+                    g_players[i].die();
                     break;
                 }
             }
         }
     });
 
-    g_gameSocket.on("startRoom", function(roomName, map, mapIndex)
+    g_gameSocket.on("startRoom", function(roomName, map)
     {
         if (g_myRoomName == roomName)
         {
             g_map = map;
-            g_mapIndex = mapIndex;
+            chooseMapTable.style.display = "none";
+            var waitMessage = document.getElementById("waitMessage");
+            if (waitMessage !== null)
+            {
+                waitMessage.style.display = "none";
+            }
             initGame();
+        }
+    });
+
+    g_gameSocket.on("getMapIndex", function(roomName, mapIndex)
+    {
+        if (g_myRoomName == roomName)
+        {
+            g_mapIndex = mapIndex;
+            var rows = chooseMapTable.rows;
+            var currMapIndex = 0;
+            for (var i = 0; i < rows.length; i++)
+            {
+                for (var j = 0; j < rows[i].cells.length; j++)
+                {
+                    rows[i].cells[j].style.boxShadow = "";
+                    if (currMapIndex == mapIndex)
+                    {
+                        rows[i].cells[j].style.boxShadow = "0 0 100px rgba(38, 38, 199, 1)";
+                    }
+                    currMapIndex++;
+                }
+            }
         }
     });
 
@@ -153,7 +183,7 @@ function initGameSocket()
     {
         if (g_myRoomName == roomName)
         {
-            addBombToPlayerPos(g_players[object.playerId], object.state);
+            addBombToPlayerPos(g_players[object.playerId], object.posX, object.posY, object.state);
         }
     });
 
@@ -178,6 +208,21 @@ function initGameSocket()
         if (g_myRoomName == roomName)
         {
             g_players[playerId].die();
+        }
+    });
+
+    g_gameSocket.on("newMessage", function(roomName, playerName, message)
+    {
+        if (g_myRoomName == roomName)
+        {
+            console.log(playerName, message);
+            var row = chatTable.insertRow(chatTable.rows.length);
+            var nameCell = row.insertCell(0);
+            var messageCell = row.insertCell(1);
+            nameCell.innerHTML = "<span>" + playerName + "</span>";
+            nameCell.className = "chat_name";
+            messageCell.innerHTML = "<span>" + message + "</span>";
+            messageCell.className = "chat_message";
         }
     });
 }
