@@ -1,7 +1,7 @@
 exports.processGame = function(io)
 {
-    COLOR_DEFAULT = "green";
-    MAX_PLAYERS_COUNT = 4;
+    COLOR_DEFAULT = "black";
+    MAX_PLAYERS_COUNT = 2;
     var rooms = [];
 
     io.on("connection", function(socket)
@@ -9,10 +9,6 @@ exports.processGame = function(io)
         socket.roomName = null;
         socket.on("playerConnect", function(roomName, playerName)
         {
-            if (socket.roomName === null)
-            {
-                socket.roomName = roomName;
-            }
             roomNamePos = getRoomNamePos(roomName);
             if (roomNamePos == -1)
             {
@@ -22,8 +18,15 @@ exports.processGame = function(io)
             var playerNamePos = getPlayerNamePos(roomNamePos, playerName);
             if (playerNamePos == -1)
             {
-                rooms[roomNamePos].players.push({playerId: rooms[roomNamePos].players.length, playerName: playerName, color: COLOR_DEFAULT});
-                io.emit("playerConnect", roomName, rooms[roomNamePos].players.length - 1, playerName);
+                if (rooms[roomNamePos].players.length >= MAX_PLAYERS_COUNT)
+                {
+                    io.emit("playerConnectRejected", socket.client.conn.id);
+                }
+                else
+                {
+                    rooms[roomNamePos].players.push({playerId: rooms[roomNamePos].players.length, playerName: playerName, color: COLOR_DEFAULT});
+                    io.emit("playerConnect", roomName, rooms[roomNamePos].players.length - 1, playerName);
+                }
             }
             else
             {
@@ -41,6 +44,10 @@ exports.processGame = function(io)
                 {
                     rooms[roomNamePos].players.splice(playerIdPos, 1);
                     io.emit("playerDisconnect", roomName, playerId);
+                    if (rooms[roomNamePos].players.length == 0)
+                    {
+                        rooms.splice(roomNamePos, 1);
+                    }
                 }
             }
         });
@@ -86,7 +93,7 @@ exports.processGame = function(io)
                 var players = [];
                 for (var i = 0; i < rooms[roomNamePos].players.length; i++)
                 {
-                    players.push({id: rooms[roomNamePos].players[i].playerId, name: rooms[roomNamePos].players[i].playerName});
+                    players.push({id: rooms[roomNamePos].players[i].playerId, name: rooms[roomNamePos].players[i].playerName, color: rooms[roomNamePos].players[i].color});
                 }
                 io.emit("getPlayerNames", roomName, players);
             }
@@ -143,7 +150,15 @@ exports.processGame = function(io)
 
         socket.on("sendMessage", function(roomName, playerName, message)
         {
-            io.emit("newMessage", roomName, playerName, message);
+            roomNamePos = getRoomNamePos(roomName);
+            if (roomNamePos != -1)
+            {
+                playerIdPos = getPlayerNamePos(roomNamePos, playerName);
+                if (playerIdPos != -1)
+                {
+                    io.emit("newMessage", roomName, playerName, message, rooms[roomNamePos].players[playerIdPos].color);
+                }
+            }
         });
     });
 

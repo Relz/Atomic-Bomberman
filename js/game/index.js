@@ -23,7 +23,7 @@ function setUpGame()
                 playerModels[i].style.display = "none";
             }
         }
-
+        g_gameSocket.emit("playerChoosedColor", g_myRoomName, g_playerId, g_myColor);
     };
 
     var playerModels = document.getElementsByClassName("player_model");
@@ -50,31 +50,7 @@ function setUpGame()
     g_gameSocket.emit("getMapIndex", g_myRoomName);
 
     var exitRoom = document.getElementById("roomExit");
-    exitRoom.addEventListener("click", function()
-    {
-        $.ajax({
-            url: "php/exit_game_room.php",
-            success: function(data)
-            {
-                var error = false;
-                switch (data)
-                {
-                    case "error 0":
-                        error = true;
-                        break;
-                }
-                if (!error)
-                {
-                    if (data != "")
-                    {
-                        g_websiteSocket.emit("removeRoom", data);
-                    }
-                    g_gameSocket.emit("playerDisconnect", g_myRoomName, g_playerId);
-                    location.reload();
-                }
-            }
-        });
-    });
+    exitRoom.addEventListener("click", leaveRoom);
 
     var startRoom = document.getElementById("roomStart");
 
@@ -99,8 +75,46 @@ function setUpGame()
     {
         if (event.keyCode == KEYCODE_ENTER && this.value !== "")
         {
-            g_gameSocket.emit("sendMessage", g_myRoomName, g_myPlayerName, this.value);
+            var message = removeExtraSpaces(this.value);
+            if (message != " ")
+            {
+                g_gameSocket.emit("sendMessage", g_myRoomName, g_myPlayerName, message);
+            }
             this.value = "";
+        }
+    });
+
+    function removeExtraSpaces(value)
+    {
+        return value.replace(/\s+/g,' ');
+    }
+}
+
+function leaveRoom()
+{
+    alert(g_players.length);
+    $.ajax({
+        type: "POST",
+        url: "php/exit_game_room.php",
+        data: "players_in_room=" + g_players.length,
+        success: function(data)
+        {
+            var error = false;
+            switch (data)
+            {
+                case "error 0":
+                    error = true;
+                    break;
+            }
+            if (!error)
+            {
+                if (data !== "")
+                {
+                    g_websiteSocket.emit("removeRoom", data);
+                }
+                g_gameSocket.emit("playerDisconnect", g_myRoomName, g_playerId);
+                location.reload();
+            }
         }
     });
 }
@@ -113,7 +127,6 @@ function initGame()
     baseImage.src = "img/game/map/field" + g_mapIndex + ".png";
     var spriteMapImage = new Image();
     spriteMapImage.src = SPRITE_MAP;
-    g_gameSocket.emit("playerChoosedColor", g_myRoomName, g_playerId, g_myColor);
     play(baseImage, spriteMapImage);
 }
 

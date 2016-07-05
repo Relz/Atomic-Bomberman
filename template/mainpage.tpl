@@ -9,9 +9,9 @@
 
 {block name="room_list"}
   <div class="rooms">
-    <span class="rooms_header_text">Игровые комнаты</span>
+    <span class="rooms_header_text">{$headerGameRooms}</span>
     <ul class="room_list" id="room_list">
-    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">Не найдено ни одной игровой комнаты</span>
+    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">{$infoEmptyGameRooms}</span>
     {foreach from=$rooms item=roomName}
       <li class="room">{$roomName}</li>
     {/foreach}

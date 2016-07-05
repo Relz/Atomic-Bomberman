@@ -191,7 +191,7 @@ li
 .room_list
 {
     height: 90%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .rooms_empty
@@ -241,6 +241,7 @@ li
 .room_create_form .room_header_text
 {
     display: block;
+    text-align: center;
     font: bold 20px sans-serif;
 }
 
@@ -377,6 +378,7 @@ li
     background: rgba(237, 241, 245, 0.9);
     border-radius: 39px;
     box-shadow: 0 0 7px rgba(0,0,0,0.5);
+    overflow-y: auto;
 }
 
 .players_header_text
@@ -406,7 +408,7 @@ li
 
 .player_model_list
 {
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 20px 0;
     height: 80%;
     cursor: pointer;
@@ -574,6 +576,7 @@ li
     font: 15px sans-serif;
     text-align: center;
     height: 85%;
+    overflow-y: auto;
 }
 
 .chat_table tbody td

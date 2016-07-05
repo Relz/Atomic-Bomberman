@@ -8,7 +8,7 @@
     if (!empty($roomName) && isUserAuthorized())
     {
         dbInitialConnect();
-        $result = dbQueryGetResult("SELECT * FROM room WHERE BINARY title='$roomName'");
+        $result = dbQueryGetResult("SELECT * FROM room WHERE BINARY title='" . dbQuote($roomName) . "'");
         if (mysqli_num_rows($result) == 0)
         {
             die("error 0");

@@ -70,6 +70,14 @@
         $g_smarty->assign("labelRoomPassword", t("LABEL_ROOM_PASSWORD"));
         $g_smarty->assign("btnCreateRoomText", t("BTN_CREATE_ROOM_TEXT"));
         $g_smarty->assign("username", "");
+        $g_smarty->assign("infoEmptyRoomList", t("INFO_EMPTY_ROOM_LIST"));
+        $g_smarty->assign("headerGameRooms", t("HEADER_GAME_ROOMS"));
+        $g_smarty->assign("errorCanvasNotSupported", t("ERROR_CANVAS_NOT_SUPPORTED"));
+        $g_smarty->assign("headerPlayers", t("HEADER_PLAYERS"));
+        $g_smarty->assign("infoWaitRoomMaker", t("INFO_WAIT_ROOM_MAKER"));
+        $g_smarty->assign("headerChat", t("HEADER_CHAT"));
+        $g_smarty->assign("btnLeaveGameRoom", t("BTN_LEAVE_GAME_ROOM"));
+        $g_smarty->assign("btnStartGame", t("BTN_START_GAME"));
     }
 
     function processPostRequest()

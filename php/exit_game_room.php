@@ -1,9 +1,11 @@
 <?php
     require_once("include/common.inc.php");
 
+    $playersInRoom = getPostParam("players_in_room");
+
     $result = "";
     session_start();
-    if ($_SESSION["room_owner"] === true)
+    if ($playersInRoom == 1)
     {
         $result = $_SESSION["room_name"];
         dbInitialConnect();

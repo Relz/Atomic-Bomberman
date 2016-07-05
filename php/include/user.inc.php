@@ -16,6 +16,7 @@
 
     function initSession($username, $randomKey)
     {
+        session_start();
         $_SESSION["username"] = $username;
         $_SESSION["random_key"] = $randomKey;
         initIdByUsername($username);
@@ -34,6 +35,7 @@
 
     function loginUser($username)
     {
+        global $RANDOM_KEY_TIMEOUT;
         session_start();
         dbInitialConnect();
         $randomKey = randMD5(10);

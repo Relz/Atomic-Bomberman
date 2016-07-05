@@ -21,6 +21,14 @@ function initGameSocket()
         }
     });
 
+    g_gameSocket.on("playerConnectRejected", function(rejectedId)
+    {
+        if (g_gameSocket.id == rejectedId)
+        {
+            leaveRoom();
+        }
+    });
+
     g_gameSocket.on("playerDisconnect", function(roomName, id)
     {
         if (g_myRoomName == roomName)
@@ -96,6 +104,8 @@ function initGameSocket()
     {
         if (g_myRoomName == roomName)
         {
+            console.log(players);
+            console.log(g_players);
             playerListUl.innerHTML = "";
             for (var i = 0; i < players.length; i++)
             {
@@ -117,6 +127,7 @@ function initGameSocket()
                 }
                 var li = document.createElement("li");
                 li.className = "player_name";
+                li.style.color = players[i].color;
                 li.appendChild(document.createTextNode(players[i].name));
                 playerListUl.appendChild(li);
             }
@@ -211,18 +222,19 @@ function initGameSocket()
         }
     });
 
-    g_gameSocket.on("newMessage", function(roomName, playerName, message)
+    g_gameSocket.on("newMessage", function(roomName, playerName, message, color)
     {
         if (g_myRoomName == roomName)
         {
-            console.log(playerName, message);
             var row = chatTable.insertRow(chatTable.rows.length);
             var nameCell = row.insertCell(0);
             var messageCell = row.insertCell(1);
             nameCell.innerHTML = "<span>" + playerName + "</span>";
             nameCell.className = "chat_name";
+            nameCell.style.color = color;
             messageCell.innerHTML = "<span>" + message + "</span>";
             messageCell.className = "chat_message";
+            chatTable.scrollTop = chatTable.scrollHeight;
         }
     });
 }

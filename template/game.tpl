@@ -6,7 +6,7 @@
       {block name="player_choose_model"}{/block}
     </div>
     <div class="game">
-      <canvas height="480" width="640" id="canvas" class="canvas">Обновите браузер</canvas>
+      <canvas height="480" width="640" id="canvas" class="canvas">{$errorCanvasNotSupported}</canvas>
       {block name="choose_map"}{/block}
       {if !$isRoomOwner}
       {block name="wait_message"}{/block}
@@ -19,7 +19,7 @@
 
 {block name="player_list"}
   <div class="players">
-    <span class="players_header_text">Игроки</span>
+    <span class="players_header_text">{$headerPlayers}</span>
     <ul class="player_list" id="playerList">
     {foreach from=$players item=playerName}
       <li>{$playerName}</li>
@@ -50,13 +50,13 @@
 
 {block name="wait_message"}
   <div class="wait_message" id="waitMessage">
-    <span class="wait_message_text">Выберите модель игрока и ожидайте начала игры</span>
+    <span class="wait_message_text">{$infoWaitRoomMaker}</span>
   </div>
 {/block}
 
 {block name="chat"}
   <div class="chat">
-    <span class="chat_header_text">Чат</span>
+    <span class="chat_header_text">{$headerChat}</span>
     <table class="chat_table" id="chatTable">
       <tbody>
       </tbody>
