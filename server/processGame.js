@@ -24,8 +24,26 @@ exports.processGame = function(io)
                 }
                 else
                 {
-                    rooms[roomNamePos].players.push({playerId: rooms[roomNamePos].players.length, playerName: playerName, color: COLOR_DEFAULT});
-                    io.emit("playerConnect", roomName, rooms[roomNamePos].players.length - 1, playerName);
+                    var newId = -1;
+                    for (var i = 0; i < rooms[roomNamePos].players.length + 1; i++)
+                    {
+                        var idFree = true;
+                        for (var j = 0; j < rooms[roomNamePos].players.length; j++)
+                        {
+                            if (rooms[roomNamePos].players[j].playerId == i)
+                            {
+                                idFree = false;
+                                break;
+                            }
+                        }
+                        if (idFree)
+                        {
+                            newId = i;
+                            break;
+                        }
+                    }
+                    rooms[roomNamePos].players.push({playerId: newId, playerName: playerName, color: COLOR_DEFAULT});
+                    io.emit("playerConnect", roomName, newId, playerName);
                 }
             }
             else

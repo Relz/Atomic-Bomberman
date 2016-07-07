@@ -11,7 +11,7 @@
   <div class="rooms">
     <span class="rooms_header_text">{$headerGameRooms}</span>
     <ul class="room_list" id="room_list">
-    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">{$infoEmptyGameRooms}</span>
+    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">{$infoEmptyRoomList}</span>
     {foreach from=$rooms item=roomName}
       <li class="room">{$roomName}</li>
     {/foreach}

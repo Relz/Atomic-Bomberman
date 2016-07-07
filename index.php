@@ -25,7 +25,7 @@
             {
                 session_start();
                 $g_smarty->assign("username", $_SESSION["username"]);
-                if (inGame())
+                if (isUserInGame())
                 {
                     $g_smarty->assign("inGameRoom", true);
                     $g_smarty->assign("isRoomOwner", $_SESSION["room_owner"]);
@@ -111,10 +111,4 @@
             mysqli_free_result($queryResult);
         }
         return $result;
-    }
-
-    function inGame()
-    {
-        session_start();
-        return (isset($_SESSION["room_name"]) && !empty($_SESSION["room_name"]));
     }

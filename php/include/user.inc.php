@@ -67,6 +67,13 @@
                && isset($_SESSION["random_key"]) && isMyRandomKeyValid($_SESSION["username"]));
     }
 
+
+    function isUserInGame()
+    {
+        session_start();
+        return (isset($_SESSION["room_name"]) && !empty($_SESSION["room_name"]));
+    }
+
     function isMyRandomKeyValid($username)
     {
         session_start();

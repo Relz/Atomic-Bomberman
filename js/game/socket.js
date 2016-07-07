@@ -14,6 +14,7 @@ function initGameSocket()
         {
             if (g_playerId === null)
             {
+                console.log("ID:", playerId);
                 g_playerId = playerId;
                 g_playerName = playerName;
                 g_gameSocket.emit("getPlayerNames", g_myRoomName);
