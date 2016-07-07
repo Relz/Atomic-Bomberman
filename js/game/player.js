@@ -48,7 +48,6 @@ PLAYER_COLOR_DEFAULT = "green";
 
 var g_players = [];
 var g_playerId = null;
-var g_playerName = null;
 var g_playerNames = [];
 
 function Player(id, name, color, posX, posY)
@@ -230,7 +229,7 @@ function Player(id, name, color, posX, posY)
                 this.canvasY -= this.speed;
                 if (this.playerId == g_playerId)
                 {
-                    g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                    g_gameSocket.emit("canvasYChanged", g_playerRoomName, this.playerId, this.canvasY);
                 }
                 if (this.canvasY < (this.posY - 0.5) * CELL_HEIGHT)
                 {
@@ -248,7 +247,7 @@ function Player(id, name, color, posX, posY)
                 this.canvasX += this.speed;
                 if (this.playerId == g_playerId)
                 {
-                    g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                    g_gameSocket.emit("canvasXChanged", g_playerRoomName, this.playerId, this.canvasX);
                 }
                 if (this.canvasX > (this.posX + 0.5) * CELL_WIDTH)
                 {
@@ -266,7 +265,7 @@ function Player(id, name, color, posX, posY)
                 this.canvasY += this.speed;
                 if (this.playerId == g_playerId)
                 {
-                    g_gameSocket.emit("canvasYChanged", g_myRoomName, this.playerId, this.canvasY);
+                    g_gameSocket.emit("canvasYChanged", g_playerRoomName, this.playerId, this.canvasY);
                 }
                 if (this.canvasY > (this.posY + 0.5) * CELL_HEIGHT)
                 {
@@ -284,7 +283,7 @@ function Player(id, name, color, posX, posY)
                 this.canvasX -= this.speed;
                 if (this.playerId == g_playerId)
                 {
-                    g_gameSocket.emit("canvasXChanged", g_myRoomName, this.playerId, this.canvasX);
+                    g_gameSocket.emit("canvasXChanged", g_playerRoomName, this.playerId, this.canvasX);
                 }
                 if (this.canvasX < (this.posX - 0.5) * CELL_WIDTH)
                 {

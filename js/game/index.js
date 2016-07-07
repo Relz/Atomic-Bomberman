@@ -7,15 +7,15 @@ CANVAS_MARGIN_LEFT_PX = 20;
 KEYCODE_ENTER = 13;
 
 var g_ctx = null;
-var g_myColor = null;
-var g_myRoomName = getCookie("room_name");
-var g_myPlayerName = getCookie("player_name");
+var g_playerColor = null;
+var g_playerRoomName = getCookie("room_name");
+var g_playerName = getCookie("player_name");
 
 function setUpGame()
 {
     var onPlayerModelsClick = function()
     {
-        g_myColor = this.getAttribute("data-color");
+        g_playerColor = this.getAttribute("data-color");
         for (var i = 0; i < playerModels.length; i++)
         {
             if (playerModels[i] != this)
@@ -23,7 +23,7 @@ function setUpGame()
                 playerModels[i].style.display = "none";
             }
         }
-        g_gameSocket.emit("playerChoosedColor", g_myRoomName, g_playerId, g_myColor);
+        g_gameSocket.emit("playerChoosedColor", g_playerRoomName, g_playerId, g_playerColor);
     };
 
     var playerModels = document.getElementsByClassName("player_model");
@@ -37,7 +37,7 @@ function setUpGame()
         var onMapPreviewsClick = function()
         {
             g_mapIndex = this.getAttribute("data-index");
-            g_gameSocket.emit("setMapIndex", g_myRoomName, g_mapIndex);
+            g_gameSocket.emit("setMapIndex", g_playerRoomName, g_mapIndex);
         };
 
         var mapPreviews = document.getElementsByClassName("previews");
@@ -47,7 +47,7 @@ function setUpGame()
             mapPreviews[i].addEventListener('click', onMapPreviewsClick);
         }
     }
-    g_gameSocket.emit("getMapIndex", g_myRoomName);
+    g_gameSocket.emit("getMapIndex", g_playerRoomName);
 
     var exitRoom = document.getElementById("roomExit");
     exitRoom.addEventListener("click", leaveRoom);
@@ -58,10 +58,10 @@ function setUpGame()
     {
         startRoom.addEventListener("click", function()
         {
-            if (g_mapIndex !== null && g_myColor !== null)
+            if (g_mapIndex !== null && g_playerColor !== null)
             {
                 this.style.display = "none";
-                g_gameSocket.emit("startRoom", g_myRoomName);
+                g_gameSocket.emit("startRoom", g_playerRoomName);
             }
             else
             {
@@ -78,7 +78,7 @@ function setUpGame()
             var message = removeExtraSpaces(this.value);
             if (message != " ")
             {
-                g_gameSocket.emit("sendMessage", g_myRoomName, g_myPlayerName, message);
+                g_gameSocket.emit("sendMessage", g_playerRoomName, g_playerName, message);
             }
             this.value = "";
         }
@@ -92,7 +92,6 @@ function setUpGame()
 
 function leaveRoom()
 {
-    alert(g_players.length);
     $.ajax({
         type: "POST",
         url: "php/exit_game_room.php",
@@ -112,7 +111,7 @@ function leaveRoom()
                 {
                     g_websiteSocket.emit("removeRoom", data);
                 }
-                g_gameSocket.emit("playerDisconnect", g_myRoomName, g_playerId);
+                g_gameSocket.emit("playerDisconnect", g_playerRoomName, g_playerId);
                 location.reload();
             }
         }

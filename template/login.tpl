@@ -11,6 +11,9 @@
         <input type="submit" id="btnLogin" class="btn_login" href="#" title="{$btnLoginText}" value="{$btnLoginText}"/>
       </form>
     </div>
+    <div class="{if $isLoginError}error_message{else}error_message_hidden{/if}">
+      {$errorUsernameNotFree}
+    </div>
   </div>
 {/block}
 

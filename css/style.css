@@ -162,6 +162,31 @@ li
     box-shadow: inset 0 0 0 2px #5555AA, 0 2px 5px rgba(0, 0, 0, 0.3), 0 -1px 1px rgba(38, 38, 199, 1);
 }
 
+.error_message
+{
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    font: bold 20px sans-serif;
+    color: #EE0000;
+    text-align: center;
+}
+
+.error_message_hidden
+{
+    display: none;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(237, 241, 245, 0.9);
+    border-radius: 39px;
+    font: bold 20px sans-serif;
+    color: #EE0000;
+    text-align: center;
+}
+
 .content
 {
     height: 88%;

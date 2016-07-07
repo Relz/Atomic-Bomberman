@@ -1,14 +1,15 @@
 exports.processGame = function(io)
 {
     COLOR_DEFAULT = "black";
-    MAX_PLAYERS_COUNT = 2;
+    MAX_PLAYERS_COUNT = 3;
     var rooms = [];
 
     io.on("connection", function(socket)
     {
-        socket.roomName = null;
         socket.on("playerConnect", function(roomName, playerName)
         {
+            socket.roomName = roomName;
+            socket.playerName = playerName;
             roomNamePos = getRoomNamePos(roomName);
             if (roomNamePos == -1)
             {
@@ -42,31 +43,15 @@ exports.processGame = function(io)
                             break;
                         }
                     }
+                    socket.playerId = newId;
                     rooms[roomNamePos].players.push({playerId: newId, playerName: playerName, color: COLOR_DEFAULT});
-                    io.emit("playerConnect", roomName, newId, playerName);
+                    io.emit("playerConnect", roomName, newId, COLOR_DEFAULT);
                 }
             }
             else
             {
-                io.emit("playerConnect", roomName, rooms[roomNamePos].players[playerNamePos].playerId, playerName);
-            }
-        });
-
-        socket.on("playerDisconnect", function(roomName, playerId)
-        {
-            roomNamePos = getRoomNamePos(roomName);
-            if (roomNamePos != -1)
-            {
-                playerIdPos = getPlayerIdPos(roomNamePos, playerId);
-                if (playerIdPos != -1)
-                {
-                    rooms[roomNamePos].players.splice(playerIdPos, 1);
-                    io.emit("playerDisconnect", roomName, playerId);
-                    if (rooms[roomNamePos].players.length == 0)
-                    {
-                        rooms.splice(roomNamePos, 1);
-                    }
-                }
+                socket.playerId = rooms[roomNamePos].players[playerNamePos].playerId;
+                io.emit("playerConnect", roomName, socket.playerId, rooms[roomNamePos].players[playerNamePos].color);
             }
         });
 
@@ -175,6 +160,24 @@ exports.processGame = function(io)
                 if (playerIdPos != -1)
                 {
                     io.emit("newMessage", roomName, playerName, message, rooms[roomNamePos].players[playerIdPos].color);
+                }
+            }
+        });
+        socket.on("disconnect", function()
+        {
+            console.log("disc");
+            roomNamePos = getRoomNamePos(socket.roomName);
+            if (roomNamePos != -1)
+            {
+                playerIdPos = getPlayerIdPos(roomNamePos, socket.playerId);
+                if (playerIdPos != -1)
+                {
+                    rooms[roomNamePos].players.splice(playerIdPos, 1);
+                    io.emit("playerDisconnect", socket.roomName, socket.playerId);
+                    if (rooms[roomNamePos].players.length == 0)
+                    {
+                        rooms.splice(roomNamePos, 1);
+                    }
                 }
             }
         });

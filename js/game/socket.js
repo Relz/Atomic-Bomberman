@@ -7,17 +7,18 @@ function initGameSocket()
     var chatTable = document.getElementById("chatTable");
     var chooseMapTable = document.getElementById("chooseMap");
     g_gameSocket = io.connect(":3000");
-    g_gameSocket.emit("playerConnect", g_myRoomName, g_myPlayerName);
-    g_gameSocket.on("playerConnect", function(roomName, playerId, playerName)
+    g_gameSocket.emit("playerConnect", g_playerRoomName, g_playerName);
+    g_gameSocket.on("playerConnect", function(roomName, playerId, playerColor)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             if (g_playerId === null)
             {
                 console.log("ID:", playerId);
+                console.log("COLOR:", playerColor);
                 g_playerId = playerId;
-                g_playerName = playerName;
-                g_gameSocket.emit("getPlayerNames", g_myRoomName);
+                g_playerColor = playerColor;
+                g_gameSocket.emit("getPlayerNames", g_playerRoomName);
             }
         }
     });
@@ -32,7 +33,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerDisconnect", function(roomName, id)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             for (var i = 0; i < g_players.length; i++)
             {
@@ -48,6 +49,7 @@ function initGameSocket()
                         }
                     }
                     g_players[i].die();
+                    g_players.splice(i, 1);
                     break;
                 }
             }
@@ -56,7 +58,7 @@ function initGameSocket()
 
     g_gameSocket.on("startRoom", function(roomName, map)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_map = map;
             chooseMapTable.style.display = "none";
@@ -71,7 +73,7 @@ function initGameSocket()
 
     g_gameSocket.on("getMapIndex", function(roomName, mapIndex)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_mapIndex = mapIndex;
             var rows = chooseMapTable.rows;
@@ -93,7 +95,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerChoosedColor", function(roomName, playerId, color)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[playerId].setSpritePlayerImageByColor(color);
             var playerNames = playerListUl.children;
@@ -103,10 +105,10 @@ function initGameSocket()
 
     g_gameSocket.on("getPlayerNames", function(roomName, players)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
-            console.log(players);
-            console.log(g_players);
+//            console.log(players);
+//            console.log(g_players);
             playerListUl.innerHTML = "";
             for (var i = 0; i < players.length; i++)
             {
@@ -161,7 +163,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerUpKeyDown", function(roomName, object)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[object.playerId].upKeyDown = object.upKeyDown;
         }
@@ -169,7 +171,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerRightKeyDown", function(roomName, object)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[object.playerId].rightKeyDown = object.rightKeyDown;
         }
@@ -177,7 +179,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerDownKeyDown", function(roomName, object)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[object.playerId].downKeyDown = object.downKeyDown;
         }
@@ -185,7 +187,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerLeftKeyDown", function(roomName, object)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[object.playerId].leftKeyDown = object.leftKeyDown;
         }
@@ -193,7 +195,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerPlateBomb", function(roomName, object)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             addBombToPlayerPos(g_players[object.playerId], object.posX, object.posY, object.state);
         }
@@ -201,7 +203,7 @@ function initGameSocket()
 
     g_gameSocket.on("canvasXChanged", function(roomName, playerId, canvasX)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[playerId].canvasX = canvasX;
         }
@@ -209,7 +211,7 @@ function initGameSocket()
 
     g_gameSocket.on("canvasYChanged", function(roomName, playerId, canvasY)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[playerId].canvasY = canvasY;
         }
@@ -217,7 +219,7 @@ function initGameSocket()
 
     g_gameSocket.on("playerDied", function(roomName, playerId)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             g_players[playerId].die();
         }
@@ -225,7 +227,7 @@ function initGameSocket()
 
     g_gameSocket.on("newMessage", function(roomName, playerName, message, color)
     {
-        if (g_myRoomName == roomName)
+        if (g_playerRoomName == roomName)
         {
             var row = chatTable.insertRow(chatTable.rows.length);
             var nameCell = row.insertCell(0);

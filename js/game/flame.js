@@ -44,7 +44,7 @@ function Flame(posX, posY, upperWallPos, rightWallPos, lowerWallPos, leftWallPos
             {
                 if (g_players[i].playerId == g_playerId)
                 {
-                    g_gameSocket.emit("playerDied", g_myRoomName, g_playerId);
+                    g_gameSocket.emit("playerDied", g_playerRoomName, g_playerId);
                 }
             }
         }

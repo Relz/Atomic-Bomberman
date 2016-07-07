@@ -24,6 +24,7 @@
             if (isUserAuthorized())
             {
                 session_start();
+                loginUser($_SESSION["username"]);
                 $g_smarty->assign("username", $_SESSION["username"]);
                 if (isUserInGame())
                 {
@@ -39,6 +40,12 @@
             }
             else
             {
+                unsetSession();
+                $isLoginError = getGetParam("error");
+                if ($isLoginError === "1")
+                {
+                    $g_smarty->assign("isLoginError", true);
+                }
                 $g_smarty->display("login.tpl");
             }
             break;
@@ -78,10 +85,13 @@
         $g_smarty->assign("headerChat", t("HEADER_CHAT"));
         $g_smarty->assign("btnLeaveGameRoom", t("BTN_LEAVE_GAME_ROOM"));
         $g_smarty->assign("btnStartGame", t("BTN_START_GAME"));
+        $g_smarty->assign("isLoginError", false);
+        $g_smarty->assign("errorUsernameNotFree", t("ERROR_USERNAME_NOT_FREE"));
     }
 
     function processPostRequest()
     {
+        global $lang;
         if (isset($_POST["username"]) && !empty($_POST["username"]))
         {
             $username = $_POST["username"];
@@ -90,9 +100,13 @@
             {
                 registerNewUser($username);
             }
-            else
+            elseif (isUsernameFree($username))
             {
                 loginUser($username);
+            }
+            else
+            {
+                header("Location: ?lang=" . $lang . "&error=1");
             }
         }
     }
