@@ -1,3 +1,6 @@
+var SERVER_NAME = "Server";
+var SERVER_COLOR = "grey";
+
 var g_gameSocket = null;
 var g_websiteSocket = null;
 
@@ -7,18 +10,20 @@ function initGameSocket()
     var chatTable = document.getElementById("chatTable");
     var chooseMapTable = document.getElementById("chooseMap");
     g_gameSocket = io.connect(":3000");
-    g_gameSocket.emit("playerConnect", g_playerRoomName, g_playerName);
-    g_gameSocket.on("playerConnect", function(roomName, playerId, playerColor)
+    g_gameSocket.emit("playerConnect", g_playerRoomName, g_playerName, g_roomOwner);
+    g_gameSocket.on("playerConnect", function(roomName, playerId, playerName, playerColor)
     {
         if (g_playerRoomName == roomName)
         {
             if (g_playerId === null)
             {
-                console.log("ID:", playerId);
-                console.log("COLOR:", playerColor);
                 g_playerId = playerId;
                 g_playerColor = playerColor;
-                g_gameSocket.emit("getPlayerNames", g_playerRoomName);
+                g_gameSocket.emit("getPlayers", g_playerRoomName);
+            }
+            else
+            {
+                sendMessageToChat(SERVER_NAME, playerName + " Connected", SERVER_COLOR);
             }
         }
     });
@@ -31,18 +36,20 @@ function initGameSocket()
         }
     });
 
-    g_gameSocket.on("playerDisconnect", function(roomName, id)
+    g_gameSocket.on("playerDisconnect", function(roomName, id, roomOwner)
     {
         if (g_playerRoomName == roomName)
         {
+            var playerName = "null";
             for (var i = 0; i < g_players.length; i++)
             {
                 if (id == g_players[i].playerId)
                 {
+                    playerName = g_players[i].name;
                     var playerNamesLi = playerListUl.children;
                     for (var j = 0; j < playerNamesLi.length; j++)
                     {
-                        if (playerNamesLi[j].innerHTML == g_players[i].name)
+                        if (playerNamesLi[j].innerHTML == playerName)
                         {
                             playerListUl.removeChild(playerNamesLi[j]);
                             break;
@@ -52,6 +59,19 @@ function initGameSocket()
                     g_players.splice(i, 1);
                     break;
                 }
+            }
+            if (g_playerId == id)
+            {
+                changeRoomOwner(g_playerId, false);
+            }
+            else
+            {
+                sendMessageToChat(SERVER_NAME, playerName + " Disconnected", SERVER_COLOR);
+            }
+            if (roomOwner == "true" && g_players.length > 0 && !g_gameStarted)
+            {
+                changeRoomOwner(g_players[0].playerId, true);
+                sendMessageToChat(SERVER_NAME, g_players[0].name + " became the room master", SERVER_COLOR);
             }
         }
     });
@@ -103,12 +123,10 @@ function initGameSocket()
         }
     });
 
-    g_gameSocket.on("getPlayerNames", function(roomName, players)
+    g_gameSocket.on("getPlayers", function(roomName, players)
     {
         if (g_playerRoomName == roomName)
         {
-//            console.log(players);
-//            console.log(g_players);
             playerListUl.innerHTML = "";
             for (var i = 0; i < players.length; i++)
             {
@@ -125,7 +143,7 @@ function initGameSocket()
                     if (!playerIdFound)
                     {
                         var startPlayerPos = getStartPlayerPos(players[i].id);
-                        g_players.push(new Player(players[i].id, players[i].name, PLAYER_COLOR_DEFAULT, startPlayerPos.x, startPlayerPos.y));
+                        g_players.push(new Player(players[i].id, players[i].name, players[i].color, startPlayerPos.x, startPlayerPos.y));
                     }
                 }
                 var li = document.createElement("li");
@@ -165,7 +183,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[object.playerId].upKeyDown = object.upKeyDown;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].upKeyDown = object.upKeyDown;
+                    break;
+                }
+            }
         }
     });
 
@@ -173,7 +198,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[object.playerId].rightKeyDown = object.rightKeyDown;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].rightKeyDown = object.rightKeyDown;
+                    break;
+                }
+            }
         }
     });
 
@@ -181,7 +213,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[object.playerId].downKeyDown = object.downKeyDown;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].downKeyDown = object.downKeyDown;
+                    break;
+                }
+            }
         }
     });
 
@@ -189,7 +228,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[object.playerId].leftKeyDown = object.leftKeyDown;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    g_players[i].leftKeyDown = object.leftKeyDown;
+                    break;
+                }
+            }
         }
     });
 
@@ -197,7 +243,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            addBombToPlayerPos(g_players[object.playerId], object.posX, object.posY, object.state);
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (object.playerId == g_players[i].playerId)
+                {
+                    addBombToPlayerPos(g_players[i], object.posX, object.posY, object.state);
+                    break;
+                }
+            }
         }
     });
 
@@ -205,7 +258,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[playerId].canvasX = canvasX;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (playerId == g_players[i].playerId)
+                {
+                    g_players[i].canvasX = canvasX;
+                    break;
+                }
+            }
         }
     });
 
@@ -213,7 +273,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[playerId].canvasY = canvasY;
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (playerId == g_players[i].playerId)
+                {
+                    g_players[i].canvasY = canvasY;
+                    break;
+                }
+            }
         }
     });
 
@@ -221,7 +288,14 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            g_players[playerId].die();
+            for (var i = 0; i < g_players.length; i++)
+            {
+                if (playerId == g_players[i].playerId)
+                {
+                    g_players[i].die();
+                    break;
+                }
+            }
         }
     });
 
@@ -229,17 +303,29 @@ function initGameSocket()
     {
         if (g_playerRoomName == roomName)
         {
-            var row = chatTable.insertRow(chatTable.rows.length);
-            var nameCell = row.insertCell(0);
-            var messageCell = row.insertCell(1);
-            nameCell.innerHTML = "<span>" + playerName + "</span>";
-            nameCell.className = "chat_name";
-            nameCell.style.color = color;
-            messageCell.innerHTML = "<span>" + message + "</span>";
-            messageCell.className = "chat_message";
-            chatTable.scrollTop = chatTable.scrollHeight;
+            sendMessageToChat(playerName, message, color);
         }
     });
+
+    function sendMessageToChat(playerName, message, color)
+    {
+        var row = chatTable.insertRow(chatTable.rows.length);
+        var nameCell = row.insertCell(0);
+        var messageCell = row.insertCell(1);
+        nameCell.innerHTML = "<span>" + playerName + "</span>";
+        nameCell.className = "chat_name";
+        nameCell.style.color = color;
+        messageCell.innerHTML = "<span>" + message + "</span>";
+        messageCell.className = "chat_message";
+        chatTable.scrollTop = chatTable.scrollHeight;
+    }
+}
+
+function changeRoomOwner(id, roomOwner)
+{
+    g_gameSocket.emit("becomeRoomOwner", roomOwner);
+    setCookie("room_owner", roomOwner.toString());
+    location.reload();
 }
 
 function initWebsiteSocket()

@@ -5,76 +5,24 @@ function init()
 
     var inputRoomName = document.getElementById("roomName");
     var inputRoomPassword = document.getElementById("roomPassword");
+    var inputPlayerCount = document.getElementById("playerCount");
     var btnCreateNewRoom = document.getElementById("btnCreateNewRoom");
     btnCreateNewRoom.addEventListener("click", function()
     {
-        $.ajax({
-            type: "POST",
-            url: "php/add_game_room.php",
-            data: "room_name=" + inputRoomName.value + "&room_password=" + inputRoomPassword.value,
-            success: function(data)
-            {
-                var error = false;
-                switch (data)
-                {
-                    case "error 0":
-                        error = true;
-                        break;
-                    case "error 1":
-                        error = true;
-                        break;
-                    case "error 2":
-                        error = true;
-                        break;
-                }
-                if (!error)
-                {
-                    g_websiteSocket.emit("createNewRoom", data);
-                    setCookie("room_name", inputRoomName.value);
-                    setCookie("room_owner", "true");
-                    location.reload();
-                }
-            }
-        });
+        var roomName = inputRoomName.value;
+        var password = inputRoomPassword.value;
+        var playerCount = Math.ceil(inputPlayerCount.value);
+        if (roomName !== "" && playerCount >= 1 && playerCount <= 4)
+        {
+            g_websiteSocket.emit("createNewRoom", g_websiteSocket.id, roomName, password, playerCount);
+        }
     });
-
-    var gameRooms = document.getElementsByClassName("room");
-
-    for (var i = 0; i < gameRooms.length; i++)
-    {
-        gameRooms[i].addEventListener('click', onGameRoomClick);
-    }
 }
-
 
 function onGameRoomClick()
 {
-    var roomName = this.innerHTML;
-    $.ajax({
-        type: "POST",
-        url: "php/enter_game_room.php",
-        data: "room_name=" + roomName + "&room_password=",
-        success: function(data)
-        {
-            var error = false;
-            switch (data)
-            {
-                case "error 0":
-                    error = true;
-                    break;
-                case "error 1":
-                    error = true;
-                    break;
-            }
-            if (!error)
-            {
-                g_websiteSocket.emit("enterRoom", data);
-                setCookie("room_name", roomName);
-                setCookie("room_owner", "false");
-                location.reload();
-            }
-        }
-    });
+    var roomName = this.getAttribute("data-room_name");
+    g_websiteSocket.emit("enterGameRoom", g_websiteSocket.id, roomName);
 }
 
 init();

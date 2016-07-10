@@ -1,15 +1,16 @@
 exports.processGame = function(io)
 {
     COLOR_DEFAULT = "black";
-    MAX_PLAYERS_COUNT = 3;
+    MAX_PLAYERS_COUNT = 4;
     var rooms = [];
 
     io.on("connection", function(socket)
     {
-        socket.on("playerConnect", function(roomName, playerName)
+        socket.on("playerConnect", function(roomName, playerName, roomOwner)
         {
             socket.roomName = roomName;
             socket.playerName = playerName;
+            socket.roomOwner = roomOwner;
             roomNamePos = getRoomNamePos(roomName);
             if (roomNamePos == -1)
             {
@@ -45,13 +46,13 @@ exports.processGame = function(io)
                     }
                     socket.playerId = newId;
                     rooms[roomNamePos].players.push({playerId: newId, playerName: playerName, color: COLOR_DEFAULT});
-                    io.emit("playerConnect", roomName, newId, COLOR_DEFAULT);
+                    io.emit("playerConnect", roomName, newId, playerName, COLOR_DEFAULT);
                 }
             }
             else
             {
                 socket.playerId = rooms[roomNamePos].players[playerNamePos].playerId;
-                io.emit("playerConnect", roomName, socket.playerId, rooms[roomNamePos].players[playerNamePos].color);
+                io.emit("playerConnect", roomName, socket.playerId, playerName, rooms[roomNamePos].players[playerNamePos].color);
             }
         });
 
@@ -88,7 +89,7 @@ exports.processGame = function(io)
             }
         });
 
-        socket.on("getPlayerNames", function(roomName)
+        socket.on("getPlayers", function(roomName)
         {
             roomNamePos = getRoomNamePos(roomName);
             if (roomNamePos != -1)
@@ -98,7 +99,7 @@ exports.processGame = function(io)
                 {
                     players.push({id: rooms[roomNamePos].players[i].playerId, name: rooms[roomNamePos].players[i].playerName, color: rooms[roomNamePos].players[i].color});
                 }
-                io.emit("getPlayerNames", roomName, players);
+                io.emit("getPlayers", roomName, players);
             }
         });
 
@@ -163,9 +164,9 @@ exports.processGame = function(io)
                 }
             }
         });
+
         socket.on("disconnect", function()
         {
-            console.log("disc");
             roomNamePos = getRoomNamePos(socket.roomName);
             if (roomNamePos != -1)
             {
@@ -173,13 +174,21 @@ exports.processGame = function(io)
                 if (playerIdPos != -1)
                 {
                     rooms[roomNamePos].players.splice(playerIdPos, 1);
-                    io.emit("playerDisconnect", socket.roomName, socket.playerId);
                     if (rooms[roomNamePos].players.length == 0)
                     {
                         rooms.splice(roomNamePos, 1);
                     }
+                    else
+                    {
+                        io.emit("playerDisconnect", socket.roomName, socket.playerId, socket.roomOwner);
+                    }
                 }
             }
+        });
+
+        socket.on("becomeRoomOwner", function(roomOwner)
+        {
+            socket.roomOwner = roomOwner;
         });
     });
 

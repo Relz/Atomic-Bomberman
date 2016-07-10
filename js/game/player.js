@@ -107,15 +107,17 @@ function Player(id, name, color, posX, posY)
     this.draw = function()
     {
         _setImagePosY(this);
-        g_ctx.drawImage(spritePlayerImage,
-          imageWidth * imagePosX,
-          imageHeight * imagePosY,
-          imageWidth,
-          imageHeight,
-          self.canvasX + playerOffsetX,
-          self.canvasY + playerOffsetY,
-          imageWidth,
-          imageHeight);
+        g_ctx.drawImage(
+            spritePlayerImage,
+            imageWidth * imagePosX,
+            imageHeight * imagePosY,
+            imageWidth,
+            imageHeight,
+            self.canvasX + playerOffsetX,
+            self.canvasY + playerOffsetY,
+            imageWidth,
+            imageHeight
+        );
     };
 
     this.die = function()

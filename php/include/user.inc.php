@@ -1,5 +1,5 @@
 <?php
-    $RANDOM_KEY_TIMEOUT = "00:05:00";
+    $RANDOM_KEY_TIMEOUT = "00:10:00";
     $SEC_TO_UTC = 3 * 60 * 60;
 
     function initIdByUsername($username)
@@ -25,10 +25,11 @@
 
     function registerNewUser($username)
     {
+        global $RANDOM_KEY_TIMEOUT;
         session_start();
         dbInitialConnect();
         $randomKey = randMD5(10);
-        if (dbQuery("INSERT INTO user SET name='" . dbQuote($username) . "', random_key='$randomKey'"))
+        if (dbQuery("INSERT INTO user SET name='" . dbQuote($username) . "', random_key='$randomKey', random_key_expire=ADDTIME(NOW(), '$RANDOM_KEY_TIMEOUT')"))
         {
             initSession($username, $randomKey);
         }
@@ -54,16 +55,21 @@
         $myRandomKey = $_SESSION["random_key"];
         if (dbQuery("UPDATE user SET random_key='$myRandomKey', random_key_expire=NOW() WHERE BINARY name='" . dbQuote($username) . "'"))
         {
-            unsetSession();
+            unsetSessionAndCookies();
             header("Location: ?lang=" . $lang);
         }
     }
 
-    function unsetSession()
+    function unsetSessionAndCookies()
     {
         unset($_SESSION["username"]);
         unset($_SESSION["random_key"]);
-        unset($_SESSION["room_name"]);
+        unset($_COOKIE["room_name"]);
+        unset($_COOKIE["player_name"]);
+        unset($_COOKIE["room_owner"]);
+        setcookie("room_name", null, -1);
+        setcookie("player_name", null, -1);
+        setcookie("room_owner", null, -1);
     }
 
     function isUserAuthorized()
@@ -76,8 +82,8 @@
 
     function isUserInGame()
     {
-        session_start();
-        return (isset($_SESSION["room_name"]) && !empty($_SESSION["room_name"]));
+        //session_start();
+        return (isset($_COOKIE["room_name"]) && !empty($_COOKIE["room_name"]));
     }
 
     function isMyRandomKeyValid($username)

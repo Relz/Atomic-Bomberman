@@ -8,6 +8,7 @@
         "HEADER_CREATE_ROOM" => "Create new game room",
         "LABEL_ROOM_NAME" => "Game room's name",
         "LABEL_ROOM_PASSWORD" => "Game room's password",
+        "LABEL_PLAYER_COUNT" => "Game room's player count",
         "BTN_CREATE_ROOM_TEXT" => "Create",
         "INFO_EMPTY_ROOM_LIST" => "There is no game rooms",
         "HEADER_GAME_ROOMS" => "Game rooms",

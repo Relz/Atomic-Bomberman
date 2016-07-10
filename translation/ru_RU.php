@@ -8,6 +8,7 @@
         "HEADER_CREATE_ROOM" => "Создать новую игровую комнату",
         "LABEL_ROOM_NAME" => "Имя игровой комнаты",
         "LABEL_ROOM_PASSWORD" => "Пароль игровой комнаты",
+        "LABEL_PLAYER_COUNT" => "Количество игроков в комнате",
         "BTN_CREATE_ROOM_TEXT" => "Создать",
         "INFO_EMPTY_ROOM_LIST" => "Не найдено ни одной игровой комнаты",
         "HEADER_GAME_ROOMS" => "Игровые комнаты",

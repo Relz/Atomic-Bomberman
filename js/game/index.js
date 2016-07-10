@@ -10,6 +10,8 @@ var g_ctx = null;
 var g_playerColor = null;
 var g_playerRoomName = getCookie("room_name");
 var g_playerName = getCookie("player_name");
+var g_roomOwner = getCookie("room_owner");
+var g_gameStarted = false;
 
 function setUpGame()
 {
@@ -30,9 +32,9 @@ function setUpGame()
 
     for (var i = 0; i < playerModels.length; i++)
     {
-        playerModels[i].addEventListener('click', onPlayerModelsClick);
+        playerModels[i].addEventListener("click", onPlayerModelsClick);
     }
-    if (getCookie("room_owner") == "true")
+    if (g_roomOwner == "true")
     {
         var onMapPreviewsClick = function()
         {
@@ -44,13 +46,16 @@ function setUpGame()
 
         for (var i = 0; i < mapPreviews.length; i++)
         {
-            mapPreviews[i].addEventListener('click', onMapPreviewsClick);
+            mapPreviews[i].addEventListener("click", onMapPreviewsClick);
         }
     }
     g_gameSocket.emit("getMapIndex", g_playerRoomName);
 
     var exitRoom = document.getElementById("roomExit");
     exitRoom.addEventListener("click", leaveRoom);
+
+    var btnLogout = document.getElementById("logout");
+    btnLogout.addEventListener("click", leaveRoom);
 
     var startRoom = document.getElementById("roomStart");
 
@@ -63,15 +68,11 @@ function setUpGame()
                 this.style.display = "none";
                 g_gameSocket.emit("startRoom", g_playerRoomName);
             }
-            else
-            {
-
-            }
         });
     }
 
     var inputSendChatMessage = document.getElementById("chatInputMessage");
-    inputSendChatMessage.addEventListener('keypress', function()
+    inputSendChatMessage.addEventListener("keypress", function()
     {
         if (event.keyCode == KEYCODE_ENTER && this.value !== "")
         {
@@ -92,34 +93,15 @@ function setUpGame()
 
 function leaveRoom()
 {
-    $.ajax({
-        type: "POST",
-        url: "php/exit_game_room.php",
-        data: "players_in_room=" + g_players.length,
-        success: function(data)
-        {
-            var error = false;
-            switch (data)
-            {
-                case "error 0":
-                    error = true;
-                    break;
-            }
-            if (!error)
-            {
-                if (data !== "")
-                {
-                    g_websiteSocket.emit("removeRoom", data);
-                }
-                g_gameSocket.emit("playerDisconnect", g_playerRoomName, g_playerId);
-                location.reload();
-            }
-        }
-    });
+    g_websiteSocket.emit("playerLeftRoom", g_playerRoomName);
+    deleteCookie("room_name");
+    deleteCookie("room_owner");
+    location.reload();
 }
 
 function initGame()
 {
+    g_gameStarted = true;
     var canvas = document.getElementById("canvas");
     g_ctx = canvas.getContext("2d");
     var baseImage = new Image();
@@ -146,3 +128,4 @@ function play(baseImage, spriteMapImage)
 initGameSocket();
 initWebsiteSocket();
 setUpGame();
+

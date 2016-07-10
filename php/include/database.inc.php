@@ -34,3 +34,24 @@
         global $g_dbLink;
         return mysqli_real_escape_string($g_dbLink, $value);
     }
+
+    function dbIsEmptyResult($result)
+    {
+        return mysqli_num_rows($result) == 0;
+    }
+
+    function dbGetRooms()
+    {
+        $result = [];
+        dbInitialConnect();
+        $queryResult = dbQueryGetResult("SELECT title FROM room");
+        if (!dbIsEmptyResult($queryResult))
+        {
+            while ($row = mysqli_fetch_assoc($queryResult))
+            {
+                array_push($result, $row["title"]);
+            }
+            mysqli_free_result($queryResult);
+        }
+        return $result;
+    }

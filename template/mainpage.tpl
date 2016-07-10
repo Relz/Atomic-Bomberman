@@ -12,9 +12,18 @@
     <span class="rooms_header_text">{$headerGameRooms}</span>
     <ul class="room_list" id="room_list">
     <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">{$infoEmptyRoomList}</span>
-    {foreach from=$rooms item=roomName}
-      <li class="room">{$roomName}</li>
-    {/foreach}
+    <!--{foreach from=$rooms item=roomName}
+      <li class="room" data-room_name="{$roomName}">
+        <span class="room_name">{$roomName}</span>
+        <div class="block_room_space">
+          <div class="room_space not_free"></div>
+          <div class="room_space free"></div>
+          <div class="room_space free"></div>
+          <div class="room_space free"></div>
+        </div>
+        <div class="clearboth"></div>
+      </li>
+    {/foreach}-->
     </ul>
   </div>
 {/block}
@@ -31,6 +40,10 @@
     <div class="block_room_password">
       <label for="roomPassword">{$labelRoomPassword}</label>
       <input type="password" class="room_password" id="roomPassword"/>
+    </div>
+    <div class="block_player_count">
+      <label for="playerCount">{$labelPlayerCount}</label>
+      <input type="number" class="player_count" id="playerCount" value="2" min="1" max="4">
     </div>
     <input type="button" value="{$btnCreateRoomText}" class="submit" title="{$btnCreateRoomText}" id="btnCreateNewRoom"/>
   </form>

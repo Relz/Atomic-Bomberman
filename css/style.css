@@ -26,7 +26,7 @@ li
 
 .icon
 {
-    background: url(../img/website/sprite.png) no-repeat scroll 0 0;
+    background: url(../img/website/sprite_language.png) no-repeat scroll 0 0;
 }
 
 .topbar
@@ -252,6 +252,31 @@ li
     color: #FFF;
 }
 
+.room_list .block_room_space
+{
+    float: right;
+}
+
+.room_list .block_room_space .room_space
+{
+    float: left;
+    height: 20px;
+    width: 11px;
+    background: url(../img/website/sprite_room_space.png) center center no-repeat;
+}
+
+.room_list .block_room_space .room_space.free
+{
+    background-position: 0 0 !important;
+    margin-right: 10px;
+}
+
+.room_list .block_room_space .room_space.not_free
+{
+    background-position: -11px 0 !important;
+    margin-right: 10px;
+}
+
 .room_create_form
 {
     float: right;
@@ -298,6 +323,13 @@ li
     border-radius: 39px;
     outline: none;
     padding: 0 10px;
+}
+
+.room_create_form .block_player_count
+{
+    padding: 10px;
+    font: 20px sans-serif;
+    margin: 0 auto;
 }
 
 .room_create_form .submit

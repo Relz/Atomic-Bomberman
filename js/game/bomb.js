@@ -22,15 +22,17 @@ function Bomb(player, posX, posY, cooldown)
     animateBomb(player, this);
     this.draw = function()
     {
-        g_ctx.drawImage(bombImage,
-          BOMB_SPRITE_ELEMENT_WIDTH * imagePosX,
-          BOMB_SPRITE_ELEMENT_HEIGHT * imagePosY,
-          BOMB_SPRITE_ELEMENT_WIDTH,
-          BOMB_SPRITE_ELEMENT_HEIGHT,
-          this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX,
-          this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX,
-          BOMB_SPRITE_ELEMENT_WIDTH,
-          BOMB_SPRITE_ELEMENT_HEIGHT);
+        g_ctx.drawImage(
+            bombImage,
+            BOMB_SPRITE_ELEMENT_WIDTH * imagePosX,
+            BOMB_SPRITE_ELEMENT_HEIGHT * imagePosY,
+            BOMB_SPRITE_ELEMENT_WIDTH,
+            BOMB_SPRITE_ELEMENT_HEIGHT,
+            this.posX * CELL_WIDTH + CANVAS_MARGIN_LEFT_PX,
+            this.posY * CELL_HEIGHT + CANVAS_MARGIN_TOP_PX,
+            BOMB_SPRITE_ELEMENT_WIDTH,
+            BOMB_SPRITE_ELEMENT_HEIGHT
+        );
     };
 
     function bombAttack(player, self)
