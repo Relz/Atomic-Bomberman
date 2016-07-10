@@ -28,7 +28,7 @@ function setCookie(name, value, options)
 
 function getCookie(name)
 {
-    var cookie = " " + document.cookie;
+    var cookie = " " + decodeURIComponent(document.cookie);
     var search = " " + name + "=";
     var setStr = null;
     var offset = 0;

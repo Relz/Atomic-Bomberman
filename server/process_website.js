@@ -44,6 +44,7 @@ exports.processWebsite = function(io)
                 {
                     if (maxPlayerCount <= MAX_PLAYERS_COUNT)
                     {
+                        console.log(roomName);
                         io.emit("createNewRoom", id, roomName, 1, maxPlayerCount);
                         rooms.push({roomName: roomName, playerCount: 1, maxPlayerCount: maxPlayerCount});
                     }
@@ -59,10 +60,12 @@ exports.processWebsite = function(io)
         {
             for (var i = 0; i < rooms.length; i++)
             {
+                        console.log(rooms[i].roomName, roomName);
                 if (rooms[i].roomName == roomName)
                 {
                     if (rooms[i].playerCount == 1)
                     {
+                        console.log(roomName);
                         rooms.splice(i, 1);
                         io.emit("removeRoom", roomName);
                     }

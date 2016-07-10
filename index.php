@@ -84,9 +84,9 @@
     function processPostRequest()
     {
         global $lang;
-        if (isset($_POST["username"]) && !empty($_POST["username"]))
+        $username = getPostParam("username");
+        if (!empty($username))
         {
-            $username = $_POST["username"];
             dbInitialConnect();
             if (dbIsEmptyResult(dbQueryGetResult("SELECT * FROM user WHERE BINARY name='" . dbQuote($username) . "'")))
             {

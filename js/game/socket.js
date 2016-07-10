@@ -292,6 +292,15 @@ function initGameSocket()
             {
                 if (playerId == g_players[i].playerId)
                 {
+                    var playerNames = document.getElementsByClassName("player_name");
+                    for (var j = 0; j < playerNames.length; j++)
+                    {
+                        if (playerNames[j].innerHTML == g_players[i].name)
+                        {
+                            playerNames[j].style.textDecoration = "line-through";
+                            break;
+                        }
+                    }
                     g_players[i].die();
                     break;
                 }

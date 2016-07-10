@@ -27,6 +27,7 @@ function initWebsiteSocket()
     {
         if (g_websiteSocket.id == id)
         {
+            console.log(roomName);
             setCookie("room_name", roomName);
             setCookie("room_owner", "true");
             location.reload();
