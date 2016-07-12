@@ -16,7 +16,6 @@
             initSmartyVariables($smarty);
             if (isUserAuthorized())
             {
-                session_start();
                 loginUser($_SESSION["username"]);
                 $smarty->assign("username", $_SESSION["username"]);
                 if (isUserInGame())
