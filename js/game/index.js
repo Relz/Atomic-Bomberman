@@ -72,7 +72,7 @@ function setUpGame()
     }
 
     var inputSendChatMessage = document.getElementById("chatInputMessage");
-    inputSendChatMessage.addEventListener("keypress", function()
+    inputSendChatMessage.addEventListener("keypress", function(event)
     {
         if (event.keyCode == KEYCODE_ENTER && this.value !== "")
         {

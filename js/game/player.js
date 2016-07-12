@@ -68,14 +68,14 @@ function Player(id, name, color, posX, posY)
     this.alive = true;
     this.showing = true;
     var self = this;
-    window.addEventListener("keydown", function()
+    window.addEventListener("keydown", function(event)
     {
         if (self.alive && self.playerId == g_playerId)
         {
             handleKey(self, event.keyCode, true);
         }
     });
-    window.addEventListener("keyup", function()
+    window.addEventListener("keyup", function(event)
     {
         if (self.alive && self.playerId == g_playerId)
         {

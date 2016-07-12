@@ -1,33 +1,27 @@
 function handleKey(self, keyCode, state)
 {
-    var keyUp = PLAYER1_KEY_UP;
-    var keyRight = PLAYER1_KEY_RIGHT;
-    var keyDown = PLAYER1_KEY_DOWN;
-    var keyLeft = PLAYER1_KEY_LEFT;
-    var keyPlateBomb = PLAYER1_KEY_PLATE_BOMB;
-
     var keyName;
     var message;
     var eventName;
     switch (keyCode)
     {
-        case keyUp:
+        case PLAYER1_KEY_UP:
             processKey("upKeyDown", "downKeyDown", "playerUpKeyDown", "playerDownKeyDown");
         break;
 
-        case keyRight:
+        case PLAYER1_KEY_RIGHT:
             processKey("rightKeyDown", "leftKeyDown", "playerRightKeyDown", "playerLeftKeyDown");
         break;
 
-        case keyDown:
+        case PLAYER1_KEY_DOWN:
             processKey("downKeyDown", "upKeyDown", "playerDownKeyDown", "playerUpKeyDown");
         break;
 
-        case keyLeft:
+        case PLAYER1_KEY_LEFT:
             processKey("leftKeyDown", "rightKeyDown", "playerLeftKeyDown", "playerRightKeyDown");
         break;
 
-        case keyPlateBomb:
+        case PLAYER1_KEY_PLATE_BOMB:
             g_gameSocket.emit("playerPlateBomb", g_playerRoomName, {playerId: self.playerId, posX: self.posX, posY: self.posY, state: state});
         break;
 

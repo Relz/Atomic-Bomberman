@@ -3,7 +3,6 @@ var g_websiteSocket = null;
 function initWebsiteSocket()
 {
     g_websiteSocket = io.connect(":3001");
-    g_websiteSocket.emit("playerConnect");
 
     var roomList = document.getElementById("room_list");
     var roomsEmptyText = document.getElementById("roomsEmptyText");
@@ -27,7 +26,6 @@ function initWebsiteSocket()
     {
         if (g_websiteSocket.id == id)
         {
-            console.log(roomName);
             setCookie("room_name", roomName);
             setCookie("room_owner", "true");
             location.reload();
