@@ -339,5 +339,5 @@ function changeRoomOwner(id, roomOwner)
 
 function initWebsiteSocket()
 {
-    g_websiteSocket = io.connect("/socket/website");
+    g_websiteSocket = io.connect(":3001");
 }
