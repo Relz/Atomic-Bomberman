@@ -7,16 +7,16 @@
       <a href="?action=logout&lang={$lang}" class="logout_image" {if $inGameRoom}id="logout"{/if} title="{$logoutText}"></a>
     {/if}
     {if !$inGameRoom}
-    <div class="select-language">
-      <a class="icon ru" href="?lang=ru_RU" title="RU"></a>
-      <a class="icon en" href="?lang=en_US" title="EN"></a>
-    </div>
+      <div class="select-language">
+        <a class="icon ru" href="?lang=ru_RU" title="RU"></a>
+        <a class="icon en" href="?lang=en_US" title="EN"></a>
+      </div>
     {/if}
     {if $inGameRoom}
-      <a class="room_exit" id="roomExit">{$btnLeaveGameRoom}</a>
+      <a class="room_exit" id="roomExit" title="{$btnLeaveGameRoom}">{$btnLeaveGameRoom}</a>
     {/if}
-    {if $inGameRoom && $isRoomOwner}
-      <a class="room_start" id="roomStart">{$btnStartGame}</a>
+    {if $inGameRoom}
+      <a class="room_start hidden" id="roomStart" title="{$btnStartGame}">{$btnStartGame}</a>
     {/if}
     <div class="clearboth"></div>
   </div>

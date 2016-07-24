@@ -50,11 +50,10 @@ var g_players = [];
 var g_playerId = null;
 var g_playerNames = [];
 
-function Player(id, name, color, posX, posY)
+function Player(id, name, posX, posY)
 {
-    this.playerId = id;
+    this.id = id;
     this.name = name;
-    this.color = color;
     this.posX = posX;
     this.posY = posY;
     this.canvasX = posX * CELL_WIDTH;
@@ -63,6 +62,7 @@ function Player(id, name, color, posX, posY)
     this.rightKeyDown = false;
     this.downKeyDown = false;
     this.leftKeyDown = false;
+    this.staying = true;
 
     this.direction = PLAYER_DIRECTION_DOWN;
     this.alive = true;
@@ -70,14 +70,14 @@ function Player(id, name, color, posX, posY)
     var self = this;
     window.addEventListener("keydown", function(event)
     {
-        if (self.alive && self.playerId == g_playerId)
+        if (self.id == g_playerId && self.alive)
         {
             handleKey(self, event.keyCode, true);
         }
     });
     window.addEventListener("keyup", function(event)
     {
-        if (self.alive && self.playerId == g_playerId)
+        if (self.id == g_playerId && self.alive)
         {
             handleKey(self, event.keyCode, false);
         }
@@ -98,11 +98,18 @@ function Player(id, name, color, posX, posY)
     var playerOffsetX = CANVAS_MARGIN_LEFT_PX - (imageWidth - CELL_WIDTH) / 2;
     var playerOffsetY = CANVAS_MARGIN_TOP_PX - imageHeight / 2;
 
+    this.setPosition = function(posX, posY)
+    {
+        this.posX = posX;
+        this.posY = posY;
+        this.canvasX = posX * CELL_WIDTH;
+        this.canvasY = posY * CELL_HEIGHT;
+    };
+
     this.setSpritePlayerImageByColor = function(color)
     {
         spritePlayerImage.src = PLAYER_SPRITE_IMAGE_URLS[color];
     };
-    this.setSpritePlayerImageByColor(this.color);
 
     this.draw = function()
     {
@@ -138,167 +145,20 @@ function Player(id, name, color, posX, posY)
             if (i == PLAYER_DEATH_SPRITE_ELEMENT_COUNT)
             {
                 self.showing = false;
+                g_players.splice(g_players.indexOf(self), 1);
                 cancelAnimationFrame(animationFrame);
             }
         }, delay);
     };
 
-    this.tryToPickUpBonus = function()
-    {
-        if (g_map[this.posY][this.posX].bonus !== null)
-        {
-            _useBonus(this, g_map[this.posY][this.posX].bonus.id);
-            _removeBonusFromMap(this);
-        }
-
-        function _useBonus(self, bonusId)
-        {
-            switch (bonusId)
-            {
-                case BONUS_BOMB_ID:
-                    self.maxBomb++;
-                    break;
-                case BONUS_FLAME_ID:
-                    self.bombAttackRange++;
-                    break;
-                case BONUS_DOUBLE_FLAME_ID:
-                    self.bombAttackRange+=2;
-                    break;
-                case BONUS_SPEED_ID:
-                    if (self.speed != PLAYER_MAX_SPEED)
-                    {
-                        self.speed++;
-                    }
-                    break;
-                case BONUS_CURSE_ID:
-                    self.upKeyDown = false;
-                    self.rightKeyDown = false;
-                    self.downKeyDown = false;
-                    self.leftKeyDown = false;
-                    self.cursed = true;
-                    break;
-                case BONUS_EXHAUST_ID:
-                    self.upKeyDown = false;
-                    self.rightKeyDown = false;
-                    self.downKeyDown = false;
-                    self.leftKeyDown = false;
-                    self.cursed = true;
-                    break;
-                case BONUS_DETONATOR_ID:
-
-                    break;
-                case BONUS_KICK_ID:
-
-                    break;
-                case BONUS_PUNCH_ID:
-
-                    break;
-                case BONUS_GRAB_ID:
-
-                    break;
-                case BONUS_RANDOM_ID:
-
-                    break;
-            }
-        }
-
-        function _removeBonusFromMap(self)
-        {
-            var bonusIndex = -1;
-            for (var i = 0; i < g_bonuses.length; i++)
-            {
-                if (g_bonuses[i].posX == self.posX && g_bonuses[i].posY == self.posY)
-                {
-                    bonusIndex = i;
-                }
-            }
-            if (bonusIndex >= 0)
-            {
-                g_map[self.posY][self.posX].bonus = null;
-                g_bonuses.splice(bonusIndex, 1);
-            }
-        }
-    };
-
     this.update = function()
     {
-        if (this.upKeyDown)
-        {
-            this.direction = PLAYER_DIRECTION_UP;
-            if ((this.posY !== 0 && (g_map[this.posY - 1][this.posX].y === -1)) ||
-                (this.canvasY > this.posY * CELL_HEIGHT))
-            {
-                this.canvasY -= this.speed;
-                if (this.playerId == g_playerId)
-                {
-                    g_gameSocket.emit("canvasYChanged", g_playerRoomName, this.playerId, this.canvasY);
-                }
-                if (this.canvasY < (this.posY - 0.5) * CELL_HEIGHT)
-                {
-                    this.posY--;
-                    this.tryToPickUpBonus();
-                }
-            }
-        }
-        else if (this.rightKeyDown)
-        {
-            this.direction = PLAYER_DIRECTION_RIGHT;
-            if ((this.posX + 1 < CELLS_COUNT_HORIZONTAL && (g_map[this.posY][this.posX + 1].y == -1)) ||
-                (this.canvasX  < this.posX * CELL_WIDTH))
-            {
-                this.canvasX += this.speed;
-                if (this.playerId == g_playerId)
-                {
-                    g_gameSocket.emit("canvasXChanged", g_playerRoomName, this.playerId, this.canvasX);
-                }
-                if (this.canvasX > (this.posX + 0.5) * CELL_WIDTH)
-                {
-                    this.posX++;
-                    this.tryToPickUpBonus();
-                }
-            }
-        }
-        else if (this.downKeyDown)
-        {
-            this.direction = PLAYER_DIRECTION_DOWN;
-            if ((this.posY + 1 < CELLS_COUNT_VERTICAL && (g_map[this.posY + 1][this.posX].y == -1)) ||
-                (this.canvasY < this.posY * CELL_HEIGHT))
-            {
-                this.canvasY += this.speed;
-                if (this.playerId == g_playerId)
-                {
-                    g_gameSocket.emit("canvasYChanged", g_playerRoomName, this.playerId, this.canvasY);
-                }
-                if (this.canvasY > (this.posY + 0.5) * CELL_HEIGHT)
-                {
-                    this.posY++;
-                    this.tryToPickUpBonus();
-                }
-            }
-        }
-        else if (this.leftKeyDown)
-        {
-            this.direction = PLAYER_DIRECTION_LEFT;
-            if (this.posX !== 0 && (g_map[this.posY][this.posX - 1].y === -1) ||
-                (this.canvasX > this.posX * CELL_WIDTH))
-            {
-                this.canvasX -= this.speed;
-                if (this.playerId == g_playerId)
-                {
-                    g_gameSocket.emit("canvasXChanged", g_playerRoomName, this.playerId, this.canvasX);
-                }
-                if (this.canvasX < (this.posX - 0.5) * CELL_WIDTH)
-                {
-                    this.posX--;
-                    this.tryToPickUpBonus();
-                }
-            }
-        }
+        g_socket.emit("sendKeyStates", this.upKeyDown, this.rightKeyDown, this.downKeyDown, this.leftKeyDown);
     };
 
     function _setImagePosY(self)
     {
-        if (_isStaying(self))
+        if (self.staying)
         {
             switch(self.direction){
                 case PLAYER_DIRECTION_UP:
@@ -318,11 +178,6 @@ function Player(id, name, color, posX, posY)
         else if (!walking && self.alive)
         {
             _walkAnimation(self);
-        }
-
-        function _isStaying(self)
-        {
-            return !self.upKeyDown && !self.rightKeyDown && !self.downKeyDown && !self.leftKeyDown;
         }
 
         function _walkAnimation(self)
@@ -358,7 +213,7 @@ function Player(id, name, color, posX, posY)
                 {
                     i = 0;
                 }
-                if (_isStaying(self) || !self.alive)
+                if (self.staying || !self.alive)
                 {
                     walking = false;
                     cancelAnimationFrame(animationFrame);
@@ -369,35 +224,6 @@ function Player(id, name, color, posX, posY)
 
 }
 
-var isLastStateKeyDown = false;
-function addBombToPlayerPos(player, posX, posY, state)
-{
-    if (state && !isLastStateKeyDown)
-    {
-        var allowToPlantBomb = true;
-        if (player.bombCount == player.maxBomb)
-        {
-            allowToPlantBomb = false;
-        }
-        else
-        {
-            for (var i = 0; i < g_bombs.length; i++)
-            {
-                if (g_bombs[i].posX == posX &&  g_bombs[i].posY == posY)
-                {
-                    allowToPlantBomb = false;
-                }
-            }
-        }
-        if (allowToPlantBomb)
-        {
-            player.bombCount++;
-            g_bombs.unshift(new Bomb(player, posX, posY, BOMB_DURATION));
-        }
-    }
-    isLastStateKeyDown = state;
-}
-
 function drawPlayers()
 {
     for (var i = 0; i < g_players.length; i++)
@@ -406,7 +232,7 @@ function drawPlayers()
         {
             g_players[i].draw();
         }
-        if (g_players[i].alive)
+        if (g_players[i].id == g_playerId && g_players[i].alive)
         {
             g_players[i].update();
         }

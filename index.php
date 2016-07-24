@@ -3,20 +3,15 @@
     require_once("php/strings.php");
 
     $smarty = new Smarty();
-    $smarty->template_dir = ROOT_DIR . "template/";
-    $smarty->compile_dir = ROOT_DIR . "template_c/";
-    $smarty->config_dir = ROOT_DIR . "config/";
-    $smarty->cache_dir = ROOT_DIR . "cache/";
 
-    $action = getGetParam("action");
-    switch ($action)
+    switch (getGetParam("action"))
     {
         case "":
             processPostRequest();
             initSmartyVariables($smarty);
             if (isUserAuthorized())
             {
-                loginUser($_SESSION["username"]);
+                refreshUser($_SESSION["username"]);
                 $smarty->assign("username", $_SESSION["username"]);
                 if (isUserInGame())
                 {
@@ -31,12 +26,16 @@
             }
             else
             {
-                unsetSessionAndCookies();
                 $isLoginError = getGetParam("error");
                 if ($isLoginError === "1")
                 {
                     $smarty->assign("isLoginError", true);
                 }
+                elseif (!empty($_SESSION["username"]) && !isUserRandomKeyValid($_SESSION["username"]))
+                {
+                    $smarty->assign("isUserSessionExpired", true);
+                }
+                unsetSessionAndCookies();
                 $smarty->display("login.tpl");
             }
             break;
@@ -78,6 +77,7 @@
         $smarty->assign("btnStartGame", t("BTN_START_GAME"));
         $smarty->assign("isLoginError", false);
         $smarty->assign("errorUsernameNotFree", t("ERROR_USERNAME_NOT_FREE"));
+        $smarty->assign("errorUserSessionExpired", t("ERROR_USER_SESSION_EXPIRED"));
     }
 
     function processPostRequest()
@@ -100,4 +100,5 @@
                 header("Location: ?lang=" . $lang . "&error=1");
             }
         }
+        unset($_POST);
     }

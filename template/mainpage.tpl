@@ -11,19 +11,7 @@
   <div class="rooms">
     <span class="rooms_header_text">{$headerGameRooms}</span>
     <ul class="room_list" id="room_list">
-    <span class="{if count($rooms) == 0}rooms_empty{else}rooms_empty_hidden{/if}" id="roomsEmptyText">{$infoEmptyRoomList}</span>
-    <!--{foreach from=$rooms item=roomName}
-      <li class="room" data-room_name="{$roomName}">
-        <span class="room_name">{$roomName}</span>
-        <div class="block_room_space">
-          <div class="room_space not_free"></div>
-          <div class="room_space free"></div>
-          <div class="room_space free"></div>
-          <div class="room_space free"></div>
-        </div>
-        <div class="clearboth"></div>
-      </li>
-    {/foreach}-->
+    <span class="rooms_empty" id="roomsEmptyText">{$infoEmptyRoomList}</span>
     </ul>
   </div>
 {/block}
@@ -35,7 +23,7 @@
     <input style="display:none" type="password" name="fake_password_remembered"/>
     <div class="block_room_name">
       <label for="roomName">{$labelRoomName}<span class="required_field">{$symbolRequired}</span></label>
-      <input type="text" class="room_name" id="roomName"/>
+      <input type="text" class="room_name" id="roomName" autofocus/>
     </div>
     <div class="block_room_password">
       <label for="roomPassword">{$labelRoomPassword}</label>

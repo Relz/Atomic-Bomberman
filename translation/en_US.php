@@ -5,6 +5,7 @@
         "INPUT_NAME_PLACEHOLDER" => "Enter your name",
         "LOGOUT_TEXT" => "Logout",
         "ERROR_USERNAME_NOT_FREE" => "This username is not free",
+        "ERROR_USER_SESSION_EXPIRED" => "Your session expired, login again",
         "HEADER_CREATE_ROOM" => "Create new game room",
         "LABEL_ROOM_NAME" => "Game room's name",
         "LABEL_ROOM_PASSWORD" => "Game room's password",

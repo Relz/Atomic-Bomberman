@@ -24,6 +24,11 @@ li
     clear: both;
 }
 
+.hidden
+{
+    display: none !important;
+}
+
 .icon
 {
     background: url(../img/website/sprite_language.png) no-repeat scroll 0 0;
@@ -174,19 +179,6 @@ li
     text-align: center;
 }
 
-.error_message_hidden
-{
-    display: none;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: rgba(237, 241, 245, 0.9);
-    border-radius: 39px;
-    font: bold 20px sans-serif;
-    color: #EE0000;
-    text-align: center;
-}
-
 .content
 {
     height: 88%;
@@ -227,11 +219,6 @@ li
     text-align: center;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     margin-top: 10%;
-}
-
-.rooms_empty_hidden
-{
-    display: none;
 }
 
 .room_list li

@@ -1,5 +1,5 @@
 <?php
-    $RANDOM_KEY_TIMEOUT = "00:10:00";
+    $RANDOM_KEY_TIMEOUT = "00:20:00";
     $SEC_TO_UTC = 3 * 60 * 60;
 
     function initIdByUsername($username)
@@ -40,6 +40,18 @@
         if (dbQuery("UPDATE user SET random_key='$randomKey', random_key_expire=ADDTIME(NOW(), '$RANDOM_KEY_TIMEOUT') WHERE BINARY name='" . dbQuote($username) . "'"))
         {
             initSession($username, $randomKey);
+            header("Location: ?lang=" . $lang);
+        }
+    }
+
+    function refreshUser($username)
+    {
+        global $RANDOM_KEY_TIMEOUT;
+        dbInitialConnect();
+        $randomKey = isset($_SESSION["random_key"]) ? $_SESSION["random_key"] : randMD5(10);
+        if (dbQuery("UPDATE user SET random_key='$randomKey', random_key_expire=ADDTIME(NOW(), '$RANDOM_KEY_TIMEOUT') WHERE BINARY name='" . dbQuote($username) . "'"))
+        {
+            initSession($username, $randomKey);
         }
     }
 
@@ -70,16 +82,10 @@
     function isUserAuthorized()
     {
         return (isset($_SESSION["username"]) && !empty($_SESSION["username"])
-               && isset($_SESSION["random_key"]) && isMyRandomKeyValid($_SESSION["username"]));
+               && isset($_SESSION["random_key"]) && isUserRandomKeyValid($_SESSION["username"]));
     }
 
-
-    function isUserInGame()
-    {
-        return (isset($_COOKIE["room_name"]) && !empty($_COOKIE["room_name"]));
-    }
-
-    function isMyRandomKeyValid($username)
+    function isUserRandomKeyValid($username)
     {
         global $SEC_TO_UTC;
         dbInitialConnect();
@@ -89,14 +95,19 @@
         return ($row["random_key"] == $_SESSION["random_key"] && (strtotime($row["random_key_expire"]) -  $SEC_TO_UTC > time()));
     }
 
+    function isUserInGame()
+    {
+        return (isset($_COOKIE["room_name"]) && !empty($_COOKIE["room_name"]));
+    }
+
     function isUsernameFree($username)
     {
         global $SEC_TO_UTC;
         dbInitialConnect();
-        $result = dbQueryGetResult("SELECT random_key_expire FROM user WHERE BINARY name='" . dbQuote($username) . "'");
+        $result = dbQueryGetResult("SELECT random_key,random_key_expire FROM user WHERE BINARY name='" . dbQuote($username) . "'");
         $row = mysqli_fetch_assoc($result);
         mysqli_free_result($result);
-        return (strtotime($row["random_key_expire"]) -  $SEC_TO_UTC < time());
+        return ($row["random_key"] == $_SESSION["random_key"]) || (strtotime($row["random_key_expire"]) -  $SEC_TO_UTC < time());
     }
 
     function randMD5($length)

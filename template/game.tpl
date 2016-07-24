@@ -8,9 +8,7 @@
     <div class="game">
       <canvas height="480" width="640" id="canvas" class="canvas">{$errorCanvasNotSupported}</canvas>
       {block name="choose_map"}{/block}
-      {if !$isRoomOwner}
       {block name="wait_message"}{/block}
-      {/if}
     </div>
     {block name="chat"}{/block}
     <div class="clearboth"></div>

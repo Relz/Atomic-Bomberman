@@ -5,6 +5,7 @@
         "INPUT_NAME_PLACEHOLDER" => "Введите имя",
         "LOGOUT_TEXT" => "Выйти",
         "ERROR_USERNAME_NOT_FREE" => "Это имя уже занято",
+        "ERROR_USER_SESSION_EXPIRED" => "Ваша сессия истекла, войдите снова",
         "HEADER_CREATE_ROOM" => "Создать новую игровую комнату",
         "LABEL_ROOM_NAME" => "Имя игровой комнаты",
         "LABEL_ROOM_PASSWORD" => "Пароль игровой комнаты",

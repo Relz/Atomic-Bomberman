@@ -11,8 +11,12 @@
         <input type="submit" id="btnLogin" class="btn_login" href="#" title="{$btnLoginText}" value="{$btnLoginText}"/>
       </form>
     </div>
-    <div class="{if $isLoginError}error_message{else}error_message_hidden{/if}">
-      {$errorUsernameNotFree}
+    <div class="error_message{if !$isLoginError && !$isUserSessionExpired} hidden{/if}">
+      {if $isLoginError}
+        {$errorUsernameNotFree}
+      {elseif $isUserSessionExpired}
+        {$errorUserSessionExpired}
+      {/if}
     </div>
   </div>
 {/block}

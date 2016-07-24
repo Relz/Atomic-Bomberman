@@ -1,51 +1,53 @@
-var g_websiteSocket = null;
-
-function initWebsiteSocket()
+var g_socket = null;
+function initSocket()
 {
-    g_websiteSocket = io.connect(":3001");
+    g_socket = io.connect(":3000");
 
     var roomList = document.getElementById("room_list");
     var roomsEmptyText = document.getElementById("roomsEmptyText");
 
-    g_websiteSocket.on("getRooms", function(id, rooms)
+    g_socket.emit("getRooms");
+
+    g_socket.on("getRooms", function(id, roomList)
     {
-        if (id == g_websiteSocket.id)
+        if (id == g_socket.id)
         {
-            if (rooms.length > 0)
+            for (var i = 0; i < roomList.length; i++)
             {
-                roomsEmptyText.className = "rooms_empty_hidden";
-            }
-            for (var i = 0; i < rooms.length; i++)
-            {
-                addGameRoomToList(rooms[i].roomName, rooms[i].playerCount, rooms[i].maxPlayerCount);
+                if (roomList[i].playerCount != 0)
+                {
+                    addGameRoomToList(roomList[i].roomName, roomList[i].playerCount, roomList[i].maxPlayerCount);
+                    roomsEmptyText.className = "rooms_empty hidden";
+                }
             }
         }
     });
 
-    g_websiteSocket.on("createNewRoom", function(id, roomName, playerCount, maxPlayerCount)
+    g_socket.on("createNewRoom", function(id, roomName)
     {
-        if (g_websiteSocket.id == id)
+        if (g_socket.id == id)
         {
             setCookie("room_name", roomName);
             setCookie("room_owner", "true");
             location.reload();
         }
-        else
-        {
-            roomsEmptyText.className = "rooms_empty_hidden";
-            addGameRoomToList(roomName, playerCount, maxPlayerCount);
-        }
     });
 
-    g_websiteSocket.on("roomNameAlreadyExists", function(id, roomName)
+    g_socket.on("newRoomCreated", function(roomName, playerCount, maxPlayerCount)
     {
-        if (g_websiteSocket.id == id)
+        roomsEmptyText.className = "rooms_empty hidden";
+        addGameRoomToList(roomName, playerCount, maxPlayerCount);
+    });
+
+    g_socket.on("roomNameAlreadyExists", function(id, roomName)
+    {
+        if (g_socket.id == id)
         {
             alert("Game room '" + roomName + "' already exists!");
         }
     });
 
-    g_websiteSocket.on("removeRoom", function(roomName)
+    g_socket.on("removeRoom", function(roomName)
     {
         var roomNames = roomList.getElementsByClassName("room_name");
         for (var i = 0; i < roomNames.length; i++)
@@ -61,17 +63,41 @@ function initWebsiteSocket()
         }
     });
 
-    g_websiteSocket.on("gameRoomIsFull", function(roomName, id)
+    g_socket.on("gameRoomIsFull", function(roomName, id)
     {
-        if (g_websiteSocket.id == id)
+        if (g_socket.id == id)
         {
             alert("Game room '" + roomName + "' is full!");
         }
     });
 
-    g_websiteSocket.on("enterGameRoom", function(roomName, id)
+    g_socket.on("gameRoomNotFound", function(roomName, id)
     {
-        if (g_websiteSocket.id == id)
+        if (g_socket.id == id)
+        {
+            alert("Game room '" + roomName + "' not found!");
+        }
+    });
+
+    g_socket.on("gameRoomAlreadyStarted", function(roomName, id)
+    {
+        if (g_socket.id == id)
+        {
+            alert("Game room '" + roomName + "' already started!");
+        }
+    });
+
+    g_socket.on("maxPlayerCountOverflow", function(id, maxPlayerCount)
+    {
+        if (g_socket.id == id)
+        {
+            alert("Error: player limit in room is " + maxPlayerCount +"!");
+        }
+    });
+
+    g_socket.on("enterGameRoom", function(roomName, id)
+    {
+        if (g_socket.id == id)
         {
             setCookie("room_name", roomName);
             setCookie("room_owner", "false");
@@ -91,7 +117,7 @@ function initWebsiteSocket()
         }
     });
 
-    g_websiteSocket.on("playerLeftRoom", function(roomName)
+    g_socket.on("playerLeftRoom", function(roomName)
     {
         var rooms = roomList.getElementsByClassName("room");
         for (var i = 0; i < rooms.length; i++)
