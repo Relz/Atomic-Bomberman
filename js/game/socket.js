@@ -1,5 +1,5 @@
 var g_socket = null;
-var first;
+
 function initSocket()
 {
     var playerListUl = document.getElementById("playerList");
@@ -107,6 +107,7 @@ function initSocket()
         var playerIdPos = getPlayerIdPos(id);
         if (playerIdPos != -1)
         {
+            g_players[playerIdPos].color = color;
             g_players[playerIdPos].setSpritePlayerImageByColor(color);
             var playerNames = playerListUl.children;
             var playerPosInList = findPlayerPosInListByName(playerNames, name);
@@ -125,11 +126,8 @@ function initSocket()
         {
             if (players.length > g_players.length && getPlayerIdPos(players[i].id) == -1)
             {
-                if (g_players.length == 0)
-                {
-                    first = players[i].id;
-                }
                 g_players.push(new Player(players[i].id, players[i].name, players[i].posX, players[i].posY));
+                g_players[g_players.length - 1].color = players[i].color;
                 g_players[g_players.length - 1].setSpritePlayerImageByColor(players[i].color);
             }
             var li = document.createElement("li");
@@ -199,8 +197,6 @@ function initSocket()
         var playerIdPos = getPlayerIdPos(id);
         if (playerIdPos != -1)
         {
-            if (id == first)
-            console.log(id, isStaying);
             g_players[playerIdPos].staying = isStaying;
         }
     });

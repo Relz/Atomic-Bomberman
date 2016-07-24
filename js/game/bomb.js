@@ -1,7 +1,13 @@
 BOMB_DURATION = 3000;
 BOMB_ANIMATION_DURATION = 1000;
 
-SPRITE_BOMB_URL = "img/game/sprite_bomb.png";
+SPRITE_BOMB_URLS = {
+    "black": "img/game/bomb/sprite_bomb_black.png",
+    "red": "img/game/bomb/sprite_bomb_red.png",
+    "green": "img/game/bomb/sprite_bomb_green.png",
+    "blue": "img/game/bomb/sprite_bomb_blue.png",
+    "purple": "img/game/bomb/sprite_bomb_purple.png",
+};
 BOMB_SPRITE_ELEMENT_WIDTH = 36;
 BOMB_SPRITE_ELEMENT_HEIGHT = 37;
 BOMB_SPRITE_STANDART_COUNT = 10;
@@ -17,11 +23,20 @@ function Bomb(player, posX, posY, cooldown)
     this.currTime = cooldown;
     var imagePosX = 0;
     var imagePosY = 0;
+    var spriteBombImage = new Image();
+
     animateBomb(player, this);
-    this.draw = function(spiteBombImage)
+
+    this.setSpriteBombImageByColor = function(color)
+    {
+        spriteBombImage.src = SPRITE_BOMB_URLS[color];
+    };
+    this.setSpriteBombImageByColor(this.color);
+
+    this.draw = function()
     {
         g_ctx.drawImage(
-            spiteBombImage,
+            spriteBombImage,
             BOMB_SPRITE_ELEMENT_WIDTH * imagePosX,
             BOMB_SPRITE_ELEMENT_HEIGHT * imagePosY,
             BOMB_SPRITE_ELEMENT_WIDTH,
@@ -61,10 +76,10 @@ function Bomb(player, posX, posY, cooldown)
     }
 }
 
-function drawBombs(spiteBombImage)
+function drawBombs()
 {
     for (var i = 0; i < g_bombs.length; i++)
     {
-        g_bombs[i].draw(spiteBombImage);
+        g_bombs[i].draw();
     }
 }

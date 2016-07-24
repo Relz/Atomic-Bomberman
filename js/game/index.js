@@ -89,9 +89,7 @@ function initGame()
     spriteMapImage.src = SPRITE_MAP_URL;
     var spriteBonusImage = new Image();
     spriteBonusImage.src = SPRITE_BONUS_URL;
-    var spriteBombImage = new Image();
-    spriteBombImage.src = SPRITE_BOMB_URL;
-    draw(baseImage, spriteMapImage, spriteBonusImage, spriteBombImage);
+    draw(baseImage, spriteMapImage, spriteBonusImage);
 }
 
 function draw(baseImage, spriteMapImage, spriteBonusImage, spriteBombImage)
@@ -99,7 +97,7 @@ function draw(baseImage, spriteMapImage, spriteBonusImage, spriteBombImage)
     drawBase(baseImage);
     drawMap(spriteMapImage);
     drawBonuses(spriteBonusImage);
-    drawBombs(spriteBombImage);
+    drawBombs();
     drawFlames();
     drawPlayers();
     window.requestAnimationFrame(function()

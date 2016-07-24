@@ -54,6 +54,7 @@ function Player(id, name, posX, posY)
 {
     this.id = id;
     this.name = name;
+    this.color = null;
     this.posX = posX;
     this.posY = posY;
     this.canvasX = posX * CELL_WIDTH;
