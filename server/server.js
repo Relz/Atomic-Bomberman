@@ -31,9 +31,12 @@ function initServer(port)
 
 globals.io.on("connection", function(socket)
 {
+    globals.onlineCount++;
+
     socket.on("getRooms", function()
     {
         globals.io.emit("getRooms", socket.client.conn.id, globals.roomList);
+        globals.io.emit("getOnlineCount", globals.onlineCount);
     });
 
     socket.on("enterGameRoom", function(roomName, id)
@@ -320,6 +323,7 @@ globals.io.on("connection", function(socket)
 
     socket.on("disconnect", function()
     {
+        globals.onlineCount--;
         if (socket.roomName !== undefined)
         {
             roomNamePos = getRoomNamePos(socket.roomName);

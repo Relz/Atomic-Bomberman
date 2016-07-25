@@ -23,6 +23,12 @@ function initSocket()
         }
     });
 
+    g_socket.on("getOnlineCount", function(onlineCount)
+    {
+        var onlineCountElt = document.getElementById("onlineCount");
+        onlineCountElt.innerHTML = onlineCount;
+    });
+
     g_socket.on("createNewRoom", function(id, roomName)
     {
         if (g_socket.id == id)

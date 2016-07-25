@@ -3,6 +3,9 @@
     <a href="." title="Atomic Bomberman" class="logo">
       <img src="{$rootDir}img/website/logo.png">
     </a>
+    {if $username != "" && !$inGameRoom}
+      <span class="info_online">{$infoOnline}<span id="onlineCount" class="online_count"></span></span>
+    {/if}
     {if $username != ""}
       <a href="?action=logout&lang={$lang}" class="logout_image" {if $inGameRoom}id="logout"{/if} title="{$logoutText}"></a>
     {/if}

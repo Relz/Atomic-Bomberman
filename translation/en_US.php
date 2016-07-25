@@ -18,5 +18,6 @@
         "INFO_WAIT_ROOM_MAKER" => "Choose player model and prepare for battle",
         "HEADER_CHAT" => "Chat",
         "BTN_LEAVE_GAME_ROOM" => "Leave game room",
-        "BTN_START_GAME" => "Start game"
+        "BTN_START_GAME" => "Start game",
+        "INFO_ONLINE" => "Online: "
     ];

@@ -18,5 +18,6 @@
         "INFO_WAIT_ROOM_MAKER" => "Выберите модель игрока и ожидайте начала игры",
         "HEADER_CHAT" => "Чат",
         "BTN_LEAVE_GAME_ROOM" => "Покинуть комнату",
-        "BTN_START_GAME" => "Начать игру"
+        "BTN_START_GAME" => "Начать игру",
+        "INFO_ONLINE" => "Онлайн: "
     ];

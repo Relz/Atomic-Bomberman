@@ -48,6 +48,18 @@ li
     padding: 10px;
 }
 
+.info_online
+{
+    float: left;
+    border-radius: 4px;
+    line-height: 10px;
+    padding: 10px 20px;
+    font: bold 20px sans-serif;
+    color: #666;
+    background: rgba(150, 200, 150, 0.7);
+    margin: 0 0 0 5%;
+}
+
 .select-language
 {
     float: right;

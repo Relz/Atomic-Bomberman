@@ -78,6 +78,7 @@
         $smarty->assign("isLoginError", false);
         $smarty->assign("errorUsernameNotFree", t("ERROR_USERNAME_NOT_FREE"));
         $smarty->assign("errorUserSessionExpired", t("ERROR_USER_SESSION_EXPIRED"));
+        $smarty->assign("infoOnline", t("INFO_ONLINE"));
     }
 
     function processPostRequest()
